@@ -163,6 +163,12 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# Created by https://www.toptal.com/developers/gitignore/api/svn
+# Edit at https://www.toptal.com/developers/gitignore?templates=svn
 
+### SVN ###
+.svn/
+
+# End of https://www.toptal.com/developers/gitignore/api/svn
 
 
