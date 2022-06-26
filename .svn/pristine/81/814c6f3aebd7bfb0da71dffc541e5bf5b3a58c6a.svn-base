@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+.btnType{
+	float:right;
+}
+
+.app_date_apply{
+	 height:25px;
+	 margin-bottom:5px;
+}
+
+.selectEmpDv{
+	margin-bottom:10px;
+	overflow:hidden;
+}
+
+.selectEmpDv li{
+	float:left;
+	margin-right:30px;	
+}
+
+#empDvReg{
+	border:1px solid #000;
+}
+
+#dv_form{
+	display:none;
+}
+
+#searchEnter{
+	margin-right: 25px;
+}
+
+#tableTextD .tdtext1{
+	text-align: center;
+}
