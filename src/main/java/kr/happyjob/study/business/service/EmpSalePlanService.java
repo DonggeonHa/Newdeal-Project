@@ -19,7 +19,6 @@ public interface EmpSalePlanService {
 	/** 리스트  단건 조회 */
 	public EmpSalePlanModel planListSelect(Map<String, Object> paramMap);
 	
-
 	/** 단건 저장 */
 	public int  insertPlanList(Map<String, Object> paramMap);
 	

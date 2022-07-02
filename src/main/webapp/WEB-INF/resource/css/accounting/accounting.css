@@ -28,9 +28,34 @@
 }
 
 #searchEnter{
-	margin-right: 25px;
+	margin-right:25px;
 }
 
 #tableTextD .tdtext1{
-	text-align: center;
+	text-align:center;
 }
+
+#container ul 
+.contents 
+.content 
+.app_date_apply 
+.datepicker {
+	text-align:center;
+	padding:5px;
+	border-radius:0px !important;
+}
+
+.ui-widget-header 
+.ui-widget-header 
+.ui-helper-clearfix 
+.ui-corner-all {
+	background: #d3d3d3 !important;
+	border:1px solid #d3d3d3 !important;
+}
+
+.ui-widget-header{
+	background: #d3d3d3 !important;
+	border:1px solid #d3d3d3 !important;
+}
+
+

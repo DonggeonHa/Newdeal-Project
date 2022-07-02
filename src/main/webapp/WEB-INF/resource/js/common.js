@@ -130,7 +130,7 @@ function checkNotCheckBox(arr) {
  * @param  exParams  pageFunc에 넘겨줄 추가적인 파라미터 ( optional / 가능한 파라미터 형식: 문자열 )
  * @return html 문자열
  */
-function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc, exParams)
+function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc, exParams, exParams2)
 {	
 	totalCount = parseInt(totalCount);
 	pageRow = parseInt(pageRow);
@@ -163,8 +163,14 @@ function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc
 		endPage = totalPage;
 	}
 	
+	//alert("endPage: " + endPage); endPage 확인
+	
 	// 추가 파라미터가 있는 경우 함수 호출 파라미터로 적용
 	var sExParam = exParams==undefined ? "" : ",\"" + exParams.join("\",\"") + "\"";
+	
+	if(exParams2 != undefined)
+		sExParam = ",\"" + exParams.join("\",\"") + "\""+ ",\"" + exParams2.join("\",\"") + "\""; //추가 인자 적용하기위해서 추가함.
+	
 	
 	var pagingHtml = "<div class='paging'>";
 	pagingHtml += "<a class='first' href='javascript:"+pageFunc+"(1"+sExParam+")'><span class='hidden'>맨앞</span></a>";

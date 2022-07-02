@@ -1,7 +1,11 @@
 package kr.happyjob.study.business.controller;
 
-import kr.happyjob.study.business.model.EstManagementModel;
+import kr.happyjob.study.business.dto.EstListDetailDto;
+import kr.happyjob.study.business.dto.EstListDto;
+import kr.happyjob.study.business.dto.SelectEstListDto;
 import kr.happyjob.study.business.service.EstManagementService;
+import kr.happyjob.study.business.vo.ErpClientVo;
+import kr.happyjob.study.business.vo.UserInfoVo;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,19 +41,15 @@ public class EstManagementController {
 	
 	@Value("${cop.addr}")
 	private String erp_addr; 			// 주소
-	
-	@Value("${cop.emp}")
-	private String erp_emp; 			// 담당자
-	
-	@Value("${cop.tel}")
-	private String erp_tel;	 			// 회사 번호
+
+	@Value("1004호")
+	private String erp_addrDetail;		// 상세주소
 
 	// Set logger
 	private final Logger logger = LogManager.getLogger(this.getClass());
 	
 	// Get class name for logger
 	private final String className = this.getClass().toString();
-
 
 	// 좌측 사이드메뉴에서 영업 -> 견적서 작성 및 조회를 눌렀을 때 이동
 	@RequestMapping("estManagement.do")
@@ -66,7 +66,7 @@ public class EstManagementController {
 
 		int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));	// 현재 페이지 번호 넘어온것
 		int pageSize = Integer.parseInt((String)paramMap.get("pageSize"));			// 페이지 사이즈 넘어온것
-		int pageIndex = (currentPage-1) * pageSize;									// 페이지 시작 row 번호 넘어온것
+		int pageIndex = (currentPage - 1) * pageSize;								// 페이지 시작 row 번호 넘어온것
 		String client_search = (String) paramMap.get("client_search");  			// 거래처 검색 셀렉트박스 넘어온것
 		String from_date = (String) paramMap.get("from_date"); 						// 날짜 시작 데이터 검색  넘어온것
 		String to_date = (String) paramMap.get("to_date"); 							// 날짜 끝 데이터 검색  넘어온것
@@ -75,8 +75,10 @@ public class EstManagementController {
 		paramMap.put("pageSize", pageSize); 										// DB로
 		
 		// 1 . 목록 리스트 조회
-		List<EstManagementModel> estList = estService.estList(paramMap); 			// -> 콜백단으로 보내지는 데이터
+		List<EstListDto> estList = estService.estList(paramMap); 			// -> 콜백단으로 보내지는 데이터
 		model.addAttribute("estList", estList);
+		
+		model.addAttribute("erp_copnm", erp_copnm);
 
 		// 2 . 목록 리스트  카운트 조회
 		int estCnt = estService.estCnt(paramMap);
@@ -88,6 +90,39 @@ public class EstManagementController {
 		logger.info("   - paramMap ? ? ? ? ? ? : " + paramMap);
 		
 		return "/business/EstManagementCallBack"; 
+	}
+
+	/* model에 회사 프로퍼티 넣기 == 조회 */
+	@RequestMapping("estCreateModal.do")
+	@ResponseBody
+	public Map<String, Object> estCreateModal(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+									HttpServletResponse response, HttpSession session) throws Exception {
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		String loginID = (String) session.getAttribute("loginId");
+		UserInfoVo user = estService.searchLoginId(loginID);
+
+		// happyjob.properties에서 회사 프로퍼티 박은거 보내기
+		resultMap.put("erp_copnm", erp_copnm); 							// 회사이름
+		resultMap.put("erp_copnum", erp_copnum); 						// 사업자번호
+		resultMap.put("user", user);									// 담당자 이름, 이메일, 전화번호
+
+		return resultMap;
+	}
+
+	/* model에 거래처 프로퍼티 넣기 == 조회 */
+	@RequestMapping("searchClient.do")
+	@ResponseBody
+	public Map<String, Object> searchClient(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+											  HttpServletResponse response, HttpSession session) throws Exception {
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		ErpClientVo client = estService.searchClient(paramMap);
+
+		resultMap.put("client", client);								// 거래처 이름, 이메일
+
+		return resultMap;
 	}
 	
 	// 단건 조회
@@ -102,28 +137,25 @@ public class EstManagementController {
  		String resultMsg = "조회 되었습니다.";
 
  		// 단건 조회
- 		// 단건조회에 맞는 모달 안 리스트 뽑을 때 estimate_no는 여기서 꺼내서 썼음
- 		EstManagementModel estpart = estService.selectEstList(paramMap);
+ 		// 단건조회에 맞는 모달 안 리스트 뽑을 때 estimate_no, client_cd는 여기서 꺼내서 썼음
+		SelectEstListDto estpart = estService.selectEstList(paramMap);
 
+		String value = estpart.getRemarks();
+
+		if("".equals(value) || value == null) {
+			estpart.setRemarks("없음.");
+		}
 		Map<String, Object> resultMap = new HashMap<String, Object>();
- 		resultMap.put("result",result); 								// 컨트롤러 탔으니 성공했다는 메세지 뷰로 보낸다
- 		resultMap.put("estpart",estpart); 								// 단건조회 목록
- 		resultMap.put("resultMsg",resultMsg); 							// 한국어로 메세지
+ 		resultMap.put("result", result); 								// 컨트롤러 탔으니 성공했다는 메세지 뷰로 보낸다
+ 		resultMap.put("estpart", estpart); 								// 단건조회 목록
+ 		resultMap.put("resultMsg", resultMsg); 							// 한국어로 메세지
  		
  		// happyjob.properties에서 회사 프로퍼티 박은거 보내기
- 		resultMap.put("erp_copnm",erp_copnm); 							// 회사이름
- 		resultMap.put("erp_copnum",erp_copnum); 						// 사업자번호
- 		resultMap.put("erp_addr",erp_addr); 							// 회사 주소
- 		resultMap.put("erp_emp",erp_emp); 								// 담당자 이름
- 		resultMap.put("erp_tel",erp_tel); 								// 담당자 전화번호
- 		
-		logger.info("+ End " + estpart + "estpart"); 
-	 
-	 	logger.info("+ End " + className + "estManagementSelect"); 		// log4j  순서도 중요
+ 		resultMap.put("erp_copnm", erp_copnm); 							// 회사이름
+ 		resultMap.put("erp_copnum", erp_copnum); 						// 사업자번호
+ 		resultMap.put("erp_addr", erp_addr); 							// 회사 주소
+ 		resultMap.put("erp_addrDetail", erp_addrDetail); 				// 회사 상세주소
 
-	 	System.out.printf("resultMap     ", resultMap);
- 		System.out.println("estManagementSelect   컨트롤러로           왔음 ");
-		 
  		return resultMap ;
  	}
  	
@@ -133,14 +165,15 @@ public class EstManagementController {
     			HttpServletResponse response, HttpSession session) throws Exception {
 
 		logger.info("+ 자바단 컨트롤러 Start " + className + " .EstDetaillist");
-		System.out.println("EstDetaillist   컨트롤러로           왔음 ");
 
 		// 1 . 목록 리스트 조회
-		List<EstManagementModel> estDetailList = estService.estListDetail(paramMap); 	// -> 콜백단으로 보내지는 데이터
-		model.addAttribute("estDetailList", estDetailList);
+		List<EstListDetailDto> estListDetail = estService.estListDetail(paramMap); 	// -> 콜백단으로 보내지는 데이터
+		model.addAttribute("estListDetail", estListDetail);
+		logger.info("+ @@@@@@@@estListDetailestListDetail " + estListDetail + " .EstDetaillist");
+
 
 		// 2 . 목록 리스트  카운트 조회
-		int estDetailCnt =estService.estDetailCnt(paramMap);
+		int estDetailCnt = estService.estDetailCnt(paramMap);
 		model.addAttribute("estDetailCnt",estDetailCnt);
 		
 		logger.info("   자바단 컨트롤러  - paramMap : " + paramMap);
@@ -161,19 +194,6 @@ public class EstManagementController {
 		
 		String result = "SUCCESS";
 		String resultMsg = "저장 되었습니다.";
-		
-		// 실제 뷰단의 자바스크립트 =>  $(#"").(data.실제컬럼이름)에서 뿌리고 가져옴
-		String estimate_no = request.getParameter("estimate_no");
-		paramMap.put("estimate_no", estimate_no);
-
-		String client_search1 = request.getParameter("client_search1");
-		paramMap.put("client_search1", client_search1);
-
-		String divproducttall = request.getParameter("divproducttall");
-		paramMap.put("divproducttall", divproducttall);
-
-		String estimate_cnt = request.getParameter("estimate_cnt");
-		paramMap.put("estimate_cnt", estimate_cnt);
 
 		String loginID = (String) session.getAttribute("loginId");
 		paramMap.put("loginID", loginID);
@@ -183,18 +203,12 @@ public class EstManagementController {
 			//estimate테이블 인서트
 			estService.insertEstList(paramMap);
 
-			//estimate_prod 테이블 인서트
-			estService.updateInsertEstList(paramMap);
-
-			System.out.println("---------------------------> 신규등록 ");
-			 
-			// insert 두번 날리는법 -- 메소드 이름 다르게 
+			// insert 두번 날리는법 -- 메소드 이름 다르게
 			// estService.insert1EstList(paramMap);
 			// estService.insert2EstList(paramMap);
 
 		//  단건 조회시
 		} else if("U".equals(action)) {
-
 			estService.estListDetail(paramMap);
 			System.out.println("------------> 상세 조회");
 
@@ -239,4 +253,6 @@ public class EstManagementController {
 		
  		return resultMap;
  	}
+
+
 }

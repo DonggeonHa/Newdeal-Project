@@ -15,18 +15,20 @@
 
 	<c:forEach items="${oemList}" var="list">
 		<tr>
+			<td>${list.client_nm}</td>
 			<!-- 날짜 누르면 readonly  -->
-			<td>${list.estimate_no}</td>
+			<td>${list.name}</td>
 			<td>
 				<a href="javascript:oemOne('${list.estimate_no}')">
 					<strong>${list.receive_num}</strong>
 				</a>
 			</td>
-			<td>${list.client_nm}</td>
+			<td>${list.receive_date}</td>
+			<td>${list.limit_date}</td>
 			<td>${list.product_nm}</td>
-			<td>${list.supply_val}</td>
-			<td>${list.supply_tax}</td>
-			<td>${list.supply_cost}</td>
+			<td><fmt:formatNumber value="${list.estimate_cnt}" pattern="#,###"/></td>
+			<td><fmt:formatNumber value="${list.supply_cost}" pattern="#,###"/></td>
+			<td>${list.remarks}</td>
 		</tr>
 		<c:set var="nRow" value="${nRow + 1}" />
 		<!-- 페이징 네비게이션 -->

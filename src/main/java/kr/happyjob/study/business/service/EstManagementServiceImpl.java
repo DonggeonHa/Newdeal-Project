@@ -1,7 +1,11 @@
 package kr.happyjob.study.business.service;
 
 import kr.happyjob.study.business.dao.EstManagementDao;
-import kr.happyjob.study.business.model.EstManagementModel;
+import kr.happyjob.study.business.dto.EstListDetailDto;
+import kr.happyjob.study.business.dto.EstListDto;
+import kr.happyjob.study.business.dto.SelectEstListDto;
+import kr.happyjob.study.business.vo.ErpClientVo;
+import kr.happyjob.study.business.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +20,9 @@ public class EstManagementServiceImpl implements EstManagementService{
 	
 	//리스트 목록 조회
 	@Override
-	public List<EstManagementModel> estList(Map<String, Object> paramMap) throws Exception {
+	public List<EstListDto> estList(Map<String, Object> paramMap) throws Exception {
 		return estManagementDao.estList(paramMap);
 	}
-	
 
 	//리스트 목록 카운트  => 매퍼의 리스트 관계 확인
 	@Override
@@ -27,13 +30,11 @@ public class EstManagementServiceImpl implements EstManagementService{
 		return estManagementDao.estCnt(paramMap);
 	}
 
-	
 	//단건조회
 	@Override
-	public EstManagementModel selectEstList(Map<String, Object> paramMap) {
+	public SelectEstListDto selectEstList(Map<String, Object> paramMap) {
 		return estManagementDao.selectEstList(paramMap);
 	}
-
 	
 	//단건 신규등록
 	@Override
@@ -55,7 +56,7 @@ public class EstManagementServiceImpl implements EstManagementService{
 
 	// 모달 안 리스트 뿌리기
 	@Override
-	public List<EstManagementModel> estListDetail(Map<String, Object> paramMap) throws Exception {
+	public List<EstListDetailDto> estListDetail(Map<String, Object> paramMap) throws Exception {
 		return estManagementDao.estListDetail(paramMap);
 	}
 	// 모달 안 리스트 뿌리기 카운트 
@@ -68,5 +69,17 @@ public class EstManagementServiceImpl implements EstManagementService{
 	@Override
 	public int updateInsertEstList(Map<String, Object> paramMap) throws Exception {
 		return estManagementDao.updateInsertEstList(paramMap);
+	}
+
+	@Override
+	/** 로그인 아이디 찾기 */
+	public UserInfoVo searchLoginId(String loginId) {
+		return estManagementDao.searchLoginId(loginId);
+	}
+
+	@Override
+	/** 클라이언트 찾기 */
+	public ErpClientVo searchClient(Map<String, Object> paramMap) {
+		return estManagementDao.searchClient(paramMap);
 	}
 }

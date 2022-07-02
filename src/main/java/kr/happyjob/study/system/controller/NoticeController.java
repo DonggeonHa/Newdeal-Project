@@ -34,142 +34,192 @@ public class NoticeController {
 	private final String className = this.getClass().toString();
 	
 	
-	
-	// 처음 로딩될 때 공지사항 연결
+	//공지사항 페이지 연결 
 	@RequestMapping("notice.do")
-	public String init(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+	public String notice(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) throws Exception {
 
-		logger.info("+ Start " + className + ".initNotice");
-		logger.info("   - paramMap : " + paramMap);
+		logger.info("+ Start " + className + ".notice");
+		
 		
 		String loginID = (String) session.getAttribute("loginId");
 		paramMap.put("loginID", loginID);
-		System.out.println(loginID);
-//		paramMap.put("writer", loginID);
-		
+		logger.info("로그인아이디는 "+loginID);
+		logger.info("   - paramMap : " + paramMap);
+		logger.info("+ End " + className + ".notice");
+
 		return "system/notice";
 	}
 	
-	// 공지사항 리스트 출력
+		
+	//공지사항 리스트 출력 
 	@RequestMapping("noticeList.do")
-	public String noticeList(Model model, @RequestParam Map<String, Object> paramMap, 
-			HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-		
+	public String noticeList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+
+		logger.info("+ Start " + className + ".noticeList");
 		logger.info("   - paramMap : " + paramMap);
-		String title = (String) paramMap.get("title");
+
 		
-		int currentPage = Integer.parseInt((String) paramMap.get("currentPage")); // 현재페이지
-	    int pageSize = Integer.parseInt((String) paramMap.get("pageSize"));
-	    int pageIndex = (currentPage - 1) * pageSize;
+
+		int pagenum = Integer.parseInt((String) paramMap.get("pagenum"));
+		int pagesize = Integer.parseInt((String) paramMap.get("pagesize"));
+		int pageindex = (pagenum - 1) * pagesize;
 		
-		paramMap.put("pageIndex", pageIndex);
-		paramMap.put("pageSize", pageSize);
-		paramMap.put("title", title);
+		String to_date =(String) paramMap.get("toDate");
+		String from_date =(String) paramMap.get("fromDate");
+		String today =(String) paramMap.get("today");
 		
-		// 공지사항 목록 조회
-		List<NoticeModel> noticeList = noticeService.noticeList(paramMap);
-		model.addAttribute("notice", noticeList);
-		
-		// 목록 수 추출해서 보내기
-		int noticeCnt = noticeService.noticeCnt(paramMap);
-		
-	    model.addAttribute("noticeCnt", noticeCnt);
-	    model.addAttribute("pageSize", pageSize);
-	    model.addAttribute("currentPage",currentPage);
-	    
-	    return "system/noticeList";
-	}
+		paramMap.put("pagesize", pagesize);
+		paramMap.put("pageindex", pageindex);
 	
-	// 공지사항 상세 조회
-	@RequestMapping("detailNotice.do")
-	@ResponseBody
-	public Map<String,Object> detailNotice(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
 		
-		//System.out.println("상세정보 보기를 위한 param에서 넘어온 값을 찍어봅시다.: " + paramMap);
-		  logger.info("+ Start " + className + ".detailNotice");
-		  logger.info("   - paramMap : " + paramMap);
-		  
-		String result="";
 		
-		// 선택된 게시판 1건 조회 
-		NoticeModel detailNotice = noticeService.noticeDetail(paramMap);
 		
-		if(detailNotice != null) {
-			result = "SUCCESS";  // 성공시 찍습니다. 
-		}else {
-			result = "FAIL / 불러오기에 실패했습니다.";  // null이면 실패입니다.
+		if( to_date == "" && from_date != ""){//from만 입력했을 시 
+			to_date = today;
+		}
+		if (to_date != "" && from_date == "") {//to만 입력했을
+			from_date = "0001-01-01";
+		}
+		if(to_date == "" && from_date == "") {
+			to_date = today;
+			from_date = "0001-01-01";
 		}
 		
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("resultMsg", result); // success 용어 담기 
-		resultMap.put("result", detailNotice); // 리턴 값 해쉬에 담기 
-		//resultMap.put("resultComments", comments);
-		System.out.println(detailNotice);
 		
-		logger.info("+ End " + className + ".detailNotice");
-	    
-	    return resultMap;
+		
+		logger.info("   - toDate : " + to_date);
+		logger.info("   - fromDate : " + from_date);
+		logger.info("   - today : " + today);
+		
+		paramMap.put("toDate", to_date);
+		paramMap.put("fromDate", from_date);
+		
+		
+		List<NoticeModel> result_list = noticeService.noticeList(paramMap);
+		
+
+
+		model.addAttribute("result", result_list);
+		
+		int totalcnt = noticeService.noticeCnt(paramMap);
+				
+		model.addAttribute("totalcnt", totalcnt);
+
+
+		logger.info("+ End " + className + ".noticeList");
+
+		return "system/noticeList";
+		
+
 	}
 	
-	// 공지사항 신규등록, 업데이트
-	@RequestMapping("noticeSave.do")
-	@ResponseBody
-	public Map<String, Object> noticeSave(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+	
+	// 공지사항 단건조회
+	@RequestMapping("noticeSelectOne.do")
+	@ResponseBody //내가 요청하고 내가 받음 
+	public Map<String,Object> noticeSelectOne(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+
+		logger.info("+ Start " + className + ".noticeList");
+		logger.info("   - paramMap : " + paramMap);
 		
+		
+		
+		Map<String,Object>resultvalue = new HashMap<String,Object>();
+		
+
+		
+
+		NoticeModel result = noticeService.noticeSelectOne(paramMap);
+		
+		if(result != null) {
+			resultvalue.put("resultdata", "SUCCESS");
+		}
+		logger.info(" 성공? " +resultvalue.get("result"));
+				
+		
+		resultvalue.put("result",result);
+		
+		resultvalue.put("writer", paramMap.get("writer"));
+				
+
+		model.addAttribute("result", result);
+		
+		int totalcnt = noticeService.noticeCnt(paramMap);
+				
+		model.addAttribute("totalcnt", totalcnt);
+		
+
+		logger.info("+ End " + className + ".noticeList");
+
+		return resultvalue;
+		
+
+	}
+	
+	
+	/*신규등록일때도 저장 , 수정일때도 저장 2가지 case가 있음 action으로 구분*/
+	@RequestMapping("noticeSave.do")
+	@ResponseBody //내가 요청하고 내가 받음 
+	public Map<String,Object> noticeSave(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+
 		logger.info("+ Start " + className + ".noticeSave");
 		logger.info("   - paramMap : " + paramMap);
 		
-		String action = (String)paramMap.get("action");
-		String resultMsg = "";
+		String action = (String)paramMap.get("action"); // object타입이여서 형변환해야
 		
-		// 사용자 정보 설정
-		paramMap.put("loginId", session.getAttribute("loginId"));
+	/* string의 action.equals("I") 는 위험한 코딩임 action이 null이면 error 
+	  
+	 	"I".equals(action)을 추
+	 * */	
+		Map<String,Object>resultvalue = new HashMap<String,Object>();
 		
-		logger.info("loginId : " + paramMap.get("loginId"));
 		
-		if ("I".equals(action)) {
-			// 그룹코드 신규 저장
-			noticeService.insertNotice(paramMap);
-			resultMsg = "SUCCESS";
-		} else if("U".equals(action)) {
-			// 그룹코드 수정 저장
-			noticeService.updateNotice(paramMap);
-			resultMsg = "UPDATED";
-			System.out.println(paramMap);
-		} else {
-			resultMsg = "FALSE : 등록에 실패하였습니다.";
+		paramMap.put("loginID", session.getAttribute("loginId"));
+		
+		
+		logger.info("loginID 1: " +paramMap.get("loginID"));
+		
+		resultvalue.put("loginID",session.getAttribute("loginId"));
+		
+		logger.info("loginID 2 : " +resultvalue.get("loginID"));
+		
+		
+		if("I".equals(action)) { //등록일 때 
+			
+			noticeService.saveInsert(paramMap);
+			resultvalue.put("result", "SUCCESS");
+			
+		}
+		else if ("U".equals(action)) {//수정일 때 
+			
+			logger.info("+수정  " + className + ".UPDATE");
+
+			
+			noticeService.saveUpdate(paramMap);
+			resultvalue.put("result", "UPDATED");
+			
+			logger.info("+수정  " + className + ".UPDATE");
+			
+		}else if ("D".equals(action)) {
+			
+			logger.info("+ 삭제  " + className + ".DELETE");
+
+			
+			noticeService.deleteNotice(paramMap);
+			resultvalue.put("result", "DELETE");
 		}
 		
-		//결과 값 전송
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("resultMsg", resultMsg);
-	    
-	    return resultMap;
-	}
 	
-	// 공지사항 삭제
-	@RequestMapping("noticeDelete.do")
-	@ResponseBody
-	public Map<String, Object> noticeDelete(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
 		
-		logger.info("+ Start " + className + ".noticeDelete");
-		logger.info("   - paramMap : " + paramMap);
+		logger.info("+ End " + className + ".noticeSave");
 
-		String result = "SUCCESS";
-		String resultMsg = "삭제 되었습니다.";
+		return resultvalue;
 		
-		// 그룹코드 삭제
-		noticeService.deleteNotice(paramMap);
 		
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("result", result);
-		resultMap.put("resultMsg", resultMsg);
-		
-		logger.info("+ End " + className + ".noticeDelete");
-		
-		return resultMap;
-	}
+	}	
 	
 }

@@ -14,25 +14,32 @@
 	<c:set var="nRow" value="${pageSize*(currentPageEmpList-1)}" />
 	<c:forEach items="${listEmployeeModel}" var="list">
 		<tr>
-			<td><a href="javascript:viewEmpDtl('${list.loginID }')">${list.loginID}</a></td>
+			<td id="trytest"><a href="javascript:viewEmpDtl('${list.loginID }')"> <strong> ${list.loginID}</strong></a></td>
 			<td>${list.name}</td>
 			<td>${list.dept_name}</td>
 			<td>${list.poscd}</td>
 			<td>${list.entry_date}</td>
 			<c:choose>
-				<c:when test = "${list.rest_yn == 'n'}"><td>재직</td></c:when>
 				<c:when test = "${list.rest_yn == 'y'}"><td>휴직</td></c:when>
+				<c:when test = "${list.rest_yn == 'n'}"><td>재직</td></c:when>				
 				<c:when test = "${list.out_yn == 'y'}"><td>퇴직</td></c:when>
 			</c:choose>
 			
-			<c:if test = "${list.out_yn == 'n' }"><!-- 재직자 리스트 조회일 시 -->
+			<c:if test = "${list.rest_yn == 'n' }" ><!-- 재직자 리스트 조회일 시 -->			
 				<td>
 					<a class="btnType3 color1" href="javascript:fPopModalResignEmp('${list.loginID}', '${list.name}', '${list.entry_date}');"><span>퇴사처리</span></a>
 				</td>
 			</c:if>
+			
 			<c:if test ="${list.out_yn == 'y' }"> <!-- 퇴직자 리스트 조회일 시 -->
 				<td>${list.retire_date}</td>
 			</c:if>
+			
+			<c:if test ="${list.rest_yn == 'y' }"> <!-- 휴직자 리스트 조회일 시 -->
+				<td>휴직일자 데이터 없음</td>
+			</c:if>
+
+		
 		</tr>
 		<c:set var="nRow" value="${nRow + 1}" />
 	</c:forEach>

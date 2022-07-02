@@ -12,21 +12,24 @@
 
 
 <c:if test = "${estCnt > 0 }">
-	<c:set var="nRow" value="${pageSize*(currentPage-1)}" />
+	<c:set var="nRow" value="${pageSize * (currentPage - 1)}" />
 
-	<c:forEach items="${estList}" var="list"  >
+	<c:forEach items="${estList}" var="list">
 		<tr>
-			<!-- 날짜 누르면 readonly  -->
-			<td><a  href="javascript:estOne('${list.estimate_no}')" ><strong >${list.estimate_date} </strong></a></td>
-			<td> ${list.client_nm}</td>
-			<td> ${list.product_nm}</td>
-			<td> ${list.supply_val}</td>
-			<td> ${list.supply_tax}</td>
-			<td> ${list.supply_cost}</td>
+			<td>${erp_copnm}</td>
+			<td>${list.estimateNo}</td>
+			<td>${list.clientNm}</td>
+			<td>${list.name}</td>
+			<td><fmt:formatNumber value="${list.sumTotal}" pattern="#,###"/></td>
+			<td>${list.estimateDate}</td>
+			<td>
+				<a href="javascript:estOne('${list.estimateNo}', '${list.clientCd}')" >
+					<span>상세보기</span>
+				</a>
+			</td>
 		</tr>
 		<c:set var="nRow" value="${nRow + 1}" /> <!-- 페이징 네비게이션 -->
 	</c:forEach>
 </c:if>
-
 <!-- 단건조회시 카운트와 연관 깊음 -->
-<input type="hidden"  id="estCnt"  name="estCnt"  value="${estCnt}"/>
+<input type="hidden" id="estCnt" name="estCnt" value="${estCnt}"/>

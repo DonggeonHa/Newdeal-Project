@@ -165,7 +165,7 @@ public class DashboardController {
 		String result="";
 		
 		// 선택된 게시판 1건 조회 
-		NoticeModel detailNotice = noticeService.noticeDetail(paramMap);
+		NoticeModel detailNotice = noticeService.noticeSelectOne(paramMap);
 		
 		if(detailNotice != null) {
 			result = "SUCCESS";  // 성공시 찍습니다. 

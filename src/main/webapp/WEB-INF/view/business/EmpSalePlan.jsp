@@ -27,7 +27,7 @@
 <script type="text/javascript">
 
 // 그룹코드 페이징 설정
-var pageSizeSalePlan = 5;
+var pageSizeSalePlan = 10;
 var pageBlockSizeSalePlan = 5;
 
 
@@ -204,7 +204,7 @@ var pageBlockSizeSalePlan = 5;
 		
 
 		 	$("#scm_middle_class1").val(data.small_classifi); // data.실제컬럼이름
-		 	$("#divproducttall1").val(data.product_nm); // data.실제컬럼이름
+		 	$("#product_cd1").val(data.product_nm); // data.실제컬럼이름
 		 	$("#goal_amt").val(data.goal_amt); // data.실제컬럼이름
 
 
@@ -524,7 +524,7 @@ var pageBlockSizeSalePlan = 5;
        } 
        function selectproductlistcombo(){
          var margecd = $("#scm_middle_class").val();
-         productCombo("p", "divproducttall", "all", margecd);   // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))  
+         productCombo("p", "product_cd", "all", margecd);   // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))  
        }
 	 
 		// scm 대분류,중분류,제품 콤보박스 
@@ -537,7 +537,7 @@ var pageBlockSizeSalePlan = 5;
        } 
        function selectproductlistcombo1(){
          var margecd = $("#scm_middle_class1").val();
-         productCombo("p", "divproducttall1", "all", margecd);   // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))  
+         productCombo("p", "product_cd1", "all", margecd);   // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))  
        }
 	 
 	 
@@ -619,7 +619,7 @@ var pageBlockSizeSalePlan = 5;
 								<td>
 								<select id="scm_middle_class" name="scm_middle_class" onChange="javascript:selectproductlistcombo();"  ></select>
 			    				<b>제품</b>
-										<select id="divproducttall" name="divproducttall"></select>
+										<select id="product_cd" name="product_cd"></select>
 								</td>
 									</tr>
 						
@@ -725,7 +725,7 @@ var pageBlockSizeSalePlan = 5;
 			                  <tr>
 	                             <th scope="row">제품<span class="font_red">*</span></th>
 									<td>
-										<select id="divproducttall1" name="divproducttall1"></select>
+										<select id="product_cd1" name="product_cd1"></select>
 									</td>
 									        <th scope="row">목표수량 </th>
 			                    			 <td colspan="3">
@@ -736,7 +736,7 @@ var pageBlockSizeSalePlan = 5;
 			               </tbody>
 			            </table>
 			            <div class="btn_areaC mt30">
-			               <a href="" class="btnType blue" id="btnUpdatePlan" name="btn"><span>등록</span></a> 	
+			               <a href="" class="btnType blue" id="btnUpdatePlan" name="btnUpdatePlan"><span>등록</span></a> 	
 			               <a href=""   class="btnType gray"  id="btnClosePlan" name="btn"><span>취소</span></a>
 			            </div>
 			         </dd>

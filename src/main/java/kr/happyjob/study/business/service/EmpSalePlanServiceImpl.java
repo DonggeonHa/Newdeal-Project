@@ -52,7 +52,8 @@ public class EmpSalePlanServiceImpl implements EmpSalePlanService  {
 		return planpart;
 	}
 
-	@Override
+	//단건 저장
+	@Override 
 	public int insertPlanList(Map<String, Object> paramMap) {
 		int alpa = salePlanDao.insertPlanList(paramMap);
 		return alpa;

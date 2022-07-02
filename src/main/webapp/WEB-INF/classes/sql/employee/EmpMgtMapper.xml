@@ -194,10 +194,23 @@
 					   WHERE dc.group_code = 'POScd')pc ON emp.POScd = pc.detail_code
 			LEFT JOIN (SELECT dc.dept_cd, dc.dept_name
 							FROM tb_dept dc)dp ON emp.dept_cd = dp.dept_cd
-		<where><!-- 검색 조건 -->
-			<if test = "(retire_yn != null) and (!retire_yn.equals(''))">
-				AND out_yn = #{retire_yn}
+		<where><!-- 검색 조건 -->		
+			
+
+			<if test = "(retire_yn eq 'y'.toString())">
+				AND out_yn = #{retire_yn} 
 			</if>
+
+			<if test = "(abs_yn eq 'y'.toString()) ">
+				AND rest_yn = #{abs_yn} 
+			</if>	
+			
+			<if test = "(retire_yn eq 'n'.toString()) and (abs_yn eq 'n'.toString()) ">
+				AND rest_yn = #{abs_yn} 
+			</if>			
+				
+		
+			
 			<if test="(from_date != null) and (!from_date.equals('')) and (to_date != null) and (!to_date.equals(''))">
 				AND emp.entry_date BETWEEN #{from_date} and #{to_date}
 			</if>
@@ -217,6 +230,8 @@
 					</when>
 				</choose>
 			</if>
+			
+				
 		</where>
 		<if test = "(retire_yn != null) and (retire_yn eq 'n'.toString())">
 			ORDER BY emp.entry_date DESC
@@ -224,6 +239,10 @@
 		<if test = "(retire_yn != null) and (retire_yn eq 'y'.toString())">
 			ORDER BY emp.retire_date DESC
 		</if>
+		
+		
+		
+		
 		<if test ="(pageIndex != null) and (!pageIndex.equals('')) || (pageSize != null) and (!pageSize.equals(''))">
 			LIMIT #{pageIndex}, #{pageSize}
 		</if>
@@ -235,9 +254,32 @@
 			FROM tb_emp emp
 		LEFT JOIN tb_userinfo ui ON ui.loginID = emp.loginID
 		<where><!-- 검색 조건 -->
-			<if test = "(retire_yn != null) and (!retire_yn.equals(''))">
-				AND out_yn = #{retire_yn}
+
+			<if test = "(retire_yn eq 'y'.toString())">
+				AND out_yn = #{retire_yn} 
 			</if>
+
+			<if test = "(abs_yn eq 'y'.toString()) ">
+				AND rest_yn = #{abs_yn} 
+			</if>			
+		
+			<if test = "(retire_yn eq 'n'.toString()) and (abs_yn eq 'n'.toString()) ">
+				AND rest_yn = #{abs_yn} 
+			</if>
+		
+			
+<!-- 			<if test = "(retire_yn != null) and (!retire_yn.equals(''))"> -->
+<!-- 				AND out_yn = #{retire_yn} -->
+<!-- 			</if> -->
+
+		
+		
+<!-- 			<if test = "(retire_yn != null) and (!retire_yn.equals(''))"> -->
+<!-- 				AND out_yn = #{retire_yn} -->
+<!-- 			</if> -->
+			
+			
+			
 			<if test="(from_date != null) and (!from_date.equals('')) and (to_date != null) and (!to_date.equals(''))">
 				AND emp.entry_date between #{from_date} and #{to_date}
 			</if>

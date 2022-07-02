@@ -9,11 +9,17 @@
 	<!--  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<!-- 달력-->
+	
 	<!--  CSS stylesheet link -->
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/accounting/accounting.css" >
-
+	<!-- 달력-->
+	
+	
 	<title>지출결의서 신청</title>
 
+	
+	<!-- 공통영역-->
 	<jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 
 </head>
@@ -31,7 +37,7 @@
 		<div id="mask"></div>
 	
 		<div id="wrap_area">
-	
+		
 			<h2 class="hidden">header 영역</h2>
 			<jsp:include page="/WEB-INF/view/common/header.jsp"></jsp:include>
 	
@@ -62,7 +68,9 @@
 							
 							<!-- date picker -->				
 							<div class = "app_date_apply">
-								<Strong>신청일자</Strong> <input type = "date" id="from_date">~<input type="date" id="to_date">
+								<!-- 달력 조회 -->
+									<label>날&emsp;&emsp;&emsp;&nbsp;&nbsp;짜</label>
+									<input type="text" id="datePicker" class="datepicker"> ~ <input type="text" id="datePicker2" class="datepicker">
 							</div>
 							
 							<div class = "selectEmpDv">
@@ -215,11 +223,50 @@
 			<a href=""  class="closePop"><span class="hidden">닫기</span></a>
 		</div>				
 	</form> <!--// content -->
-
 </body>
+<!--달력 -->
+<link rel="stylesheet" href="https//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.kr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
 
 <script type="text/javascript">
- 
+(function($){
+	$.fn.datepicker.dates['ko'] = {
+		days: ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"],
+		daysShort: ["월", "화", "수", "목", "금", "토", "일"],
+		daysMin: ["월", "화", "수", "목", "금", "토", "일"],
+		months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		monthsShort: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+		today: "오늘",
+		clear: "삭제",
+		format: "yyyy-mm-dd",
+		titleFormat: "yyyy년mm월",
+		weekStart: 0
+	};
+}(jQuery));
+
+	// datepicker 사용 선언 
+	$('#datePicker').datepicker({	
+		format : " yyyy-mm-dd",	
+		language : 'ko',
+		todayHighlight: true,
+		toggleActive: true,
+		autoclose: true,
+		daysOfWeekHighlighted : [6]
+	});
+	
+	$('#datePicker2').datepicker({	
+		format : " yyyy-mm-dd",	
+		language : 'ko',
+		todayHighlight: true,
+		toggleActive: true,
+		autoclose: true,
+		daysOfWeekHighlighted : [6]
+	});
+	
+
 </script>
 
 </html>

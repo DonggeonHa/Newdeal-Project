@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <style>
-	#est_client_nm,#erp_copnm {
+	#est_client_nm, #erp_copnm {
 		background-color: #BBC1CD;
 		font-weight:bolder;
 		text-align: center;
@@ -24,142 +24,124 @@
 	        <table class="row">
 	        	<caption>caption</caption>
 	        	<colgroup>
-	            	<col width="120px">
-	            	<col width="*">
-	            	<col width="120px">
-	            	<col width="*">
+	            	<col width="15%">
+	            	<col width="35%">
+	            	<col width="15%">
+	            	<col width="35%">
 				</colgroup>
 	
 				<tbody>
 	            	<tr>
 	                	<th scope="row" colspan="2"> 
-	                		<input type ="text" name="est_client_nm" id="est_client_nm" readOnly />
+							<p id="cliName" />
 	                	</th>
 	                    <th scope="row" colspan="2">
-	                    	<input type ="text" name="erp_copnm" id="erp_copnm" readOnly >
+							<p id="erp_copnm" />
 	                    </th>
 	                </tr>
 	                <tr>
 	                	<!-- 목록조회 외에 UPDATE, INSERT , DELETE 등을 위해 필요함  hidden 값  // INT가 아닌것도 있음  -->
 	                	<td hidden="">
-	                		<input type="text" class="inputTxt p100" name="estimate_no" id="estimate_no" />
+	                		<input type="text" class="inputTxt p100" name="estimateNo" id="estimateNo" />
 	                	</td> 
 	                  	   
 	                  	<th scope="row">사업자등록번호</th>
-	                  	<td class="inputTxt p100">  	
-	                 		<input type="text"   name="cop_no1" id="cop_no1" style ="width :20%; height :70%" maxlength="4" readOnly>
-	                    	 - 
-	                    	<input type="text"   name="cop_no2" id="cop_no2" style ="width :20%; height :70%" maxlength="4" readOnly>
-	                    	 - 
-	                    	<input type="text"  name="cop_no3" id="cop_no3" style ="width :20%; height :70%" maxlength="4" readOnly/>
+	                  	<td class="inputTxt p100">
+							<p id="copNo" />
 	                    </td>
 						<th scope="row">사업자등록번호</th>
-	                 	<td  class="inputTxt p100">
-	             			<input type="text"   name="erp_copnum1" id="erp_copnum1" style ="width :20%; height :70%" maxlength="4"  readOnly>
-	                   	 	 - 
-	                   	 	<input type="text"   name="erp_copnum2" id="erp_copnum2" style ="width :20%; height :70%" maxlength="4" readOnly>
-	                   	 	 - 
-	                   	 	<input type="text"  name="erp_copnum3" id="erp_copnum3" style ="width :20%; height :70%" maxlength="4" readOnly/>
-	                   	 </td>
+	                 	<td class="inputTxt p100">
+							<p id="erp_copnum"></p>
+	                   	</td>
 					</tr>
 	              	<tr>
 	                	<th scope="row">담당자</th>
 	                 	<td>
-	                 		<input type="text" class="inputTxt p100" name="direct_nm" id= "direct_nm" readOnly/>
+							<p id="empNm"></p>
 	                 	</td>
 	                  	<th scope="row">담당자</th>
 	                 	<td>
-	                 		<input type="text" class="inputTxt p100" name="emp_name" id= "emp_name" readOnly/>
+							<p id="erp_emp"></p>
 	                 	</td>
 					</tr>
 	              	<tr>
 	                	<th scope="row">주소</th>
 	                 	<td>
-	                 		<input type="text" class="inputTxt p100"  name="addr" id="addr" readOnly />
+							<p id="addr"></p>
 	                 	</td>
 	                 	<th scope="row">주소</th>
 	                  	<td>
-	                  		<input type="text" class="inputTxt p100"  name="erp_addr" id="erp_addr" readOnly/>
+							<p id="erp_addr"></p>
 	                  	</td>
 	              	</tr>
 	              	<tr>
 	                	<th scope="row">나머지주소</th>
 	                 	<td>
-	                 		<input type="text" class="inputTxt p100"  name="addr_other" id="addr_other" readOnly/>
+							<p id="addrDetail"></p>
 	                 	</td>
 	                 	<th scope="row">나머지주소</th>
 	                  	<td>
-	                  		<input type="text" class="inputTxt p100"  name="erp_addr_other" id="erp_addr_other"  readOnly/>
+							<p id="erp_addrDetail"></p>
 	                  	</td>
 	              	</tr>
 	               	<tr> 	   
 	               		<th scope="row">TEL</th>
-	                  	<td  class="inputTxt p100">  	
-	                 		<input type="text"   name="local_tel1" id="local_tel1" style ="width :20%; height :70%" maxlength="4" readOnly/>
-	                    	 - 
-	                    	<input type="text"   name="local_tel2" id="local_tel2" style ="width :20%; height :70%" maxlength="4" readOnly/>
-	                    	 - 
-	                    	<input type="text"  name="local_tel3" id="local_tel3" style ="width :20%; height :70%" maxlength="4" readOnly/>
+	                  	<td class="inputTxt p100">
+							<p id="empHp"></p>
 	  					</td>
 	  			 		<th scope="row">TEL</th>
-	                 	<td  class="inputTxt p100">
-	             			<input type="text"   name="erp_tel1" id="erp_tel1" style ="width :20%; height :70%" maxlength="4"  readOnly/>
-	                   	 	 - 
-	                   	 	<input type="text"   name="erp_tel2" id="erp_tel2" style ="width :20%; height :70%" maxlength="4"  readOnly/>
-	                   	 	 - 
-	                   	 	<input type="text"  name="erp_tel3" id="erp_tel3" style ="width :20%; height :70%" maxlength="4" readOnly/>
+	                 	<td class="inputTxt p100">
+							<p id="erp_tel"></p>
 	         			</td>
 	              	</tr>
 	       			<!-- 거래처 + erp 회사 정보 끝 -->
 	       			<!--  한 칸 띄우기  -->
 	        	  	<tr>
-	                	<td  colspan="4" class="inputTxt p100">
+						<td colspan="4" class="inputTxt p100"></td>
 	           		</tr>
 	    			<tr>
-	                	<td scope="row" colspan="4" >
-	                		<br>
-	                 		1. 귀사의 일익 번창하심을 기원합니다. <br>
-	                 		2.하기와 같이 견적드리오니 검토하기 바랍니다.
+	                	<td scope="row" colspan="4">
+	                		<p id="bigo" />
 	                 	</td>
 	           		</tr>
 	      			<tr>
 	 			 		<th scope="row">견적작성일</th>
-	                 	<td class="inputTxt p100">
-	             			<input type="text" name="estimate_date" id="estimate_date" style ="width :70%; height :70%"    readOnly/>
+	                 	<td class="inputTxt p100" colspan="3">
+							<p id="estimateDate"></p>
 	             		</td>
 	              	</tr>
-	              	<tr>
-	 			 		<th scope="row" class="han_money" id="han_money" >  합 계 </th>
-						<td>
-							<input type="text" id="txt_money" maxlength="12"  readOnly />
-						</td>
-					</tr>
-	           
 	                <table class="col">
 						<caption>caption</caption>
 	                   	<colgroup>
-	                    	<col width="10%">
+	                    	<col width="35%">
 	                      	<col width="15%">
-	                       	<col width="15%">
+	                       	<col width="10%">
+	                      	<col width="10%">
+	                      	<col width="10%">
 	                      	<col width="10%">
 	                      	<col width="10%">
 	                   	</colgroup>
 	                  	<thead>
 	                    	<tr>
-	                        	<th scope="col">제품명</th>
-	                         	<th scope="col">공급가액</th>
-	                          	<th scope="col">세액</th>
-	                          	<th scope="col">제품단가</th>
-	                          	<th scope="col">수량</th>
+	                        	<th scope="col">품목정보</th>
+	                         	<th rowspan="2">납기일</th>
+	                         	<th colspan="5">공급가액</th>
 	                      	</tr>
+							<tr>
+								<th scope="col">제품명</th>
+								<th scope="col">수량</th>
+								<th scope="col">단가</th>
+								<th scope="col">공급가액</th>
+								<th scope="col">부가세</th>
+								<th scope="col">총금액</th>
+							</tr>
 	                   	</thead>
 	                   	<!--  detail 끼워넣기  -->
 	                	<tbody id="EstDetaillist"></tbody>    
 	        		</table>
 	        		<div class="btn_areaC mt30">
-	            		<a href=""   class="btnType gray"  id="btnCloseEst" name="btn">
-	            			<span>취소</span>
-	            		</a>
+						<a href="" class="btnType blue" id="btnUpdateEst" name="btn"><span>수정</span></a>
+	            		<a href="" class="btnType gray" id="btnCloseEst" name="btn"><span>취소</span></a>
 	         		</div>
 	   				<a href="" class="closePop"><span class="hidden">닫기</span></a>
 				</tbody>

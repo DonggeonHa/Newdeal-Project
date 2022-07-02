@@ -162,7 +162,7 @@ public class BmSalePlanModel {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
-	
+
 	public String getCd() {
 		return cd;
 	}

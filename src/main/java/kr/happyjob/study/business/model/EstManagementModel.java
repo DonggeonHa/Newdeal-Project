@@ -1,61 +1,43 @@
 package kr.happyjob.study.business.model;
 
 public class EstManagementModel {
-	
-	private String estimate_no;
-	private String estimate_date;
-	private int supply_val;
-	private int supply_tax;
-	private int supply_cost; 
-	
-	
-	// 매퍼에서 다른 테이블 조인해서 데려오는 데이터
-	private String client_cd; //  거래처 코드
-	private String client_nm; // 거래처 이름
-	
-	private String cop_no1;
-	private String cop_no2;
-	private String cop_no3;
-	private String emp_nm;
-	private String emp_hp;
-	
-	
-	private String product_nm; // scm 제품 정보테이블에서 조인 해 데려오는 데이터
-	private int estimate_cnt; // 수량
-	private String addr;
-	private String  addr_detail;
-	
-	
-	private String product_cd; 
-	
-	
-	private String order_cd;
-	private String loginID;
 
-	private String order_date;
-	private String want_receive_date;
-	private int order_cnt;
-	private int amount;
-	private int tax;
-	private String warehouse_cd;
+	/** estimate_info 테이블 */
+	private String estimate_no;			// 견적서번호
+	private String client_cd; 			// 거래처코드
+	private String estimate_date;		// 작성일
+	private int supply_val;				// 전체체액
+	private int supply_tax;				// 전체부가세
+	private int supply_cost; 			// 전체단가
 
-	private String offline;
-	private String deposit_yn;
-	
-	
-	
-	public String getProduct_cd() {
-		return product_cd;
-	}
-	public void setProduct_cd(String product_cd) {
-		this.product_cd = product_cd;
-	}
-	public String getProduct_nm() {
-		return product_nm;
-	}
-	public void setProduct_nm(String product_nm) {
-		this.product_nm = product_nm;
-	}
+	/** estimate_prod 테이블 */
+	private int estimate_cnt; 			// 갯수
+	private int unit_cost;				// 단가
+	private int price;					// 가액
+	private int tax;					// 부가세
+
+	/** tb_erp_client 테이블 */
+	private String client_nm; 			// 거래처명
+	private String cop_no1;				// 사업자등록번호1
+	private String cop_no2;				// 사업자등록번호2
+	private String cop_no3;				// 사업자등록번호3
+	private String emp_nm;				// 담당자
+	private String emp_hp;				// 담당자 휴대전화
+	private String addr;				// 주소
+	private String addr_detail;			// 상세주소
+
+	/** tb_scm_product 테이블 */
+	private String product_cd;
+	private String product_nm; 			// scm 제품 정보테이블에서 조인 해 데려오는 데이터
+
+	/** tb_scm_order 테이블 */
+	private String order_cd;			// 주문코드
+	private String loginID;				// 사용자ID
+	private String order_date;			// 주문일자
+	private String want_receive_date;	// 배송희망날짜
+	private int order_cnt;				// 주문갯수
+	private String deposit_yn;			// 입금 여부
+
 	public String getEstimate_no() {
 		return estimate_no;
 	}
@@ -92,20 +74,35 @@ public class EstManagementModel {
 	public void setSupply_cost(int supply_cost) {
 		this.supply_cost = supply_cost;
 	}
-	
-
-	public String getClient_nm() {
-		return client_nm;
-	}
-	public void setClient_nm(String client_nm) {
-		this.client_nm = client_nm;
-	}
-
 	public int getEstimate_cnt() {
 		return estimate_cnt;
 	}
 	public void setEstimate_cnt(int estimate_cnt) {
 		this.estimate_cnt = estimate_cnt;
+	}
+	public int getUnit_cost() {
+		return unit_cost;
+	}
+	public void setUnit_cost(int unit_cost) {
+		this.unit_cost = unit_cost;
+	}
+	public int getPrice() {
+		return price;
+	}
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	public int getTax() {
+		return tax;
+	}
+	public void setTax(int tax) {
+		this.tax = tax;
+	}
+	public String getClient_nm() {
+		return client_nm;
+	}
+	public void setClient_nm(String client_nm) {
+		this.client_nm = client_nm;
 	}
 	public String getCop_no1() {
 		return cop_no1;
@@ -137,7 +134,6 @@ public class EstManagementModel {
 	public void setEmp_hp(String emp_hp) {
 		this.emp_hp = emp_hp;
 	}
-	
 	public String getAddr() {
 		return addr;
 	}
@@ -150,8 +146,18 @@ public class EstManagementModel {
 	public void setAddr_detail(String addr_detail) {
 		this.addr_detail = addr_detail;
 	}
-	
-	
+	public String getProduct_cd() {
+		return product_cd;
+	}
+	public void setProduct_cd(String product_cd) {
+		this.product_cd = product_cd;
+	}
+	public String getProduct_nm() {
+		return product_nm;
+	}
+	public void setProduct_nm(String product_nm) {
+		this.product_nm = product_nm;
+	}
 	public String getOrder_cd() {
 		return order_cd;
 	}
@@ -182,59 +188,23 @@ public class EstManagementModel {
 	public void setOrder_cnt(int order_cnt) {
 		this.order_cnt = order_cnt;
 	}
-	public int getAmount() {
-		return amount;
-	}
-	public void setAmount(int amount) {
-		this.amount = amount;
-	}
-	public int getTax() {
-		return tax;
-	}
-	public void setTax(int tax) {
-		this.tax = tax;
-	}
-	public String getWarehouse_cd() {
-		return warehouse_cd;
-	}
-	public void setWarehouse_cd(String warehouse_cd) {
-		this.warehouse_cd = warehouse_cd;
-	}
-	public String getOffline() {
-		return offline;
-	}
-	public void setOffline(String offline) {
-		this.offline = offline;
-	}
 	public String getDeposit_yn() {
 		return deposit_yn;
 	}
 	public void setDeposit_yn(String deposit_yn) {
 		this.deposit_yn = deposit_yn;
 	}
+	
 	@Override
 	public String toString() {
-		return "자바단 EstManagementModel [estimate_no=" + estimate_no + ", estimate_date=" + estimate_date + ", supply_val="
-				+ supply_val + ", supply_tax=" + supply_tax + ", supply_cost=" + supply_cost + ", client_cd="
-				+ client_cd + ", client_nm=" + client_nm + ", cop_no1=" + cop_no1 + ", cop_no2=" + cop_no2
-				+ ", cop_no3=" + cop_no3 + ", emp_nm=" + emp_nm + ", emp_hp=" + emp_hp + ", prod_nm=" + product_nm
-				+ ", estimate_cnt=" + estimate_cnt + ", addr=" + addr + ", addr_detail=" + addr_detail + ", product_cd="
-				+ product_cd + ", order_cd=" + order_cd + ", loginID=" + loginID + ", order_date=" + order_date
-				+ ", want_receive_date=" + want_receive_date + ", order_cnt=" + order_cnt + ", amount=" + amount
-				+ ", tax=" + tax + ", warehouse_cd=" + warehouse_cd + ", offline=" + offline + ", deposit_yn="
-				+ deposit_yn + "]";
+		return "EstManagementModel [estimate_no=" + estimate_no + ", client_cd=" + client_cd + ", estimate_date="
+				+ estimate_date + ", supply_val=" + supply_val + ", supply_tax=" + supply_tax + ", supply_cost="
+				+ supply_cost + ", estimate_cnt=" + estimate_cnt + ", unit_cost=" + unit_cost + ", price=" + price
+				+ ", tax=" + tax + ", client_nm=" + client_nm + ", cop_no1=" + cop_no1 + ", cop_no2=" + cop_no2
+				+ ", cop_no3=" + cop_no3 + ", emp_nm=" + emp_nm + ", emp_hp=" + emp_hp + ", addr=" + addr
+				+ ", addr_detail=" + addr_detail + ", product_cd=" + product_cd + ", product_nm=" + product_nm
+				+ ", order_cd=" + order_cd + ", loginID=" + loginID + ", order_date=" + order_date
+				+ ", want_receive_date=" + want_receive_date + ", order_cnt=" + order_cnt + ", deposit_yn=" + deposit_yn
+				+ "]";
 	}
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-
 }

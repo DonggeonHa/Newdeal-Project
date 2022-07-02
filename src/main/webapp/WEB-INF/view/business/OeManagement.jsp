@@ -46,10 +46,10 @@
 	// 함수 시작
 	$(document).ready(function(){
 		//견적서 목록 조회 
-		 oemList();
+		oemList();
 		
 		//모달창 초기화
-		 oemInitForm();
+		oemInitForm();
 			
 		// 버튼 이벤트 등록
 		oRegisterButtonClickEvent();
@@ -102,7 +102,7 @@
 	/* -------------------------------------------------------------------  */
 	/* -------------------------------------------------------------------  */
 
-	/*  1. 견적서 신규 등록 모달  :  모달 실행 */
+	/*  1. 수주서 신규 등록 모달  :  모달 실행 */
  	function oemModal1(estimate_no){
     	// 신규 저장  - 데이터 없음
 		if (estimate_no == null || estimate_no =="") {
@@ -114,19 +114,18 @@
 			var receive_num = $("#receive_num").val();
 			var scm_big_class = $('#scm_big_class').val();
 			var scm_middle_class =  $('#scm_middle_class').val();
-			var divproducttall =  $('#divproducttall').val();
+			var product_cd =  $('#product_cd').val();
 			 
-			
 			console.log("액션 I : 신규 등록");
 			console.log("client_search1  client_search1 " ,  client_search1);
 			console.log("scm_big_class  scm_big_class " ,  scm_big_class);
 			console.log("scm_middle_class  scm_middle_class " ,  scm_middle_class);
-			console.log("divproducttall  divproducttall " ,  divproducttall);
+			console.log("product_cd  product_cd " ,  product_cd);
 	         
 	        // 모달 팝업         	
 			gfModalPop("#layer1");
-	      }	
-	   }
+		}
+	}
 	/* 신규 등록모달 끝   */
 		
 /* -------------------------------------------------------------------  */
@@ -155,29 +154,29 @@
 		
 		//2 - 1 신규등록	일 때
 		if( data == "" || data == null || data == undefined) {
-			$("#receive_num").val("");  // hidden 
-			$("#estimate_no").val("");  // hidden 
-			$("#client_search1").val(""); // 거래처 콤보박스
-			$("#scm_big_class").val(""); // scm 대분류
-			$("#scm_middle_class").val(""); // scm 중분류
-			$("#divproducttall").val(""); // scm 제품
-			$("#estimate_cnt").val(""); //수량
+			$("#receive_num").val("");  					// hidden
+			$("#estimate_no").val("");  					// hidden
+			$("#client_search1").val(""); 					// 거래처 콤보박스
+			$("#scm_big_class").val(""); 					// scm 대분류
+			$("#scm_middle_class").val(""); 				// scm 중분류
+			$("#product_cd").val(""); 					// scm 제품
+			$("#estimate_cnt").val(""); 					// 수량
 			$('#divtitle').empty();
 			$("#divtitle").append("<strong>수주서 등록</strong>");
 		} else {
 			//2 - 2 단건 상세조회 모달창 
-	 		$("#oem_client_nm").val(data.client_nm); // data.실제컬럼이름
-		 	$("#limit_date").val(data.limit_date); // data.실제컬럼이름
-		 	$("#oem_client_nm").val(data.client_nm); // data.실제컬럼이름
-		 	$("#erp_copnm").val(data.cop_copnm); // data.실제컬럼이름
-		 	$("#cop_no1").val(data.cop_no1); // data.실제컬럼이름
-		 	$("#cop_no2").val(data.cop_no2); // data.실제컬럼이름
-		 	$("#cop_no3").val(data.cop_no3); // data.실제컬럼이름
-		 	$("#direct_nm").val(data.emp_nm); // data.실제컬럼이름
-		 	$("#addr").val(data.addr); // data.실제컬럼이름
-		 	$("#addr_other").val(data.addr_detail); // data.실제컬럼이름
-		 	$("#limit_date").val(data.limit_date); // data.실제컬럼이름
-		 	$("#client_search1").val(data.client_search); // data.실제컬럼이름
+	 		$("#oem_client_nm").val(data.client_nm); 		// data.실제컬럼이름
+		 	$("#limit_date").val(data.limit_date); 			// data.실제컬럼이름
+		 	$("#oem_client_nm").val(data.client_nm); 		// data.실제컬럼이름
+		 	$("#erp_copnm").val(data.cop_copnm); 			// data.실제컬럼이름
+		 	$("#cop_no1").val(data.cop_no1); 				// data.실제컬럼이름
+		 	$("#cop_no2").val(data.cop_no2); 				// data.실제컬럼이름
+		 	$("#cop_no3").val(data.cop_no3); 				// data.실제컬럼이름
+		 	$("#direct_nm").val(data.emp_nm); 				// data.실제컬럼이름
+		 	$("#addr").val(data.addr); 						// data.실제컬럼이름
+		 	$("#addr_other").val(data.addr_detail); 		// data.실제컬럼이름
+		 	$("#limit_date").val(data.limit_date); 			// data.실제컬럼이름
+		 	$("#client_search1").val(data.client_search); 	// data.실제컬럼이름
 			//var client_search1 =  $("#client_search1").val(data.client_search).text();
 		 	//console.log("client_search1 ", client_search1);
 
@@ -199,7 +198,6 @@
 				console.log("beta0    " ,  beta0);
 				
 				$("#local_tel1").val(beta1Answer[0]);
-				
 			}
 		}
 	}
@@ -208,7 +206,7 @@
 	function oemList(currentPage) {  
 		currentPage = currentPage || 1;
 
-		var client_search =   $("#client_search").val();
+		var client_search = $("#client_search").val();
 		// 날짜 1
 		var to_date = $("#to_date").val();
 		// 날짜 2
@@ -257,7 +255,7 @@
 		var oemManageHtml = getPaginationHtml(
 			currentPage, 
 			oemCnt,
-			pageSizeOemList ,  
+			pageSizeOemList,
 			pageBlockSizeOemList,
 			'oemList'
 		);
@@ -297,19 +295,25 @@
 		oemInitForm(data.oempart); // 사업자 파트 데이터
 			
 		// 숫자 -> 한글로 , 데이터값 바로 박음 
-		fn_change_hangul_money(data.oempart.supply_val,data.oempart.estimate_cnt,data.oempart.limit_data);
+		fn_change_hangul_money(data.oempart.supply_val, data.oempart.estimate_cnt, data.oempart.limit_data);
 		
 		// 사업자등록번호
-		$("#erp_copnum2").val(data.erp_copnum);	
+		$("#erp_copnum2").val(data.erp_copnum);
+
 		var beta0 = $("#erp_copnum1").val();
 		var beta1 = $("#erp_copnum2").val();
 		var beta1Answer = beta1.split("-");
+
 		console.log("beta1Answer    ",beta1Answer);
 	
 		$("#erp_copnum2").val(beta1Answer[1]);
+
 		var beta2 = $("#erp_copnum3").val();
+
 		console.log("beta1Answer    ",beta1Answer[2]);
+
 		$("#erp_copnum3").val(beta1Answer[2]);
+
 		if(beta0 != beta1Answer[0]){
 			console.log("beta0    " ,  beta0);
 			$("#erp_copnum1").val(beta1Answer[0]);
@@ -325,15 +329,22 @@
 		$("#erp_addr_other").val("전체");	
 		
 		// 전화번호
-		$("#erp_tel2").val(data.erp_tel);	
+		$("#erp_tel2").val(data.erp_tel);
+
 		var alpa0 = $("#erp_tel1").val();
 		var alpa1 = $("#erp_tel2").val();
 		var alpa1Answer = alpa1.split("-");
+
 		console.log("alpa1Answer    ",alpa1Answer);
+
 		$("#erp_tel2").val(alpa1Answer[1]);
+
 		var alpa2 = $("#erp_tel3").val();
+
 		console.log("alpa1Answer    ",alpa1Answer[2]);
-		$("#erp_tel3").val(alpa1Answer[2]);	
+
+		$("#erp_tel3").val(alpa1Answer[2]);
+
 		if(alpa0 != alpa1Answer[0]){
 			console.log("beta0    " ,  beta0);
 			$("#erp_tel1").val(alpa1Answer[0]);
@@ -353,8 +364,7 @@
 
 		console.log(" param : " ,param);
 		console.log("param.valueOf()",  param.valueOf());
-			
-			 
+
 		//콜백
 		var resultCallback = function(data) {
 			console.log("=======resultCallback========");
@@ -378,13 +388,12 @@
 	 
 	/* 팝업내 수정, 저장 validation */
 	function oValidatePopup(data){
-	
 		var chk = checkNotEmpty(
 			[
 				["client_search1", "업체명을 체크해주세요!"],
 				["scm_big_class", "대분류를 체크해주세요!"],
 				["scm_middle_class", "중분류를 체크해주세요!"],
-				["divproducttall", "제품을 체크해주세요!"],
+				["product_cd", "제품을 체크해주세요!"],
 				["estimate_cnt", "수량을 입력해주세요"]
 			]
 		); 
@@ -417,13 +426,13 @@
 		var receive_nm = $("#receive_nm").val();
 		var scm_big_class = $('#scm_big_class').val();
 		var scm_middle_class =  $('#scm_middle_class').val();
-		var divproducttall =  $('#divproducttall').val();
+		var product_cd =  $('#product_cd').val();
 			 
 		console.log("액션 I : 신규 등록");
 		console.log("client_search1  client_search1 " ,  client_search1);
 		console.log("scm_big_class  scm_big_class " ,  scm_big_class);
 		console.log("scm_middle_class  scm_middle_class " ,  scm_middle_class);
-		console.log("divproducttall  divproducttall " ,  divproducttall);
+		console.log("product_cd  product_cd " ,  product_cd);
 		
 		var currentPage = currentPage || 1; 
 	
@@ -544,9 +553,6 @@
 		callAjax("/business/oeManagementSave.do", "post", "text",  true,param, resultCallback); //text
 	}
 
-
-		
-		
 	/**  견적서 모달 안 리스트  함수  */
 	function oemListDetailResult(data,currentPage) {
 		console.log("목록조회 콜백함수 ",data);
@@ -581,18 +587,13 @@
 		var OemCurrentPage = $("#OemCurrentPage").val();
 		console.log("OemCurrentPage " +  OemCurrentPage);
 	}
-		
-		
-		
-		
+
 	// 금액 -> 한글로 변환
 	// Copyright 취생몽사(http://bemeal2.tistory.com)
 	// 소스는 자유롭게 사용가능합니다. Copyright 는 삭제하지 마세요.
 	function fn_change_hangul_money(alpadata) {
     	var alpadata = String(alpadata);
-        console.log("typeof ", typeof(alpadata));
         var num_length = alpadata.length;
-
         var betadata = betadata;
  
         console.log("======> alpadata ", alpadata );
@@ -600,35 +601,24 @@
         console.log("======> num_length ", num_length );
             
         if(isNaN(alpadata) == true)
-              return;
-
-
+        	return;
 
         var han_value = "";
         var man_count = 0;      // 만단위 0이 아닌 금액 카운트.
 
-
-
-        for(i=0; i < alpadata.length; i++)
-        {
-        	
+        for (i = 0; i < alpadata.length; i++) {
         	console.log("======>alpadata " ,alpadata);
               // 1단위의 문자로 표시.. (0은 제외)
               var strTextWord = arrNumberWord[alpadata.charAt(i)];
 
-
-
               // 0이 아닌경우만, 십/백/천 표시
-              if(strTextWord != "")
-              {
+              if(strTextWord != "") {
                     man_count++;
                     strTextWord += arrDigitWord[(num_length - (i+1)) % 4];
               }
 
-
               // 만단위마다 표시 (0인경우에도 만단위는 표시한다)
-              if(man_count != 0 && (num_length - (i+1)) % 4 == 0)
-              {
+              if(man_count != 0 && (num_length - (i+1)) % 4 == 0) {
                     man_count = 0;
                     strTextWord = strTextWord + arrManWord[(num_length - (i+1)) / 4];
               }
@@ -637,7 +627,7 @@
         }
 
         if(alpadata != 0)
-              han_value = "금 " + han_value + " 원";
+			han_value = "금 " + han_value + " 원";
         
         // 값 넣기 
         $("#txt_money").val( han_value);
@@ -645,11 +635,8 @@
         $("#limit_date").val( alpadata.limit_date);
 	}
 
-		
-
-			
 	// scm 대분류,중분류,제품 콤보박스 
-	function selectmidcat(){
+	function selectmidcat() {
 		var largecd = $("#scm_big_class").val();
 		// 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))
 	  	productCombo("m", "scm_middle_class", "all", largecd);     
@@ -658,12 +645,11 @@
 	  	$("#scm_product").find("option").remove();
 	} 
 	
-	function selectproductlistcombo(){
+	function selectproductlistcombo() {
 	  	var margecd = $("#scm_middle_class").val();
 	 // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))
-	  	productCombo("p", "divproducttall", "all", margecd);     
+	  	productCombo("p", "product_cd", "all", margecd);     
 	}
-
 </script>
 </head>
 <body>
@@ -675,7 +661,6 @@
 		<div id="mask"></div>
 		
 		<div id="wrap_area">
-		
 		    <h2 class="hidden">header 영역</h2>
 		    <jsp:include page="/WEB-INF/view/common/header.jsp"></jsp:include>
 	
@@ -687,7 +672,6 @@
 		            	<jsp:include page="/WEB-INF/view/common/lnbMenu.jsp"></jsp:include> 
 		            	<!--// lnb 영역 -->
 		            </li>
-	            
 	            
 	            	<li class="contents">
 	                	<!-- contents -->
@@ -737,25 +721,28 @@
 	                    	<table class="col">
 		                        <caption>caption</caption>
 		                        <colgroup>
-		                           <col width="17%">
-		                           <col width="17%">
-		                           <col width="17%">
-	                               <col width="19%">
+		                           <col width="15%">
+		                           <col width="7%">
+		                           <col width="15%">
+	                               <col width="10%">
 		                           <col width="10%">
-		                           <col width="10%">
+		                           <col width="21%">
+		                           <col width="5%">
+		                           <col width="7%">
 		                           <col width="10%">
 		                        </colgroup>
-		                        
-		                        
+
 		                        <thead>
 		                        	<tr>
-			                        	<th scope="col">견적서번호</th>
-			                            <th scope="col">수주번호</th>
-			                            <th scope="col">거래처</th>
-			                            <th scope="col">제품이름</th>
+										<th scope="col">거래처</th>
+										<th scope="col">담당</th>
+			                        	<th scope="col">수주번호</th>
+			                        	<th scope="col">수주일자</th>
+			                            <th scope="col">납기일자</th>
+			                            <th scope="col">제품명</th>
+			                            <th scope="col">수량</th>
 			                            <th scope="col">단가</th>
-			                            <th scope="col">부가세</th>
-			                            <th scope="col">공급가액</th>
+			                            <th scope="col">비고</th>
 		                           	</tr>
 		                        </thead>
 	
@@ -772,8 +759,8 @@
 	        <jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
 		</div>
 	
-		<!-- 모달팝업 ==  신규 등록 1 -->
-		<div id="layer1" class="layerPop layerType2"  style="width: 800px;">
+		<!-- 모달팝업 ==  수주서 신규등록 -->
+		<div id="layer1" class="layerPop layerType2"  style="width:1000px;">
 			<dl>
 		    	<dt>
 		        	<div id="divtitle" style="color:white">수주서 신규등록</div>
@@ -814,7 +801,7 @@
 		                  	<tr>
                             	<th scope="row">제품<span class="font_red">*</span></th>
 								<td>
-									<select id="divproducttall" name="divproducttall"></select>
+									<select id="product_cd" name="product_cd"></select>
 								</td>
 								<th scope="row">수량</th>
 		                    	<td colspan="3">

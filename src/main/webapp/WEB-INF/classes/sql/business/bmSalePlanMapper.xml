@@ -60,14 +60,21 @@
 			       and CONCAT(substring(salp.sales_reg_date,1,4),"-",substring(salp.sales_reg_date,5,2),"-",substring(salp.sales_reg_date,7,2)) = #{sales_reg_date}	
 			    </if>
 			</where>
-		
+		 order by  sales_reg_date desc
+			limit #{pageindex}, #{pagesize}	
+			<!--pagesize=10 )  -->
+			
+			
+			
+			
+			
 		
 	</select>
 
 		<!-- 영업실적 갯수 조회  -->
 
 	<select id="countListBmSalePlan" resultType="int">
-		SELECT COUNT(1) AS tot_cnt FROM tb_sales_pro
+		SELECT COUNT(1) FROM tb_sales_pro
 			<where>  
 	       		<if test="(loginID_header != null) and (!loginID_header.equals(''))">
 	       			and loginID = #{loginID_header}	
@@ -86,6 +93,35 @@
 			    </if>
 			</where>
 	</select>
+	
+	<!-- 제품 대분류 목록 조회 -->
+  <select id="selectlargelist" resultType="kr.happyjob.study.business.model.BmSalePlanModel">
+    /*kr.happyjob.study.system.dao.ComnComboDao.selectlargelist*/
+      select sl.l_ct_cd as cd
+                   ,sl.l_ct_nm as name
+        from tb_scm_l_category sl
+       order by sl.l_ct_cd, sl.l_ct_nm
+  </select>
+  
+  <!-- 제품 중분류 목록 조회 -->
+  <select id="selectmidlist" resultType="kr.happyjob.study.business.model.BmSalePlanModel">
+    /*kr.happyjob.study.system.dao.ComnComboDao.selectmidlist*/
+      select ac.m_ct_cd as cd
+             ,ac.m_ct_nm as name
+        from tb_scm_m_category ac
+      where  ac.l_ct_cd = #{code}
+       order by ac.m_ct_cd, ac.m_ct_nm
+  </select>
+  
+	 <!-- 제품 대분류,중분류 별  목록 조회 -->
+  <select id="selectdivproductlist" resultType="kr.happyjob.study.business.model.BmSalePlanModel">
+    /*kr.happyjob.study.system.dao.ComnComboDao.selectdivproductlist*/
+      select pr.product_cd as cd
+            ,pr.product_nm as name
+        from tb_scm_product pr
+       where  pr.m_ct_cd = #{code} 
+       order by pr.product_cd
+  </select>   
 
 
 </mapper>

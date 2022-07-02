@@ -60,8 +60,9 @@ public class BmSalePlanController {
 	//맵핑해야하면 실행될 함수
 	//model,받아올 파라미터,
 
-		public String listBmSalePlan(Model model,@RequestParam Map<String, Object> paramMap) throws Exception {
-		   
+		public String listBmSalePlan(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+				HttpServletResponse response, HttpSession session) throws Exception {
+			
 		//String을 숫자로 바꿔줌 숫자형으로 가져온 이유는 계산을 하려고
 		int  pagenum =  Integer.parseInt((String)paramMap.get("pagenum")); 
 		int  pagesize = Integer.parseInt((String)paramMap.get("pagesize"));   
@@ -80,6 +81,8 @@ public class BmSalePlanController {
 		
 		//3.bmSalePlanCallback.jsp넘겨줄 때 model에 담아 줄거임(넘겨줄때이름,실제value값)->4.samplepage7list.jsp파일 만들기
 		model.addAttribute("totalcnt", totalcnt);
+		
+		 logger.info("+ End " + className + ".countListBmSalePlan");	  
 		
 		//1.리턴받을 jsp이름 선언하고 시작
 		return "business/bmSalePlanCallback";

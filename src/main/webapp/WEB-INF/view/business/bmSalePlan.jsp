@@ -20,20 +20,22 @@
 	   
 	   fn_ListBmSalePlan();
 	   
-	
-   $("#plall").change( function() {			
-		productCombo("m", "pmall", "all", $("#plall").val(),"");   // 제품 중분류
+   
+	$("#plall").change( function() {			
+		productCombo("m", "pmall", "all", $("#plall").val(),"");   // 제품 목록
 		
-		$('#divproducttall').children('option').remove();
+		$('#product_cd').children('option').remove();
 	});
 
 	$("#pmall").change( function() {			
-		productCombo("p", "divproducttall", "all", $("#pmall").val(),"");  // 제품 목록    
+		productCombo("p", "product_cd", "all", $("#pmall").val(),"");    // 제품 중분류
 	});			
 	
 	productCombo("l","plall","all","","");   // 제품 대분류
 	
-});
+   }); 	
+  
+	
   
    function fn_ListBmSalePlan(pagenum){
 	   
@@ -44,7 +46,7 @@
 		var loginID_header = $("#loginID_header").val();
 		var l_ct_cd = $("#plall").val();
 		var m_ct_cd = $("#pmall").val();
-		var product_cd = $("#divproducttall").val();
+		var product_cd = $("#product_cd").val();
 	   
 		console.log("pagenum : " + pagenum);
 	   
@@ -55,7 +57,7 @@
 			   loginID_header : loginID_header,//아이디
 			   l_ct_cd	 : l_ct_cd,
 			   m_ct_cd	 : m_ct_cd,
-			   product_cd       : product_cd	
+			   product_cd : product_cd	
 			   
 	   }
 	   
@@ -170,9 +172,7 @@
 								</select>
 								</li>
 
-								<li><strong>제품명</strong> <select id="divproducttall"
-									name="divproducttall">
-									</select>
+								<li><strong>제품명</strong> <select id="product_cd" name="product_cd"></select>
 								</li>
 
 								<li><strong>계획등록일</strong></br>
@@ -224,21 +224,21 @@
 							
 							<tbody id="listBmSalePlan">
 							 <tr style="border: 10px; border-color: blue">
-						                           <td width="40" height="25" style="font-size: 100%">대분류 </td>
-						                           <!-- <td colspan=5>productCombo("l","plall","all","","");   <br> --> 
+						                           <td width="40" height="25" style="font-size: 100%">대분류명  </td>
+						                            <!-- <td colspan=5>productCombo("l","plall","all","","");--><br>
 						                                 
 						                           </td>      
 						                        </tr>			
 						                        
 						                        <tr style="border: 10px; border-color: blue">
 						                           <td width="40" height="25" style="font-size: 100%">중분류명 </td>
-						                          <!--  <td colspan=5>productCombo("m", "pmall", "all", $("#plall").val(),"");</td> </tr> -->				
+						                          <!--  <td colspan=5>productCombo("m", "pmall", "all", $("#plall").val(),"");</td> -->	 </tr>			
 						                        
 						                        <tr style="border: 10px; border-color: blue">
 						                           <td width="40" height="25" style="font-size: 100%">제품명</td>
-						                           <!-- <td colspan=5>productCombo("p", "divproducttall", "all", $("#pmall").val(),""); </td> </tr>	-->
+						                           <!-- <td colspan=5>productCombo("p", "product_cd", "all", $("#pmall").val(),""); </td> --> </tr>	
 							
-								</tbody>
+								</tbody> 
 							
 							</table>
 							

@@ -9,7 +9,8 @@
 								</tr>
 							</c:if>
 							
-							<c:if test="${totalcnt > 0 }">								
+							<c:if test="${totalcnt > 0 }">		
+							<%-- <c:set var="nRow" value="${pageSize*(pagenum-1)}" /> --%>						
 								<c:forEach items="${searchlist}" var="list">
 									<tr>
 										
@@ -18,8 +19,9 @@
 									<c:if test="${userType eq 'B'}">
 										<td>${list.loginID}</td>
 									</c:if>
-										<td>${list.m_ct_nm}</td>
 										<td>${list.l_ct_nm}</td>
+										<td>${list.m_ct_nm}</td>
+										
 										<td>${list.product_nm}</td>
 										<td>${list.goal_amt}</td>
 										<td>${list.estimate_cnt}</td>
@@ -27,6 +29,7 @@
 										<td>${list.a_rate}</td>
 									</c:if>
 										<td>${list.memo}</td>
+										<%-- <c:set var="nRow" value="${nRow + 1}" /> --%>
 									</tr>
 								</c:forEach>
 							</c:if>
