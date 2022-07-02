@@ -103,10 +103,10 @@
 		// Tranjection type 설정
 		$("#action").val("I");
 
-		//모달창 수정쪽  초기화
+		// 모달창 수정쪽  초기화
 		// estInitForm();
 
-		//콜백
+		// 콜백
 		var resultCallback = function(data) {
 			console.log("=======resultCallback========" + data);
 			estModal3(data);
@@ -170,10 +170,12 @@
 
 		var loginId = <%=(String)session.getAttribute("loginId")%>;
 		// 작성자 본인일때만 수정,삭제영역 보임
-		if(loginId !== data.loginId) {
-			$("#btnUpdateEst").hide();
-		} else {
+		if(loginId === data.loginId) {
 			$("#btnUpdateEst").show();
+			console.log("######@@@#@@#@#@@#@ 성공");
+		} else {
+			$("#btnUpdateEst").hide();
+			console.log("######@@@#@@#@#@@#@ 실패");
 		}
 
 	}
@@ -185,9 +187,9 @@
 		// 거래처 리스트 셀렉창
 		var client_search = $("#client_search").val();
 		// 시작 날짜
-		var to_date = $("#to_date").val();
+		var to_date = $("#to_date").val().toLocaleString().replace(/\./g, "");
 		// 끝 날짜
-		var from_date = $("#from_date").val();
+		var from_date = $("#from_date").val().toLocaleString().replace(/\./g, "");
 		
         var param = {
         	currentPage : currentPage,
@@ -243,6 +245,50 @@
 		// 값이제대로 왔다 확인 
 		var EstCurrentPage = $("#EstCurrentPage").val();
 		console.log("EstCurrentPage " +  EstCurrentPage);
+	}
+
+	//검색구현
+	function eSearchEst(currentPage) {
+		/* 달력=>datepicker 사용했음
+		document.ready에서
+		$('#from_date').datepicker();
+		$('#to_date').datepicker();  작성 후 검색구현 함수에서 값 가져오기  */
+
+		currentPage = currentPage || 1;
+
+		// 날짜 1
+		var to_date = $("#to_date").val().toLocaleString().replace(/\./g, "");
+		// 날짜 2
+		var from_date = $("#from_date").val().toLocaleString().replace(/\./g, "");
+
+		console.log('to_date' , to_date);
+		console.log('from_date' , from_date);
+
+		// 거래처 넘기기
+		var client_search = $("#client_search").val();
+
+		var param = {
+			client_search : client_search,
+			currentPage : currentPage,
+			pageSize : pageSizeEstList,
+			from_date : from_date,
+			to_date : to_date
+		}
+
+		console.log(" param : " , param);
+		console.log("param.valueOf()",  param.valueOf());
+
+		var resultCallback = function(data) {
+			console.log("=======resultCallback========");
+
+			//목록 조회 결과
+			estListResult(data, currentPage);
+			console.log(" 검색 조회결과 data ", data);
+		};
+
+		// 목록조회에 던져준다.
+		/*  순서 주의 :  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터,, 비동기? 동기,     돌려 줄 함수  */
+		callAjax("/business/estManagementList.do", "post", "text", true, param, resultCallback); //text
 	}
 
 	/** 4-1. 단건 조회 */
@@ -313,16 +359,27 @@
 	
 		var chk = checkNotEmpty(
 			[
-				["client_search1", "업체명을 체크해주세요!"],
+				["client_search1", "업체명을 체크해주세요!"]
 			]
 		);
 	 
 	 	if(!chk){return;}
 	 	return true;
-		/*["scm_big_class", "대분류를 체크해주세요!"],
-				["scm_middle_class", "중분류를 체크해주세요!"],
-				["product_cd", "제품을 체크해주세요!"],
-				["estimate_cnt", "수량을 입력해주세요"]*/
+	}
+
+	function eValidatePopup2(){
+		var chk = checkNotEmpty(
+				[
+					["scm_big_class", "대분류를 체크해주세요!"],
+					["scm_middle_class", "중분류를 체크해주세요!"],
+					["product_cd", "제품을 체크해주세요!"],
+					["estimate_cnt", "수량을 입력해주세요"],
+					["ourDeadline", "납기일을 입력해주세요"]
+				]
+		);
+
+		if(!chk){return;}
+		return true;
 	}
 	/* 팝업내 수정, 저장 validation 끝 */
 
@@ -332,7 +389,7 @@
 		if(!(eValidatePopup())){ return; }
 
 		var resultCallback = function(data){
-			eSaveResult(data); // 저장 콜백 함수
+			eInsertResult(data); // 저장 콜백 함수
 		};
 
 		//폼이름 =>$("#myNotice").serialize() => 직렬화해서 name 값들을 그냥 넘김.
@@ -341,41 +398,67 @@
 	}
 
 	/*  저장 & 수정  & 삭제 함수 콜백 함수 */
-	function eSaveResult(data){
-		var client_search1 = $("#client_search1").val();
-		var scm_big_class = $('#scm_big_class').val();
-		var scm_middle_class =  $('#scm_middle_class').val();
-		var product_cd =  $('#product_cd').val();
-
-		console.log("액션 I : 신규 등록");
-		console.log("client_search1  client_search1 " ,  client_search1);
-		console.log("scm_big_class  scm_big_class " ,  scm_big_class);
-		console.log("scm_middle_class  scm_middle_class " ,  scm_middle_class);
-		console.log("product_cd  product_cd " ,  product_cd);
-		
-		var currentPage = currentPage || 1;
-		 
-		if($("#action").val() != "I") {
-			alert("신규등록합니다");
-		}
-
+	function eInsertResult(data){
+		console.log("들어올거라 믿는다" + data.client_search1);
 		if(data.resultMsg == "SUCCESS") {
 			alert(data.resultMsg);	// 받은 메세지 출력
 			alert("저장 되었습니다.");
-			 
-		}else if(data.resultMsg == "UPDATED") {
-			alert("수정 되었습니다.");
-			 
-		}else if(data.resultMsg == "DELETED") {
-			alert("삭제 되었습니다.");
-			 
-		}else {
+		} else {
 			alert(data.resultMsg); //실패시 이거 탄다.
 		}
 
 		gfCloseModal();	// 모달 닫기
 
+		// 모달 팝업
+		gfModalPop("#layer3");
+		eInsertEst2(data.client_search1);
+
 		// estInitForm();// 입력폼 초기화
+	}
+
+	function eInsertEst2(client_search1) {
+
+		// validation 체크
+		if(!(eValidatePopup2())){ return; }
+
+		/*
+		var productCd = $("#productCd").val();
+		var estimateCnt = $("#estimateCnt").val();
+		var ourDeadline = $("#ourDeadline").val();
+		*/
+
+		var param = {
+			client_search1 : client_search1
+		}
+
+		var resultCallback = function(data){
+			eInsertResult2(data); // 저장 콜백 함수
+		};
+
+		callAjax("/business/estManagementSave2.do", "post", "json", true, param, resultCallback);
+	}
+
+	function eInsertResult2(data) {
+		$("#erpCopnm2").text(data.erp_copnm);
+		$("#erpCopnum2").text(data.erp_copnum);
+		$("#estimateNo2").text(data.estInfo.estimateNo);
+		$("#erpEmp2").text(data.user.name);
+		$("#erpTel2").text(data.user.tel);
+		$("#erpEmail2").text(data.user.mail);
+		$("#clientNm2").text(data.estInfo.clientNm);
+		$("#clientName2").text(data.estInfo.empNm);
+		$("#clientTell2").text(data.estInfo.tel);
+
+		/*
+		if(data.resultMsg == "SUCCESS") {
+			alert(data.resultMsg);	// 받은 메세지 출력
+			alert("상세저장 되었습니다.");
+		} else {
+			alert(data.resultMsg); //실패시 이거 탄다.
+		}
+		*/
+
+		// gfCloseModal();	// 모달 닫기
 	}
 	
 	
@@ -395,54 +478,6 @@
 		 }
 	 }
 	  */
-
-	//검색구현
-	function eSearchEst(currentPage) {
-		/* 달력=>datepicker 사용했음
-		document.ready에서
-		$('#from_date').datepicker();
-		$('#to_date').datepicker();  작성 후 검색구현 함수에서 값 가져오기  */
-			
-		currentPage = currentPage || 1;
-	
-		// 날짜 1
-		var to_date = $("#to_date").val();
-		// 날짜 2
-		var from_date = $("#from_date").val();
-			
-		console.log('to_date' , to_date);
-		console.log('from_date' , from_date);
-
-		// 거래처 넘기기
-		var client_search = $("#client_search").val();
-
-		// 값 내용물
-		console.log("from_date : " + from_date.valueOf());
-		console.log("to_date : " + to_date.valueOf());
-
-	    var param = {
-			client_search : client_search,
-	        currentPage : currentPage,
-	        pageSize : pageSizeEstList,
-	        from_date : from_date,
-	        to_date : to_date
-	    }
-
-		console.log(" param : " , param);
-		console.log("param.valueOf()",  param.valueOf());
-			
-		var resultCallback = function(data) {
-			console.log("=======resultCallback========");
-			
-			//목록 조회 결과
-			estListResult(data, currentPage);
-			console.log(" 검색 조회결과 data ",data);
-		};
-			
-		// 목록조회에 던져준다.
-		/*  순서 주의 :  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터,, 비동기? 동기,     돌려 줄 함수  */
-		callAjax("/business/estManagementList.do", "post", "text", true, param, resultCallback); //text
-	}
 
 	/**  견적서 모달 안 리스트  */
 	function estDetailList(currentPage) {
@@ -538,7 +573,6 @@
 		<div id="mask"></div>
 
 		<div id="wrap_area">
-
 			<h2 class="hidden">header 영역</h2>
 			<jsp:include page="/WEB-INF/view/common/header.jsp"></jsp:include>
 
@@ -629,7 +663,7 @@
 		</div>
 		<jsp:include page="/WEB-INF/view/business/EstCreateModal1.jsp"></jsp:include>
 	</form>
-	<%--<jsp:include page="/WEB-INF/view/business/EstCreateModal2.jsp"></jsp:include>--%>
+	<jsp:include page="/WEB-INF/view/business/EstCreateModal2.jsp"></jsp:include>
 	<jsp:include page="/WEB-INF/view/business/EstManagementModal.jsp"></jsp:include>
 </body>
 </html>

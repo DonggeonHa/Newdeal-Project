@@ -35,14 +35,15 @@
 					<tr>
 						<th scope="row">회사</th>
 						<td>
-							<div id="erpCopnm"></div>
+							<div id="erpCopnm2"></div>
 						</td>
 						<th scope="row">사업자등록번호</th>
 						<td>
-							<div id="erpCopnum"></div>
+							<div id="erpCopnum2"></div>
 						</td>
-						<td colspan="2" hidden="">
-							<input type="text" class="inputTxt p100" name="estimateNo2" id="estimateNo2" />
+						<th scope="row">견적서번호</th>
+						<td>
+							<div id="estimateNo2"></div>
 						</td>
 					</tr>
 					<tr>
@@ -60,10 +61,9 @@
 						</td>
 					</tr>
 					<tr>
-						<th scope="row">거래처<span class="font_red">*</span></td>
+						<th scope="row">거래처</td>
 						<td>
-							<input type="hidden" id="clientNm2">
-
+							<div id="clientNm2"></div>
 						</td>
 						<th scope="row">거래처 담당자</td>
 						<td>
@@ -140,11 +140,11 @@
 						</td>
 						<th scope="row">제품</th>
 						<td>
-							<select id="product_cd" name="productCd"></select>
+							<select id="productCd" name="productCd"></select>
 						</td>
 						<th scope="row">수량</th>
 						<td>
-							<input type="number" name="estimateCnt" id="estimate_cnt"/>
+							<input type="number" name="estimateCnt" id="estimateCnt"/>
 						</td>
 						<th scope="row">납기일</th>
 						<td>

@@ -2,9 +2,11 @@ package kr.happyjob.study.business.controller;
 
 import kr.happyjob.study.business.dto.EstListDetailDto;
 import kr.happyjob.study.business.dto.EstListDto;
+import kr.happyjob.study.business.dto.InsertTableSelectDto;
 import kr.happyjob.study.business.dto.SelectEstListDto;
 import kr.happyjob.study.business.service.EstManagementService;
 import kr.happyjob.study.business.vo.ErpClientVo;
+import kr.happyjob.study.business.vo.EstimateInfoVo;
 import kr.happyjob.study.business.vo.UserInfoVo;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -73,6 +75,8 @@ public class EstManagementController {
 		
 		paramMap.put("pageIndex", pageIndex); 										// DB로
 		paramMap.put("pageSize", pageSize); 										// DB로
+
+		logger.info("+ @@@@@@@@@@@@@@@@@@@@@@ " + paramMap + "#######################################");
 		
 		// 1 . 목록 리스트 조회
 		List<EstListDto> estList = estService.estList(paramMap); 			// -> 콜백단으로 보내지는 데이터
@@ -90,39 +94,6 @@ public class EstManagementController {
 		logger.info("   - paramMap ? ? ? ? ? ? : " + paramMap);
 		
 		return "/business/EstManagementCallBack"; 
-	}
-
-	/* model에 회사 프로퍼티 넣기 == 조회 */
-	@RequestMapping("estCreateModal.do")
-	@ResponseBody
-	public Map<String, Object> estCreateModal(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-									HttpServletResponse response, HttpSession session) throws Exception {
-
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-
-		String loginID = (String) session.getAttribute("loginId");
-		UserInfoVo user = estService.searchLoginId(loginID);
-
-		// happyjob.properties에서 회사 프로퍼티 박은거 보내기
-		resultMap.put("erp_copnm", erp_copnm); 							// 회사이름
-		resultMap.put("erp_copnum", erp_copnum); 						// 사업자번호
-		resultMap.put("user", user);									// 담당자 이름, 이메일, 전화번호
-
-		return resultMap;
-	}
-
-	/* model에 거래처 프로퍼티 넣기 == 조회 */
-	@RequestMapping("searchClient.do")
-	@ResponseBody
-	public Map<String, Object> searchClient(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-											  HttpServletResponse response, HttpSession session) throws Exception {
-
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		ErpClientVo client = estService.searchClient(paramMap);
-
-		resultMap.put("client", client);								// 거래처 이름, 이메일
-
-		return resultMap;
 	}
 	
 	// 단건 조회
@@ -180,6 +151,39 @@ public class EstManagementController {
 		
 		return "/business/EstDetailManagementModal"; 
 	}
+
+	/* model에 회사 프로퍼티 넣기 == 조회 */
+	@RequestMapping("estCreateModal.do")
+	@ResponseBody
+	public Map<String, Object> estCreateModal(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+											  HttpServletResponse response, HttpSession session) throws Exception {
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		String loginID = (String) session.getAttribute("loginId");
+		UserInfoVo user = estService.searchLoginId(loginID);
+
+		// happyjob.properties에서 회사 프로퍼티 박은거 보내기
+		resultMap.put("erp_copnm", erp_copnm); 							// 회사이름
+		resultMap.put("erp_copnum", erp_copnum); 						// 사업자번호
+		resultMap.put("user", user);									// 담당자 이름, 이메일, 전화번호
+
+		return resultMap;
+	}
+
+	/* model에 거래처 프로퍼티 넣기 == 조회 */
+	@RequestMapping("searchClient.do")
+	@ResponseBody
+	public Map<String, Object> searchClient(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+											HttpServletResponse response, HttpSession session) throws Exception {
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		ErpClientVo client = estService.searchClient(paramMap);
+
+		resultMap.put("client", client);								// 거래처 이름, 이메일
+
+		return resultMap;
+	}
 	
  	// 신규 견적서 등록 및 수정
  	@RequestMapping("estManagementSave.do")
@@ -207,11 +211,6 @@ public class EstManagementController {
 			// estService.insert1EstList(paramMap);
 			// estService.insert2EstList(paramMap);
 
-		//  단건 조회시
-		} else if("U".equals(action)) {
-			estService.estListDetail(paramMap);
-			System.out.println("------------> 상세 조회");
-
 		} else {
 			result = "FALSE";
 			resultMsg = "알수 없는 요청 입니다.";
@@ -222,9 +221,37 @@ public class EstManagementController {
 		resultMap.put("result", result);
 		resultMap.put("resultMsg", resultMsg);
 		
-		logger.info("수정 저장 End " + className + ".신규등록 및 수정 ");
-		logger.info("   - paramMap : " + paramMap);
-		
+		return resultMap;
+	}
+
+	// 신규 견적서 등록 및 수정2222222222
+	@RequestMapping("estManagementSave2.do")
+	@ResponseBody
+	public Map<String, Object> saveEstManage2(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+											 HttpServletResponse response, HttpSession session) throws Exception {
+
+		String result = "SUCCESS";
+		String resultMsg = "저장 되었습니다.";
+
+		String loginID = (String) session.getAttribute("loginId");
+		UserInfoVo user = estService.searchLoginId(loginID);
+
+		// 신규견적서 단독 조회
+		InsertTableSelectDto InsertTableSelect = estService.InsertTableSelect(paramMap);
+
+		// estimate테이블 인서트
+		// estService.updateInsertEstList(paramMap);
+
+		// resultMap => 뷰로 간다
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("result", result);
+		resultMap.put("resultMsg", resultMsg);
+		// happyjob.properties에서 회사 프로퍼티 박은거 보내기
+		resultMap.put("erp_copnm", erp_copnm); 							// 회사이름
+		resultMap.put("erp_copnum", erp_copnum); 						// 사업자번호
+		resultMap.put("user", user);									// 담당자 이름, 이메일, 전화번호
+		resultMap.put("estInfo", InsertTableSelect);					// 이전꺼 불러옴
+
 		return resultMap;
 	}
 

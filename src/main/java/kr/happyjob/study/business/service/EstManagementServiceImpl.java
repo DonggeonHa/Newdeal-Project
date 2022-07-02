@@ -3,6 +3,7 @@ package kr.happyjob.study.business.service;
 import kr.happyjob.study.business.dao.EstManagementDao;
 import kr.happyjob.study.business.dto.EstListDetailDto;
 import kr.happyjob.study.business.dto.EstListDto;
+import kr.happyjob.study.business.dto.InsertTableSelectDto;
 import kr.happyjob.study.business.dto.SelectEstListDto;
 import kr.happyjob.study.business.vo.ErpClientVo;
 import kr.happyjob.study.business.vo.UserInfoVo;
@@ -82,4 +83,8 @@ public class EstManagementServiceImpl implements EstManagementService{
 	public ErpClientVo searchClient(Map<String, Object> paramMap) {
 		return estManagementDao.searchClient(paramMap);
 	}
+
+	@Override
+	/** 견적생성시 estimate_info 정보 불러오기 */
+	public InsertTableSelectDto InsertTableSelect(Map<String, Object> paramMap) { return estManagementDao.InsertTableSelect(paramMap); }
 }

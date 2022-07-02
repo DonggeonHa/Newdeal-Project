@@ -2,6 +2,7 @@ package kr.happyjob.study.business.dao;
 
 import kr.happyjob.study.business.dto.EstListDetailDto;
 import kr.happyjob.study.business.dto.EstListDto;
+import kr.happyjob.study.business.dto.InsertTableSelectDto;
 import kr.happyjob.study.business.dto.SelectEstListDto;
 import kr.happyjob.study.business.vo.ErpClientVo;
 import kr.happyjob.study.business.vo.UserInfoVo;
@@ -41,4 +42,7 @@ public interface EstManagementDao {
 
 	/** 클라이언트 찾기 */
 	public ErpClientVo searchClient(Map<String, Object> paramMap);
+
+	/** 견적생성시 estimate_info 정보 불러오기 */
+	public InsertTableSelectDto InsertTableSelect(Map<String, Object> paramMap);
 }

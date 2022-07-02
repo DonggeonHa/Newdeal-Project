@@ -117,6 +117,27 @@
 		);
 	</insert>
 
+	<select id="InsertTableSelect" resultType="kr.happyjob.study.business.dto.InsertTableSelectDto" parameterType="hashmap">
+		SELECT
+				a.estimate_no estimateNo,
+				a.estimate_date estimateDate,
+				a.remarks,
+				b.client_cd clientCd,
+				b.client_nm clientNm,
+				b.emp_nm empNm,
+				b.tel
+		FROM
+		    	estimate_info a
+		INNER JOIN tb_erp_client b ON a.client_cd = b.client_cd
+		WHERE
+				estimate_no = (
+									SELECT max(estimate_no)  <!--  String타입이라도 마지막에 들어온 번호가 나옴 -->
+									FROM estimate_info
+									WHERE client_cd = #{client_search1}
+							   )
+		AND
+				client_cd = #{client_search1}
+	</select>
 	<!-- 견적서제품 테이블 인서트 -->
 	<insert id ="updateInsertEstList">
 		INSERT INTO estimate_prod (
