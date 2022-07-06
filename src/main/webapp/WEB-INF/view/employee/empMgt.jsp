@@ -23,17 +23,15 @@
 <script type="text/javascript">
 
 	// 사원 리스트 페이징 설정
-	var pageSizeEmpList = 10;
-	var pageBlockSizeEmpList = 5;
+	var pageSizeEmpList = 10; //currentPage 로 들어간다
+	var pageBlockSizeEmpList = 5; //5개 블락
 
 	/* onload */
 	$(document).ready(function(){
 		showEmpList() //사원 리스트 불러오기
-	
-		
+			
 		//공통코드 검색조건
-		selectComCombo("dept", "searchKey_dept", "all", ""); //부서	
-		
+		selectComCombo("dept", "searchKey_dept", "all", ""); //부서			
 		comcombo("POScd", "searchKey_poscd", "all", "0");// 전체 or 선택
 		
 		$("#to_date").change(function() {
@@ -46,6 +44,10 @@
 
 	/* 사원 리스트 조회 */
 	function showEmpList(currentPage, retire_yn, abs_yn){ //변경
+		
+		//alert("Type// currentPage : "+ typeof(currentPage) + "/ retire : "+ typeof(retire_yn) + "/ abs : "+ typeof(abs_yn));
+		//alert("currentPage : "+ currentPage + "/ retire : "+ retire_yn + "/ abs : "+ abs_yn);
+		
 		if (retire_yn == 'y'){
 			//재직자/퇴직자 버튼 색깔 변경 ///퇴직자 버튼
 			$('#showOutEmp').removeClass('color1'); //퇴직자
@@ -95,8 +97,6 @@
 				$('#resign').hide();
 				$('#AbsenceDay').show();
 				
-				
-				
 			}
 			
 		}
@@ -106,15 +106,14 @@
 		retire_yn = retire_yn || 'n';
 		abs_yn = abs_yn || 'n'; //추가
 		
-// 		alert("retire : "+ retire_yn);
-// 		alert("abs : "+ abs_yn);
+// 		alert("retire : "+ retire_yn + "abs : "+ abs_yn);
 		
-		var searchKey_dept = $('#searchKey_dept').val();
-		var searchKey_poscd = $('#searchKey_poscd').val();
-		var searchKey = $('#searchKey').val();
-		var searchWord = $('#searchWord').val();
-		var from_date = $("#from_date").val();
-		var to_date = $("#to_date").val();
+		var searchKey_dept = $('#searchKey_dept').val(); //부서
+		var searchKey_poscd = $('#searchKey_poscd').val(); // 직급
+		var searchKey = $('#searchKey').val(); // 사번or 사원명
+		var searchWord = $('#searchWord').val(); // 검색어
+		var from_date = $("#from_date").val(); // 날짜 시작
+		var to_date = $("#to_date").val(); // 날짜 어디까지
 
 		$('#tmpEmpStatus').val(retire_yn);
 		
@@ -122,6 +121,7 @@
 		
 		var param = {
 					  retire_yn : retire_yn
+					, abs_yn : abs_yn // 추가
 					, searchKey_dept : searchKey_dept
 					, searchKey_poscd : searchKey_poscd
 					, searchKey : searchKey
@@ -130,7 +130,7 @@
 					, to_date : to_date
 					, currentPage : currentPage
 					, pageSize : pageSizeEmpList
-					, abs_yn : abs_yn // 추가
+					
 		}
 		
  		var resultCallback = function(data){
@@ -166,6 +166,7 @@
 	}//showInEmpList
 	
 	function showEmpListResult(data, currentPage){
+		
 		console.log(data);
 		
 		$('#empList').empty();
@@ -187,6 +188,8 @@
 		
 		// 현재 페이지 설정
 		$("#currentPageEmpMgt").val(currentPage);
+		
+		
 	}
 
 	/* 사원정보 디테일 */
@@ -197,24 +200,34 @@
 			viewEmpDtlResult(data);
 		};
 		
+		$("#maybe").text("사원 정보수정");
+	
 		callAjax("/employee/viewEmpDtl.do", "post", "json", true, param, resultCallback);
 	}
 	
 	function viewEmpDtlResult(data){
 		if(data.result == "SUCCESS"){
+			
+	
 			gfModalPop('#layer1');
 			empRegisterInit(data)
+			
 		}else {
 			swal("실패 : "+data.resultMsg);
 		}
 	}
 	
-	/* 퇴직처리 -> 퇴직사유 모달 팝업 */
-	function fPopModalResignEmp(resignLoginID, resignName, resign_entry_date){
+	/* 퇴직처리 -> 퇴직사유 모달 팝업 *///resign_dp, resign_pos)
+	function fPopModalResignEmp(resignLoginID, resignName, resign_entry_date, resign_dp, resign_pos){
+
 		$('#resignLoginID').val(resignLoginID);
 		$('#resignName').val(resignName);
 		$('#resign_entry_date').val(resign_entry_date);
 		
+		$('#resign_dp').val(resign_dp);
+		$('#resign_pos').val(resign_pos);
+		
+	
 		$("#confirm_retire_date").change(function() {
 			if ($("#confirm_retire_date").val() < $("#resign_entry_date").val()) {
 				swal("입사일 보다 퇴사일이 작을 수 없습니다.")
@@ -226,10 +239,14 @@
 	
 	/* 퇴직처리 */
 	function resignEmp(){
-		//alert("dfsf");
+
 		var resignLoginID = $('#resignLoginID').val();
 		var confirm_retire_date = $('#confirm_retire_date').val();
 		var retire_note = $('#write_retire_note').val();
+		
+		//var resign_dp = $('#resign_dp');
+		//var resign_pos = $('#resign_pos');
+		
 		
 		console.log("resignLoginID : " + resignLoginID);
 		
@@ -241,6 +258,8 @@
 				  loginID : resignLoginID
 				, retire_date : confirm_retire_date
 				, retire_note : retire_note
+				//, resign_dp : resign_dp
+				//, resign_pos : resign_pos
 		}
 		
 		swal("퇴사처리하겠습니까?", {
@@ -311,25 +330,11 @@
 			swal("정보삭제에 실패하였습니다.");
 		}
 	}
+	
 </script>
 
 <style>
-/* 	a:link { */
-/* 		color: teal; */
-/* 	}	 */
-/* 	a:visited { */
-/* 		color: maroon; */
-/* 		text-decoration: none */
-/* 	}	 */
-/* 	a:hover { */
-/* 		color: blue; */
-/* 		text-decoration: none; */
-/* 		background: Orange */
-/* 	}	 */
-/* 	a:active { */
-/* 		color: red; */
-/* 		text-decoration: none */
-/* 	} */
+
 
  	#trytest:hover { 
  		color: blue; 
@@ -337,6 +342,8 @@
 		background: lightgray
 		 
 	} 
+	
+
 </style>
 
 
@@ -351,7 +358,7 @@
 		
 
 		<!-- 모달 배경 -->
-		<!-- 	<div id="mask"></div> -->
+		<div id="mask"></div>
 
 		<div id="wrap_area">
 
@@ -376,9 +383,8 @@
 							</p>
 
 							<p class="conTitle">
-								<span>사원 기본정보</span> <span class="fr"> <a
-									class="btnType blue" href="javascript:fPopModalEmpMgt();"
-									name="modal" id="registerBtn"><span>사원 등록</span></a>
+								<span>사원 기본정보</span> <span class="fr"> 
+								<a class="btnType blue" href="javascript:fPopModalEmpMgt();" name="modal" id="registerBtn"><span>사원 등록</span></a>
 								</span>
 							</p>
 							<table
@@ -480,7 +486,7 @@
 			style="width: 790px;">
 			<dl>
 				<dt>
-					<strong>사원 등록</strong>
+					<strong id="maybe">사원 등록</strong>
 				</dt>
 				<dd class="content">
 					<!-- s : 여기에 내용입력 -->
@@ -624,9 +630,15 @@
 									name="year_salary" id="year_salary" /> <input type="button"
 									value="호봉" onclick="payStep()"
 									style="width: 27%; height: 100%; cursor: pointer;" /></td>
-								<th scope="row" rowspan="2">비고</th>
-								<td rowspan="2"><textarea id="memo" name="memo"
-										style="resize: none;"></textarea></td>
+								<th scope="row">휴직일</th>
+								<td><input type="date" id="abs_date" name="abs_date"
+									style="width: 90%; height: 80%"></td>	
+								
+<!-- 								<td><input type="date" id="abs_date" name="abs_date" -->
+<!-- 									style="width: 90%; height: 80%" readonly></td>	 -->
+<!-- 								<th scope="row" rowspan="2">비고</th> -->
+<!-- 								<td rowspan="2"><textarea id="memo" name="memo" -->
+<!-- 										style="resize: none;"></textarea></td> -->
 							</tr>
 							<tr>
 								<th scope="row">퇴직금</th>
@@ -635,6 +647,9 @@
 								<th scope="row">퇴직사유</th>
 								<td><input type="text" class="inputTxt p100"
 									name="retire_note" id="retire_note" readonly /></td>
+								<th scope="row" rowspan="2">비고</th>
+								<td><input type="text" id="memo" name="memo"
+									style="width: 90%; height: 80%" ></td>	
 							</tr>
 						</tbody>
 					</table>
@@ -657,6 +672,8 @@
 	<!-- ***** 사원 등록 모달 끝 ***** -->
 
 	<!-- ***** 퇴직처리 모달 ***** -->
+	
+
 	<div id="layer2" class="layerPop layerType2" style="width: 540px;">
 		<dl>
 			<dt>
@@ -677,24 +694,26 @@
 
 					<tbody>
 						<tr>
-							<th scope="row">사번 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt" id="resignLoginID"
-								name="resignLoginID" readonly /></td>
+							<th scope="row">사번 <span class="font_red">*</span> </th>
+							<td><input type="text" class="inputTxt" id="resignLoginID" name="resignLoginID" readonly /></td>
 							<th scope="row">사원명 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt" id="resignName"
-								name="resignName" readonly /></td>
+							<td><input type="text" class="inputTxt" id="resignName" name="resignName" readonly /></td>
+						</tr>
+						<tr>
+							<th scope="row">부서명<span class="font_red">*</span></th>
+							<td><input type="text" id="resign_dp" style="width: 90%; height: 80%" readonly></td>
+							<th scope="row">직 급<span class="font_red">*</span></th>
+							<td><input type="text" id="resign_pos" style="width: 90%; height: 80%"></td>
 						</tr>
 						<tr>
 							<th scope="row">입사일<span class="font_red">*</span></th>
-							<td><input type="date" id="resign_entry_date"
-								style="width: 90%; height: 80%" readonly></td>
+							<td><input type="date" id="resign_entry_date" style="width: 90%; height: 80%" readonly></td>
 							<th scope="row">퇴사일<span class="font_red">*</span></th>
-							<td><input type="date" id="confirm_retire_date"
-								style="width: 90%; height: 80%"></td>
+							<td><input type="date" id="confirm_retire_date" style="width: 90%; height: 80%"></td>
 						</tr>
-
+<!-- style="text-align: left;"text-align:center;" -->
 						<tr>
-							<th scope="row" colspan="4" style="text-align: left;">퇴사 사유</th>
+							<th scope="row" colspan="4" style="text-align: left;"> &lt; 퇴 사 사 유 &gt;</th>
 						</tr>
 						<tr>
 							<td colspan="4"><textarea id="write_retire_note"
@@ -712,8 +731,9 @@
 			</dd>
 		</dl>
 		<a href="" class="closePop"><span class="hidden">닫기</span></a>
-	</div>
+	
 	<!-- ***** 퇴직처리 모달 끝 ***** -->
+</div>
 
 </body>
 </html>

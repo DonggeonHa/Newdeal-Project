@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
@@ -16,19 +15,20 @@
 
 
 <script type="text/javascript">
-var pagesize = 10;
-var pagenavisize = 5;
+//화면 페이징 변수 
+var pagesize = 10; // 화면에 보여질 데이터 수 
+var pagenavisize = 5; // 페이징 처리 수 
 
-
+// DOM이 로드되었을 때 실행되는 코드
 $(document).ready(function() {
 
-	fn_dateset(this);
+	fn_dateset(this); 
 	fn_noticelist();
 	fNoticeButtonClickEvent();
 	
 });	
 
-
+// 날짜 셋팅 함수 , 날짜선택시 onchange()로 호출되는 함수 
 function fn_dateset(e){
 	
 	var date = new Date();
@@ -43,15 +43,16 @@ function fn_dateset(e){
 	    day = "0" + month;
 	}
 	var today = year + '-' + month + '-' + day;
+//오늘 날짜를 '00-00-00'형태로 변수에 저장   
+
+
 	var dateID =e.id;
 	var date =e.value;
 	$("#today").val(today);
 	
-	console.log(today);
-
-	if(date == "" || date == undefined){ //날짜 삭제시, min,max초기화 
+	if(date == "" || date == undefined){ 
+//페이지로드되는 시점 or 검색조건의 날짜 삭제버튼 누른 시점에서 날짜 min,max초기화 
 		
-		console.log("didd");
 		$("#to_date").attr("max",today); 
 		$("#to_date").attr("min",""); 
 
@@ -59,7 +60,7 @@ function fn_dateset(e){
 		$("#from_date").attr("min");
 	
 	}
-	
+//입력값을 받은 ID에 따라, min,max 설정
 	else if(dateID == "from_date"){	
 		
 		$("#to_date").attr("min", date); 
@@ -68,70 +69,64 @@ function fn_dateset(e){
 	else if( dateID == "to_date"){
 		console.log(e.value);
 		$("#from_date").attr("max", date);
-		
-		
-	}
-	
-	
-		
+	}		
 } 	
 
-	/*모달 팝업 창 내의 버튼 id를 얻음 해당 버튼클릭시 실행해야하는 것들 호출*/
+	/* 검색, 저장, 닫기, 수정, 삭제 튼. 모달 팝업 창 내의 버튼 id를 얻음 해당 버튼클릭시 실행해야하는 것들 호출*/
 	function fNoticeButtonClickEvent() {
 		
-		
-
 		$('a[name=btn]').click(function(e) {
 			e.preventDefault();
+//기본동작 취소. a 태그를 클릭해도 원하는 href링크로 이동하지 않게 함. form 요소 안 button태그의 클릭이벤트 발생시 submit 동작이 기본적으로 발생. 페이지가 리로드가 되는 현상을 막아줌
 
 			var btnId = $(this).attr('id');
 
 			switch (btnId) {
 			
-			case 'search_btn' : 
-					console.log("1 검색버튼이 눌렸습니다.");
-					 fn_searchnull();
-					fn_noticelist();
-					break;
+			case 'search_btn' : //신규등록 버튼 클릭 1. null 처리 2. 검색리스트 불러오는 함수 호출 
+				fn_searchnull();
+				fn_noticelist();
+				break;
 					
-			case 'btnSave':
-				console.log("2");
+			case 'btnSave': // 저장 버튼 클릭 
 				fn_noticeSave();
 				break;
-			case 'btnClose':
-				console.log("3");
+
+			case 'btnClose': //닫기 버튼 클릭 
 				gfCloseModal();
 				break;
-			case 'btnDelete':
-				console.log("4");
+
+			case 'btnDelete'://삭제 버튼 클릭 
 				fn_deleteNotice();
 				break;
 				
-			case'btnUpdate':
-				console.log("수정");
+			case'btnUpdate'://수정 버튼 클릭 
 				fn_noticeSave();
 			
 			}
 		});
 	}
 	
+	/* 검색 입력값이 없을 시, alert 하는 함수 */
 	function fn_searchnull(){
 		
 		var search_option =  $("#search_option").val();
 		var search_text = $("#search_text").val();
-		<!--null 검색 -->
-		if(search_option == "" &&  search_text == "" )
-			alert(" 값을 입력해주세요 :) ");
+		var toDate = $('#to_date').val();
+		var fromDate = $('#from_date').val();
+		<!-- 검색어를 입력하지 않았을 시-->
+		if(search_option == "" &&  search_text == "" ){
+			if(toDate != "" || fromDate != ""){
+					return;
+				}
+			swal(" 검색어를 입력해주세요 ");
+		}
 		else if(search_option != "" && search_text == "")
-			alert(" 값을 입력해 :) ");
-		
-		
+			swal(" 검색어를 입력해주세요 ");
 	}
 	
-	<!--공지사항 리스트 불러오기 -->
+	/* 공지사항 리스트 불러오기 */
 	function fn_noticelist(pagenum) {
-		
-		
 		
 		pagenum = pagenum || 1;		
 		
@@ -141,8 +136,7 @@ function fn_dateset(e){
 		var toDate = $('#to_date').val();
 		var fromDate = $('#from_date').val();
 		var today = $("#today").val();
-		
-		console.log(search_option);
+	
 		
 		var param = {
 			search_option : search_option,
@@ -154,58 +148,53 @@ function fn_dateset(e){
     		today : today
 		
 		}
+	
 		
-		Object.keys(param).forEach((key) => { 
-		    console.log(key+" = "+param[key]); // key in obj
-		    
-		})
-		
-
 		var notice_callback = function(returndata) {
-			console.log("notice_callback "+returndata);
+		
 			fn_listcallback(returndata, pagenum);
 		}
 
 		callAjax("/system/noticeList.do", "post", "text", true, param,notice_callback);
-
-	}
+				// 호출 할 부분  / 보내는 방식 / 컨트롤러에 리턴받는 타입 / async 방식 / 전송될 파라미터 / 응답 받자마 실행할 함수 
+				//async 방식이면 true.  jsp 컨트롤러에 요청받을 때 응답받을때까지 기다리는 방식 
+				//AJAX 공통 메소드 WEB-INF/resource/js/commonAjax.js
+				
+				
+				}
 	
 	
-	<!--공지사항 리스트 콜백함수 목록뿌리기  -->
+	/*  공지사항 리스트 불러오기의 콜백함수 */
 	function fn_listcallback(returndata, pagenum) {
 
-	
-		console.log("fn_listcallback : " + returndata);
-		
+		// 리스트 변경시, 기존목록을 삭제. 리스트의 총 개수 구함. 페이지 네비게이션 생성. 기존 목록에 append. 현재 페이지 설정 
 		$("#notice_list").empty().append(returndata);
 		var totalcnt = $("#totalcnt").val();
 	
 		var paginationHtml = getPaginationHtml(pagenum, totalcnt, pagesize,pagenavisize, 'fn_noticelist'); 
 		
-		//swal(paginationHtml);
+		 // * 페이지 네비게이션 생성 (공통함수 사용 -common.js) 현재페이지,총 건수,페이지당 보여지는 목록 갯수 , 페이지 번호 갯수, 페이지 번호를 클릭하면 호출할 함수 객체,pageFunc에 넘겨줄 추가적인 파라미터(optional)
+		 // function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc, exParams)
+		
 		
 		$("#notice_paging").empty().append(paginationHtml); 
 
 		$("#pagenum").val(pagenum);
-		console.log("fn_listcallback : pagenum" + pagenum);
+		
 		
 	}
-
-<!--단건 조회 -->
+	/*  공지사항 단건조회 함수  */
 function fn_selectnotice(no){
 	$("#notice_no").val(no);
 	 var writer=$("#modal_id").val();
 	
-	var param = {
-			
+	var param = {		
 			no : no,
 			writer : writer
 	}
-	
+	// 공지사항 게시번호,작성자 
 	
 	var selectOneCallback = function(returndata){
-		
-		console.log("확인2");
 		fn_selectone(returndata);
 	}
 	
@@ -213,34 +202,30 @@ function fn_selectnotice(no){
 			
 }
 
-<!-- 단건조회 콜백함수  -->
+/* 단건조회 콜백함수 */
 function fn_selectone(returndata){
 	
-	console.log(returndata.result);
-	
-	
-
-	
-	if(returndata.resultdata == "SUCCESS"){
-		 gfModalPop("#writeform");
-	}
-	
+	//모달에 정보를 넣고, 띄우기 
 	fn_modalInit(returndata.result);
+		 gfModalPop("#writeform");
+	
 	
 }
 
 
-<!-- 팝업 초기화 -->
+/* 정보에 따른 모달창 초기화 */
 function fn_modalInit(object){
 	
 	var userID = $("#writer_id").val();
+ 	//로그인 한 유저의 ID 값 
  	
- 	
+ 	// 신규등록일 때 모달창 
 	 if(object == "" || object == null || object == undefined){
 		
 		 var loginID=$("#writer_id").val();
-			console.log("아이디 "+loginID);
-	
+		
+			// 작성자의 user의 loginID값을 넣고 읽기전용으로 변경. 제목,내용 값을 초기화 후 저장, 취소버튼만 보여주기
+			// action의 형태는 INSERT임으로 I 값을 넣어줌 
 			$("#modal_id").val(loginID);
 			$("#modal_id").attr("readonly",true);
     		$("#noticeno").val("");
@@ -253,10 +238,9 @@ function fn_modalInit(object){
 			
 			
 	 }else if(object.loginID != userID){
-	
+		//  1)유저와 작성자가 다를 경우, 수정,삭제 버튼 숨기고 readonly
 		 
-		 		console.log("확인 " +object.loginID);
-	 			console.log("작성자가 다르다.");
+		 		
 	 			$("#modal_id").val(object.loginID);
 	 		   	$("#modal_title").val(object.title);
 	 			$("#modal_cont").val(object.contents);
@@ -271,18 +255,16 @@ function fn_modalInit(object){
 
 	 			
 	 			
-	 		} else{ // 수정
+	 		} else{ // 2)유저와 작성자가 같을 경우, 수정, 삭제 가능 action 값은 Update 의 U 
 	 		
 	 
-	 		console.log("작성자가 같다규 ");
-	 		console.log("수정  " +object.loginID);
-		   $("#modal_id").val(object.loginID);
-		   $("#modal_title").val(object.title);
+	
+			$("#modal_id").val(object.loginID);
+			$("#modal_title").val(object.title);
 			$("#modal_cont").val(object.contents);
 			$("#noticeno").val(object.contents);
 			
 			$("#modal_id").attr("readonly",true);
-
 			$("#btnUpdate").show();
 			$("#btnSave").hide();
 			$("#btnDelete").show();
@@ -294,10 +276,9 @@ function fn_modalInit(object){
 	
 }
 
-<!-- 신규작성 -->
+/* 신규작성 모달창 함수 수정은 U 신규는 I */
 function fn_writemodal(notice_no){
 	
-	console.log(notice_no);
 	
 	if(notice_no == null || notice_no == ""){ // 신규등록일때 
 		
@@ -315,7 +296,7 @@ function fn_writemodal(notice_no){
 	}
 }
 
-/* 팝업내 수정, 저장 validation */
+/* 팝업내 수정, 저장 validation 함수 */
 function fValidatePopup(){
 	 var chk = checkNotEmpty(
 			 [
@@ -328,35 +309,26 @@ function fValidatePopup(){
 	return true;
 }
 
-<!--저장 -->
+/* 공지사항 저장 */
 function fn_noticeSave(){
-	
 	
 	if(!(fValidatePopup())){
 		return;
 	}
-	
-	
 	var title =  $("#modal_title").val();
 	var contents = $("#modal_cont").val();
 	var action =  $("#action").val();
 	var no =  $("#notice_no").val();
 
 	
-	var param = {
-			
+	var param = {		
 			title : title,
 		   contents : contents,
 			action :action,
-			no : no
-			
+			no : no			
 	}
 	
-
-	
 	var saveCallback = function(returndata){
-		
-		console.log("저쟝");
 		fn_saveResult(returndata);
 	}
 	
@@ -367,28 +339,26 @@ function fn_noticeSave(){
 
 
 
-
+/* 저장, 수정, 삭제 콜백 함수 */ 
 function fn_saveResult(returndata){
 	
-	
-	console.log("fn_saveCallback "+ JSON.stringify(returndata));
-	console.log(returndata.result);
-
+	//결과값에 따른 sweet alert 메시지 
 	if(returndata.result == "SUCCESS"){
-		alert("저장되었습니다.");
+		swal("저장되었습니다.");
 	}else if(returndata.result == "UPDATED"){
-		 alert("수정되었습니다.");
+		swal("수정되었습니다.");
 	}else if(returndata.result == "DELETED"){
-		alert("삭제 되었습니다.");
+		swal("삭제 되었습니다.");
 	}
 	
 	gfCloseModal();
 	fn_noticelist();
 	fn_modalInit();
-
+	//모달 닫기,리스트 초기화,모달 초기화 
 	
 }
 
+/* 공지사항 수정 */
 function fn_updateNotice(){
 
 	
@@ -403,7 +373,6 @@ function fn_updateNotice(){
 	
 	var updateCallback = function(returndata){
 		
-		console.log("수져어어");
 		fn_saveResult(returndata);
 	}
 	
@@ -412,35 +381,31 @@ function fn_updateNotice(){
 	
 }
 
+/* 공지사항 삭제 */
 function fn_deleteNotice() {
+	
+	
 	
 	if(!confirm("삭제 하겠습니까?")) {
 		return;
 	}
 	
-	//$("#action").val("D");
+	$("#action").val("D");
 	
 	var no =  $("#notice_no").val();
-	//var action = $("#action").val();
-	
+
 	var param = {
 			no : no,
 			action : "D"
 	}
 	
-	var deletecollaback = function(retundata) {
+	var deletecollaback = function(returndata) {
 	  
 	
-	    if(retundata.result == "DELETE") {
-	    	alert("삭제 되었습니다");
-	    	
-	    	 gfCloseModal();
-	    	 fn_noticelist();
-	    }
+		fn_saveResult(returndata);
 	    
-	   //fn_selectoneproc(retundata);
   }	
-	$("#action").val("D");
+	
   callAjax("/system/noticeSave.do", "post", "json", true, param, deletecollaback);   	
 }
 
@@ -456,13 +421,14 @@ function fn_deleteNotice() {
 <body>
 
 	<form id="noticelistform" action="" method="">
-		<!-- 게시판 번호/ 등록인지 수정인지 알수있는 플래그값 /-->
-		<input type="hidden" id="pagenum" value=""> <input
-			type="hidden" name="action" id="action" value=""> <input
-			type="hidden" name="notice_no" id="notice_no" value=""> <input
-			type="hidden" id="writer_id" value="${loginId}"> <input
-			type="hidden" id="today" value="">
-
+		<!-- 게시판 번호/ 등록인지 수정인지 알수있는 플래그값 /현재페이지,action값, 공지사항 번호,로그인한 유저 ID,오늘 날짜-->
+		<input type="hidden" id="pagenum" value="">
+		<input type="hidden" id="pagenum" value="">
+		<input type="hidden" name="action" id="action" value="">
+		<input type="hidden" name="notice_no" id="notice_no" value=""> 
+		<input type="hidden" id="writer_id" value="${loginId}"> 
+		<input type="hidden" id="today" value="">
+		<!--   일반적인 사용자들에게는 노출되지 않는 영역이지만 서버에 특정 값을 넘길 때 사용한다.-->
 		<!-- 모달 배경 -->
 		<div id="mask"></div>
 
@@ -475,8 +441,7 @@ function fn_deleteNotice() {
 			<div id="container">
 				<ul>
 					<li class="lnb">
-						<!-- lnb 영역 --> <jsp:include
-							page="/WEB-INF/view/common/lnbMenu.jsp"></jsp:include> <!--// lnb 영역 -->
+						<!-- lnb 영역 --> <jsp:include page="/WEB-INF/view/common/lnbMenu.jsp"></jsp:include> <!--// lnb 영역 -->
 					</li>
 					<li class="contents">
 						<!-- contents -->
@@ -485,9 +450,7 @@ function fn_deleteNotice() {
 						<div class="content">
 
 							<p class="Location">
-								<a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a>
-								<span class="btn_nav bold">시스템관리</span> <span
-									class="btn_nav bold">공지사항</span>
+								<a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a> <span class="btn_nav bold">시스템관리</span> <span class="btn_nav bold">공지사항</span>
 							</p>
 
 							<p class="conTitle">
@@ -496,33 +459,33 @@ function fn_deleteNotice() {
 
 
 
-							<div
-								style="float: right; witdh: 100%; margin-top: 10px; margin-bottom: 30px;">
+							<div style="float: right; witdh: 100%; margin-top: 10px; margin-bottom: 30px;">
 								<c:set var="nullNum" value=""></c:set>
-								<a href="javascript:fn_writemodal(${nullNum});"
-									class="btnType blue" id="write_btn" name="modal"><span>신규
-										작성</span></a>
+								<a href="javascript:fn_writemodal(${nullNum});" class="btnType blue" id="write_btn" name="modal"><span>신규 작성</span></a>
 							</div>
 
 
 							<!--검색창  -->
 
-							<table
-								style="clear: both; width: 100%; cellpadding: 5; cellspacing =: 0; border: 1; text-align: center; collapse; border: 1px #50bcdf;">
+							<table style="clear: both; width: 100%; cellpadding: 5; cellspacing =: 0; border: 1; text-align: center; collapse; border: 1px #50bcdf;">
 								<tr style="border: 0px; border-color: blue;">
-									<td><select name="search_option" id="search_option">
+									<td>
+										<select name="search_option" id="search_option">
 											<option value="" selected>선택</option>
 											<option value="search_title">제목</option>
 											<option value="search_name">작성자</option>
-									</select></td>
+										</select>
+									</td>
 									<td>날짜</td>
-									<td><input type="date" id="from_date"
-										onchange="fn_dateset(this)"> <input type="date"
-										id="to_date" onchange="fn_dateset(this)"></td>
-									<td><input style="width: 300px; height: 25px;"
-										id="search_text" name=""></td>
-									<td><a href="" class="btnType blue" id="search_btn"
-										name="btn"><span>검색</span></a></td>
+									<td>
+										<input type="date" id="from_date" onchange="fn_dateset(this)"> <input type="date" id="to_date" onchange="fn_dateset(this)">
+									</td>
+									<td>
+										<input style="width: 300px; height: 25px;" id="search_text" name="">
+									</td>
+									<td>
+										<a href="" class="btnType blue" id="search_btn" name="btn"><span>검색</span></a>
+									</td>
 								</tr>
 							</table>
 							<!--검색창  -->
@@ -569,8 +532,7 @@ function fn_deleteNotice() {
 
 						</div> <!--// content -->
 
-						<h3 class="hidden">풋터 영역</h3> <jsp:include
-							page="/WEB-INF/view/common/footer.jsp"></jsp:include>
+						<h3 class="hidden">풋터 영역</h3> <jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
 					</li>
 				</ul>
 			</div>
@@ -596,17 +558,20 @@ function fn_deleteNotice() {
 						<tbody>
 							<tr>
 								<th scope="row">작성자 <span class="font_red">*</span></th>
-								<td colspan="3"><input type="text" class="inputTxt p200"
-									name="writer" id="modal_id"></input></td>
+								<td colspan="3">
+									<input type="text" class="inputTxt p200" name="writer" id="modal_id"></input>
+								</td>
 							</tr>
 							<tr>
 								<th scope="row">제목 <span class="font_red">*</span></th>
-								<td colspan="3"><textarea id="modal_title" name="title"></textarea>
+								<td colspan="3">
+									<textarea id="modal_title" name="title"></textarea>
 								</td>
 							</tr>
 							<tr>
 								<th scope="row">내용 <span class="font_red">*</span></th>
-								<td colspan="3"><textarea id="modal_cont" name="cont"></textarea>
+								<td colspan="3">
+									<textarea id="modal_cont" name="cont"></textarea>
 								</td>
 							</tr>
 						</tbody>
@@ -615,11 +580,7 @@ function fn_deleteNotice() {
 					<!-- e : 여기에 내용입력 -->
 
 					<div class="btn_areaC mt30">
-						<a href="" class="btnType blue" id="btnSave" name="btn"><span>저장</span></a>
-						<a href="" class="btnType blue" id="btnUpdate" name="btn"
-							style="display: none"><span>수정</span></a> <a href=""
-							class="btnType blue" id="btnDelete" name="btn"><span>삭제</span></a>
-						<a href="" class="btnType gray" id="btnClose" name="btn"><span>취소</span></a>
+						<a href="" class="btnType blue" id="btnSave" name="btn"><span>저장</span></a> <a href="" class="btnType blue" id="btnUpdate" name="btn" style="display: none"><span>수정</span></a> <a href="" class="btnType blue" id="btnDelete" name="btn"><span>삭제</span></a> <a href="" class="btnType gray" id="btnClose" name="btn"><span>취소</span></a>
 					</div>
 				</dd>
 			</dl>

@@ -132,11 +132,13 @@ function checkNotCheckBox(arr) {
  */
 function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc, exParams, exParams2)
 {	
+	
+	//alert(typeof(totalCount)+ " " + typeof(pageRow)+ " " + typeof(blockPage))	//결과 String, number, number
+	
 	totalCount = parseInt(totalCount);
 	pageRow = parseInt(pageRow);
 	blockPage = parseInt(blockPage);
 	
-			
 	
 	var totalPage = Math.ceil(totalCount / pageRow);
 	if (totalPage == 0) {
@@ -152,11 +154,15 @@ function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc
 	var startCount = (currentPage - 1) * pageRow;
 	var endCount = startCount + pageRow;
 
-	
+	//alert("currentPage : " + currentPage + "/ startCount : " + startCount + "/ endCount " + endCount)
 	
 	// 시작 페이지와 마지막 페이지 값 구하기.
 	startPage = Math.floor((currentPage - 1) / blockPage) * blockPage + 1;
 	endPage = startPage + blockPage - 1;
+	
+	//alert("startPage : " +  startPage + " endPage : " + endPage)
+	
+	
 
 	// 마지막 페이지가 전체 페이지 수보다 크면 전체 페이지 수로 설정
 	if (endPage > totalPage) {
@@ -166,10 +172,16 @@ function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc
 	//alert("endPage: " + endPage); endPage 확인
 	
 	// 추가 파라미터가 있는 경우 함수 호출 파라미터로 적용
+	
+	if(exParams2 != undefined)// 업글버전. 성공!!! 이래서 배열을 쓴거구나!!!
+		exParams.push(exParams2)
+	
+//	alert("exParams : " + exParams)
+		
 	var sExParam = exParams==undefined ? "" : ",\"" + exParams.join("\",\"") + "\"";
 	
-	if(exParams2 != undefined)
-		sExParam = ",\"" + exParams.join("\",\"") + "\""+ ",\"" + exParams2.join("\",\"") + "\""; //추가 인자 적용하기위해서 추가함.
+//	if(exParams2 != undefined)
+//		sExParam = ",\"" + exParams.join("\",\"") + "\""+ ",\"" + exParams2.join("\",\"") + "\""; //추가 인자 적용하기위해서 추가함. 처음 배열 join 기법을 생각 못함.
 	
 	
 	var pagingHtml = "<div class='paging'>";

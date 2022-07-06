@@ -47,7 +47,10 @@
   </div>
   <div class="login">
     <img src="/images/admin/comm/left_myImg.jpg" class="LoginImg" alt="사진" />
-    <span class="LoginName">${sessionScope.userNm}</span>
+    <span class="LoginName">${sessionScope.userNm} [${sessionScope.deptName}]</span>
+    <span class="loginId">${sessionScope.loginId}</span>
+    <span class="userType">${sessionScope.userType}</span>
+    <span class="userType"></span>
     <div class="btn_loginArea">
       <a href="#" onclick="fLogOut();" class="logout">LOGOUT</a>
     </div>

@@ -158,6 +158,7 @@
 			  , memo = #{memo}
 			  </if>
 			  , rest_yn = #{rest_yn}
+			  , abs_date = #{abs_date}
 			  , dept_cd =  #{dept_cd}
 			  , nat_ps = Round((#{year_salary} DIV 12)*#{natpsV}, -1)
 			  , h_insure = Round((#{year_salary} DIV 12)*#{hinsureV}, -1)
@@ -165,6 +166,7 @@
 			  , e_insure = Round((#{year_salary} DIV 12)*#{einsureV}, -1)
 			  , income_tax = Round((#{year_salary} DIV 12)*#{incometaxV}, -1)
 			  , poscd = #{poscd}
+			  
 		WHERE
 			loginID = #{loginID}
 	</update>
@@ -178,8 +180,9 @@
 	  		 , pc.detail_name AS 'POScd'
 	  		 , DATE_FORMAT(entry_date, '%Y-%m-%d') AS "entry_date"
 	  		 , DATE_FORMAT(emp.retire_date, '%Y-%m-%d') AS "retire_date"
+	  		 , DATE_FORMAT(emp.abs_date, '%Y-%m-%d') AS "abs_date"
 	  		 , emp.out_yn
-	  		 , emp.rest_yn
+	  		 , emp.rest_yn	  		 
 	  		 , CASE
                   WHEN DATE_FORMAT(emp.entry_date,'%Y%m') = DATE_FORMAT(DATE_SUB(curdate(),INTERVAL 1 month),'%Y%m')
                   		THEN 'B'
@@ -240,12 +243,13 @@
 			ORDER BY emp.retire_date DESC
 		</if>
 		
-		
-		
-		
+			
 		<if test ="(pageIndex != null) and (!pageIndex.equals('')) || (pageSize != null) and (!pageSize.equals(''))">
 			LIMIT #{pageIndex}, #{pageSize}
 		</if>
+
+
+		
 	</select>
 	
 	<!-- 사원 리스트 총 글 수 조회 -->
@@ -304,7 +308,7 @@
 	
 	<!-- 사원 상세조회 -->
 	<select id = "viewEmpDtl" resultType="kr.happyjob.study.employee.model.EmployeeModel">
-		SELECT ui.loginID, ui.user_type, ui.name, ui.tel, ui.sex, ui.mail, ui.zip_code, ui.addr, ui.addr_detail, ui.bank, ui.account,
+		SELECT ui.loginID, ui.user_type, ui.name, ui.tel, ui.sex, ui.mail, ui.zip_code, ui.addr, ui.addr_detail, ui.bank, ui.account,emp.abs_date,
 				emp.regno, emp.birthday, emp.school, DATE_FORMAT(entry_date, '%Y-%m-%d') AS "entry_date", DATE_FORMAT(emp.retire_date, '%Y-%m-%d') AS "retire_date", 
 				emp.year_salary, TRUNCATE((year_salary DIV 12)*(ROUND(DATEDIFF(now(),entry_date) / 365)), -1) AS 'oamt', emp.memo, emp.out_yn, emp.rest_yn, emp.filename, emp.filepath, emp.dept_cd, emp.poscd, emp.retire_note, 
 				CASE

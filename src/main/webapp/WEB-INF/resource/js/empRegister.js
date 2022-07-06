@@ -1,6 +1,10 @@
 /* 사원 등록 / 수정 Validation JS */
 //사원 등록 모달 팝업
 function fPopModalEmpMgt(){
+	
+	
+	$("#maybe").text("사원 등록");
+	
 	// 공통코드 comcombo 사용방법 -> Group Code, Combo Name, Option("all" : 전체 / "sel" : 선택 , Select Value ) 사원등록 모달창
 	comcombo("EDUcd", "school", "sel", "0"); //최종학력
 	comcombo("BKcd", "bank", "sel", "0"); //은행계좌
@@ -26,6 +30,7 @@ function fPopModalEmpMgt(){
 			alert("에러남 : "+err);
 		}
 	});
+	
 	gfModalPop('#layer1'); //사원등록 모달 팝업창 열기
 	empRegisterInit();
 	
@@ -84,7 +89,7 @@ function fPopModalEmpMgt(){
 
 //사원 등록 폼 초기화 -> 나중에 신규등록인지 수정인지 확인해서 init하는거 바꿔줘야함. 참고 jsp. std/learnmng/submittedWork.jsp
 function empRegisterInit(object){
-	if( object == "" || object == null || object == undefined) {
+	if( object == "" || object == null || object == undefined) { //받아온 정보 깡통 일 때
 		$('#action').val("I");
 		empDtlDisabled();
 		$('#name').val(""); $('#regno').val("");
@@ -96,7 +101,7 @@ function empRegisterInit(object){
 		$("#dept_cd option:eq(0)").prop("selected", true); $("#user_type option:eq(0)").prop("selected", true);
 		$("#poscd option:eq(0)").prop("selected", true); $('input:radio[name="rest_yn"]').removeAttr("checked");
 		$('input:radio[name="out_yn"]').removeAttr("checked");
-		$('#workyear').val(""); $('#retire_date').val(""); $('#entry_date').val(""); 
+		$('#workyear').val(""); $('#retire_date').val(""); $('#entry_date').val(""); $('#abs_date').val(""); //휴직일초기화 추가
 		$('#oamt').val(""); $('#retire_note').val("");
 		$('#year_salary').val(""); $('#memo').val("");
 		$('#btnEmpRegister > span').text("저장");
@@ -109,6 +114,7 @@ function empRegisterInit(object){
 		
 		$('#profilePreview').empty();
 		$('#btnDeleteEmp').show();
+		
 		if(object.empDtl.out_yn == 'n'){ //재직자일 경우
 			tmpEmpStatus = 'n';
 			$('#action').val("U");
@@ -148,6 +154,12 @@ function empRegisterInit(object){
 			$('#memo').val(object.empDtl.memo);
 			$('#oamt').val(object.empDtl.oamt); $('#retire_note').val(object.empDtl.retire_note);
 			
+			if(object.empDtl.rest_yn == 'y'){ //휴직일 추가
+				$('#abs_date').val(object.empDtl.abs_date); //휴직일자 
+				//$('#retire_date').val(object.empDtl.retire_date);
+			}
+			
+		
 		}else { //퇴직자
 			
 			tmpEmpStatus = 'y';
@@ -183,6 +195,7 @@ function empRegisterInit(object){
 			$('#addr_detail').val(object.empDtl.addr_detail);
 			$('#account').val(object.empDtl.account);
 			$('#entry_date').val(object.empDtl.entry_date);
+			
 			$('#retire_date').val(object.empDtl.retire_date);
 			//재직구분
 			$('input:radio[name=rest_yn]').prop("checked" , false);
@@ -194,6 +207,8 @@ function empRegisterInit(object){
 			$('#retire_note').text(object.empDtl.retire_note);
 		}//else(퇴직자)
 	}//else(수정 시 기존정보)
+	
+	//alert("되고있나?" + ('#retire_note').val())
 }
 //상세정보 disabled 처리 함수
 function empDtlDisabled(tmpEmpStatus){
@@ -335,6 +350,8 @@ function execDaumPostcode(q) {
 		q : q
 	});
 }//사원 등록 -> 우편번호찾기 method 끝
+
+
 
 //사원등록 -> 호봉 팝업 호출
 function payStep(){
@@ -540,13 +557,14 @@ function validateEmp(){
 		});
 		return false;
 	}
-	
+
 	return true;
 	
 }
 
 //사원등록 저장
 function empRegister(){
+	//var empRegisterForm = document.getElementById("empRegister");
 	var empRegisterForm = document.getElementById("empRegister");
 	if(!validateEmp()){
 		return;

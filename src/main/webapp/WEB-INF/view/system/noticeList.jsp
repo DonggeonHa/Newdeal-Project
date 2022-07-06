@@ -16,7 +16,7 @@
 				<td>${list.no}</td>
 				<td><a href="javascript:fn_writemodal('${list.no}');">${list.title}</a></td>
 				<td>${list.loginID}</td>
-				<td>${list.date}</td>
+				<td>${list.regdate}</td>
 			</tr>
 		</c:forEach>
 	</c:if>

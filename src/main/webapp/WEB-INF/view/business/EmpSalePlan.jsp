@@ -76,15 +76,15 @@ var pageBlockSizeSalePlan = 5;
 			e.preventDefault();
 
 			var btnIdPaln = $(this).attr('id'); // id값 들어오면 변수에 넣어준다 
-
+			
 			switch (btnIdPaln) {
-				case 'btnUpdatePaln' : // 신규등록 , 수정사항 저장
+				case 'btnUpdatePlan' : // 신규등록 , 수정사항 저장
 					pSavePlan();
 					break;
 				case 'btnDeletePaln' : // 삭제 
 					pDeletePlan();
 					break;
-				case 'btnSearchPaln': // 검색 
+				case 'btnSearchPlan': // 검색 
 					pSearchPlan();
 					break;
 				case 'btnClosePaln' : // 모달 닫기 함수 [나는 하나로 썼음 ]
@@ -98,13 +98,13 @@ var pageBlockSizeSalePlan = 5;
 
 	   /*  1.  모달 :  모달 실행 */
 	   function PlanModal1(sales_pro_seq){
-	      
+		   console.log("action1 값");
 	      // 신규 저장
 	      if (sales_pro_seq == null || sales_pro_seq =="") {
-	      
+	       	 
 	         // Tranjection type 설정
 	         $("#action").val("I");
-	         
+	         console.log("action1 값? "+ $("#action").val());
 	         
 	         //모달창 수정쪽  초기화 - 데이터 없음ㅡIF문 타고 신규등록으로감
 	         pInitForm();
@@ -117,7 +117,7 @@ var pageBlockSizeSalePlan = 5;
 	         
 	         // Tranjection type 설정
 	         $("#action").val("U");
-	         
+	         console.log("action2 값? "+ $("#action").val());
 	         // 그룹코드 단건 조회 
 	         planOne(sales_pro_seq);   
 	      }
@@ -128,11 +128,8 @@ var pageBlockSizeSalePlan = 5;
 
 /*  2 .단건조회 등등  모달창 값 초기화  */
 	function pInitForm(data) {
-	   
-	   
+	  
 		$("#planCnt").focus();
-		 
-	
 	
 		//2 - 1 신규등록	일 때
 		if( data == "" || data == null || data == undefined) {
@@ -189,23 +186,24 @@ var pageBlockSizeSalePlan = 5;
 
 
 			//2 - 2 단건조회 수정 모달창 
+			var object = data.planpart;
+			console.log("잘 들어 갔나?" + data.planpart.sales_pro_seq);
+			$("#sales_pro_seq").val(object.sales_pro_seq);
+ 			$("#client_search1").val(object.client_nm); // data.실제컬럼이름
 			
-			$("#sales_pro_seq").val(data.sales_pro_seq);
- 			$("#client_search1").val(data.client_nm); // data.실제컬럼이름
+   
 			
 
-			
-
-			$("#memo").val(data.memo);
+			$("#memo").val(object.memo);
 			
 
 			
 
 		
-
-		 	$("#scm_middle_class1").val(data.small_classifi); // data.실제컬럼이름
-		 	$("#product_cd1").val(data.product_nm); // data.실제컬럼이름
-		 	$("#goal_amt").val(data.goal_amt); // data.실제컬럼이름
+			$("#scm_big_class1").val(object.l_ct_cd);
+		 	$("#scm_middle_class1").val(object.small_classifi); // data.실제컬럼이름
+		 	$("#product_cd1").val(object.product_nm); // data.실제컬럼이름
+		 	$("#goal_amt").val(object.goal_amt); // data.실제컬럼이름
 
 
 			
@@ -331,7 +329,7 @@ var pageBlockSizeSalePlan = 5;
 	
 	/**  4-2 단건 조회 콜백 함수*/
 	function planOneResult(data) {
-		
+		console.log("data result : "+ JSON.stringify(data.result));
 		if (data.result == "SUCCESS") {
 
 			// $("#cnt").val(data.bizpart.cnt);
@@ -379,19 +377,20 @@ var pageBlockSizeSalePlan = 5;
 	 
 	 
 	 /*  신규 등록 및 저장  */
-	 function pUpdatePlan(){
+	 function pSavePlan(){
 		 
-		 alert("저장 함수 타는지!!!!!?? ");
+		 //alert("저장 함수 타는지!!!!!?? ");
 		 
 		 
 		 // validation 체크 
-		 if(!(pValidatePopup())){ return; }
+		 //if(!(pValidatePopup())){ return; }
 		 
 		 var resultCallback = function(data){
-			 
+			 console.log("확인 2");
 			 pSaveResult(data); // 저장 콜백 함수 
 		 };
 		 
+		 console.log("확인 1");
 		//폼이름 =>$("#myNotice").serialize() => 직렬화해서 name 값들을 그냥 넘김.
 		 callAjax("/business/updatePlanList.do", "post", "json", true, $("#salesForm1").serialize(), resultCallback);
 	 	
@@ -400,12 +399,17 @@ var pageBlockSizeSalePlan = 5;
 
 	 /*  단건 삭제 */
 	 function pDeletePlan(){
+		 console.log("왔나??");
 		 var con = confirm("정말 삭제하겠습니까? \n 삭제시 복구불가합니다."); 
 		 if(con){
+			 
+			 param = {
+					 sales_pro_seq : $("#sales_pro_seq").val()
+			 }
 			 var resultCallback = function(data){
-				 bSaveBizResult(data); // 삭제한걸 저장
+				 pSaveResult(data); // 삭제한걸 저장
 			 }																				 	// serialize => 함수를 json형태로 정렬한다 
-			 callAjax("/business/deletePlanList.do", "post", "json", true, $("#bizForm").serialize(), resultCallback);
+			 callAjax("/business/deletePlanList.do", "post", "json", true, param, resultCallback);
 		
 		 }else{
 			 gfCloseModal();	// 모달 닫기
@@ -417,115 +421,116 @@ var pageBlockSizeSalePlan = 5;
 	 
 	 
 	 
-		/*  [저장 & 수정  함수 콜백 함수 */
-		 function  pSaveResult(data){
-
-			 var currentPage = currentPage || 1; 
-		
-			 if($("#action").val() != "I"){
-				 currentPage = $("#currentPage").val();	
-				 sales_pro_seq =  $('sales_pro_seq').val();
-				 
-			 }
-
-			 if(data.resultMsg == "SUCCESS"){
-				
-				 alert(data.resultMsg);	// 받은 메세지 출력 
-				 alert("저장 되었습니다.");
-				 
-			 }else if(data.resultMsg == "UPDATED") {
-				 alert("수정 되었습니다.");
-				 
-			 }else if(data.resultMsg == "DELETED") {
-				 alert("삭제 되었습니다.");
-				 
-			 }else{
-				 alert(data.resultMsg); //실패시 이거 탄다. 
-
-			 }
-
-			 gfCloseModal();	// 모달 닫기
-			 planList(currentPage); // 목록조회 함수 다시 출력 
-			 pInitForm();// 입력폼 초기화
+	/*  [저장 & 수정  함수 콜백 함수 */
+	 function  pSaveResult(data){
+		 console.log("확인 3");
+		 var currentPage = currentPage || 1; 
+	
+		 
+		 if($("#action").val() != "I"){
+			 currentPage = $("#currentPage").val();	
+			 sales_pro_seq =  $('sales_pro_seq').val();
+			 
 		 }
-		
-	 
-	 
-	 
-	 //검색구현
-		function pSearchPlan(currentPage) {
-		 
-		 
-		 /* 달력=>datepicker 사용했음 
-		 document.ready에서 		
-		$('#from_date').datepicker();
-		$('#to_date').datepicker();  작성 후 검색구현 함수에서 값 가져오기  */
+
+		 if(data.resultMsg == "SUCCESS"){
 			
-		currentPage = currentPage || 1;
+			 alert(data.resultMsg);	// 받은 메세지 출력 
+			 alert("저장 되었습니다.");
+			 
+		 }else if(data.resultMsg == "UPDATED") {
+			 alert("수정 되었습니다.");
+			 
+		 }else if(data.resultMsg == "DELETED") {
+			 alert("삭제 되었습니다.");
+			 
+		 }else{
+			 alert(data.resultMsg); //실패시 이거 탄다. 
+
+		 }
+
+		 gfCloseModal();	// 모달 닫기
+		 planList(currentPage); // 목록조회 함수 다시 출력 
+		 pInitForm();// 입력폼 초기화
+	 }
 	
+	 
+	 
+	 
+ 	//검색구현
+	function pSearchPlan(currentPage) {
+	 
+	 
+	 /* 달력=>datepicker 사용했음 
+	 document.ready에서 		
+	$('#from_date').datepicker();
+	$('#to_date').datepicker();  작성 후 검색구현 함수에서 값 가져오기  */
 		
+	currentPage = currentPage || 1;
+
 	
+
+	
+	// 거래처 넘기기 
+	var client_search =   $("#client_search").val();
+
+	
+		// 날짜 1
+		var to_date = $("#to_date").val();
+		// 날짜 2
+		var from_date = $("#from_date").val();
 		
-		// 거래처 넘기기 
-		var client_search =   $("#client_search").val();
+		console.log('to_date' , to_date);
+		console.log('from_date' , from_date);
+
+
+		// 값 내용물 
+		console.log("from_date : " + from_date.valueOf());     
+		console.log("to_date : " + to_date.valueOf());     
+		
+		
+		console.log('client_search ' ,   client_search);
+
 
 		
-			// 날짜 1
-			var to_date = $("#to_date").val();
-			// 날짜 2
-			var from_date = $("#from_date").val();
-			
-			console.log('to_date' , to_date);
-			console.log('from_date' , from_date);
+        var param = {
+        			client_search : client_search
+              ,    currentPage : currentPage //컨트롤러로 넘어가는 데이터들
+              ,    pageSize : pageSizeSalePlan //컨트롤러로 넘어가는 데이터들
+              ,    from_date : from_date //컨트롤러로 넘어가는 데이터들
+              ,    to_date : to_date //컨트롤러로 넘어가는 데이터들
+        }
+	     console.log(" param : " ,param);
+		 console.log("param.valueOf()",  param.valueOf());
+		
+		var resultCallback = function(data) {
+			console.log("=======resultCallback========");
+		
+			//목록 조회 결과 
+			planListResult(data,currentPage);
+			console.log(" 검색 조회결과 data ",data);
+		};
+		
+		
+		// 목록조회에 던져준다.
+		/*  순서 주의 :  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터,, 비동기? 동기,     돌려 줄 함수  */
+		callAjax("/business/planList.do", "post", "text",  true,param, resultCallback); //text
 
-
-			// 값 내용물 
-			console.log("from_date : " + from_date.valueOf());     
-			console.log("to_date : " + to_date.valueOf());     
-			
-			
-			console.log('client_search ' ,   client_search);
-
-
-			
-	        var param = {
-	        			client_search : client_search
-	              ,    currentPage : currentPage //컨트롤러로 넘어가는 데이터들
-	              ,    pageSize : pageSizeSalePlan //컨트롤러로 넘어가는 데이터들
-	              ,    from_date : from_date //컨트롤러로 넘어가는 데이터들
-	              ,    to_date : to_date //컨트롤러로 넘어가는 데이터들
-	        }
-		     console.log(" param : " ,param);
-			 console.log("param.valueOf()",  param.valueOf());
-			
-			var resultCallback = function(data) {
-				console.log("=======resultCallback========");
-			
-				//목록 조회 결과 
-				planListResult(data,currentPage);
-				console.log(" 검색 조회결과 data ",data);
-			};
-			
-			
-			// 목록조회에 던져준다.
-			/*  순서 주의 :  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터,, 비동기? 동기,     돌려 줄 함수  */
-			callAjax("/business/planList.do", "post", "text",  true,param, resultCallback); //text
-
-	        
+        
 	  } 
 		
-		// scm 대분류,중분류,제품 콤보박스 
-       function selectmidcat(){
-         var largecd = $("#scm_big_class").val();
-         productCombo("m", "scm_middle_class", "all", largecd);   // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))  
+	  // scm 대분류,중분류,제품 콤보박스 
+      function selectmidcat(){
+        var largecd = $("#scm_big_class").val();
+        productCombo("m", "scm_middle_class", "all", largecd);   // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))  
 
-         $("#scm_middle_class").find("option").remove();
-         $("#scm_product").find("option").remove();
-       } 
-       function selectproductlistcombo(){
-         var margecd = $("#scm_middle_class").val();
-         productCombo("p", "product_cd", "all", margecd);   // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))  
-       }
+        $("#scm_middle_class").find("option").remove();
+        $("#scm_product").find("option").remove();
+      } 
+      function selectproductlistcombo(){
+        var margecd = $("#scm_middle_class").val();
+        productCombo("p", "product_cd", "all", margecd);   // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))  
+      }
 	 
 		// scm 대분류,중분류,제품 콤보박스 
        function selectmidcat1(){
@@ -701,7 +706,10 @@ var pageBlockSizeSalePlan = 5;
 		                  <tr>
 					
 							 <!-- 목록조회 외에 UPDATE, INSERT , DELETE 등을 위해 필요함  hidden 값  // INT가 아닌것도 있음  -->
-							  <td hidden=""><input type="text" class="inputTxt p100" name="estimate_no" id="estimate_no" /></td> 
+							  <td hidden="">
+							  	<input type="text" class="inputTxt p100" name="estimate_no" id="estimate_no" />
+							  	<input type="text" class="inputTxt p100" name="sales_pro_seq" id="sales_pro_seq" />
+							  </td> 
 		     
 		                     <th scope="row">거래처 이름<span class="font_red">*</span></th>
 		                     <td hidden=""><input type="hidden" id="client_nm"></td>
@@ -736,8 +744,9 @@ var pageBlockSizeSalePlan = 5;
 			               </tbody>
 			            </table>
 			            <div class="btn_areaC mt30">
-			               <a href="" class="btnType blue" id="btnUpdatePlan" name="btnUpdatePlan"><span>등록</span></a> 	
-			               <a href=""   class="btnType gray"  id="btnClosePlan" name="btn"><span>취소</span></a>
+			               <a href="" class="btnType blue" id="btnUpdatePlan" name="btn"><span>등록</span></a>
+			               <a href="" class="btnType blue" id="btnDeletePaln" name="btn"><span>삭제</span></a> 
+			               <a href=""   class="btnType gray"  id="btnClosePaln" name="btn"><span>취소</span></a>
 			            </div>
 			         </dd>
 			      </dl>

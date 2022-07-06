@@ -47,6 +47,7 @@ public class NoticeController {
 		logger.info("로그인아이디는 "+loginID);
 		logger.info("   - paramMap : " + paramMap);
 		logger.info("+ End " + className + ".notice");
+		logger.info("+ End " + className + ".notice");
 
 		return "system/notice";
 	}
@@ -58,8 +59,6 @@ public class NoticeController {
 			HttpServletResponse response, HttpSession session) throws Exception {
 
 		logger.info("+ Start " + className + ".noticeList");
-		logger.info("   - paramMap : " + paramMap);
-
 		
 
 		int pagenum = Integer.parseInt((String) paramMap.get("pagenum"));
@@ -72,34 +71,26 @@ public class NoticeController {
 		
 		paramMap.put("pagesize", pagesize);
 		paramMap.put("pageindex", pageindex);
-	
 		
-		
-		
+			
 		if( to_date == "" && from_date != ""){//from만 입력했을 시 
 			to_date = today;
 		}
-		if (to_date != "" && from_date == "") {//to만 입력했을
+		if (to_date != "" && from_date == "") {//to만 입력했을 시 
 			from_date = "0001-01-01";
 		}
-		if(to_date == "" && from_date == "") {
+		if(to_date == "" && from_date == "") { // 둘다 입력 받지 않을 시 
 			to_date = today;
 			from_date = "0001-01-01";
 		}
-		
-		
-		
-		logger.info("   - toDate : " + to_date);
-		logger.info("   - fromDate : " + from_date);
-		logger.info("   - today : " + today);
 		
 		paramMap.put("toDate", to_date);
 		paramMap.put("fromDate", from_date);
 		
+		logger.info("   - paramMap : " + paramMap);
 		
 		List<NoticeModel> result_list = noticeService.noticeList(paramMap);
 		
-
 
 		model.addAttribute("result", result_list);
 		
@@ -129,17 +120,12 @@ public class NoticeController {
 		
 		Map<String,Object>resultvalue = new HashMap<String,Object>();
 		
-
-		
-
 		NoticeModel result = noticeService.noticeSelectOne(paramMap);
 		
 		if(result != null) {
 			resultvalue.put("resultdata", "SUCCESS");
 		}
-		logger.info(" 성공? " +resultvalue.get("result"));
 				
-		
 		resultvalue.put("result",result);
 		
 		resultvalue.put("writer", paramMap.get("writer"));
@@ -173,8 +159,8 @@ public class NoticeController {
 		
 	/* string의 action.equals("I") 는 위험한 코딩임 action이 null이면 error 
 	  
-	 	"I".equals(action)을 추
-	 * */	
+	 	"I".equals(action)을 추천 
+	  */	
 		Map<String,Object>resultvalue = new HashMap<String,Object>();
 		
 		
@@ -192,25 +178,24 @@ public class NoticeController {
 			
 			noticeService.saveInsert(paramMap);
 			resultvalue.put("result", "SUCCESS");
+			logger.info(" 등록 " + className + "SUCCESS");
 			
 		}
 		else if ("U".equals(action)) {//수정일 때 
-			
-			logger.info("+수정  " + className + ".UPDATE");
 
 			
 			noticeService.saveUpdate(paramMap);
 			resultvalue.put("result", "UPDATED");
 			
-			logger.info("+수정  " + className + ".UPDATE");
+			logger.info("+수정  " + className + ".UPDATED");
 			
 		}else if ("D".equals(action)) {
-			
-			logger.info("+ 삭제  " + className + ".DELETE");
 
-			
 			noticeService.deleteNotice(paramMap);
-			resultvalue.put("result", "DELETE");
+			
+			resultvalue.put("result", "DELETED");
+			
+			logger.info("+ 삭제  " + className + ".DELETED");
 		}
 		
 	

@@ -19,7 +19,6 @@
 	            ,a.memo
 	            ,a.product_cd
 				,e.product_nm
-	
 	            ,a.sales_reg_date
 
 	            ,c.client_nm
@@ -48,15 +47,15 @@
              AND a.client_cd like #{client_search}
          </if>
          <if test="(from_date != null) and (! from_date.equals(''))">
-  			AND a.sales_reg_date  <![CDATA[>=]]> STR_TO_DATE(#{from_date}, '%Y-%m-%d')   
+  			AND a.sales_reg_date  <![CDATA[>=]]> STR_TO_DATE(#{from_date}, '%Y.%m.%d')   
          </if>
          <if test="(to_date != null) and (!to_date.equals(''))">
-           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
+           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y.%m.%d')   
          </if>         
          
       </where>
 
-		ORDER BY a.sales_pro_seq
+		ORDER BY a.sales_reg_date DESC 
 		LIMIT #{pageIndex}, #{pageSize}
 	</select>
 	
@@ -84,21 +83,22 @@
              AND a.client_cd like #{client_search} 	<!-- 카운트값 매칭 -->
          </if>
          <if test="(from_date != null) and (! from_date.equals(''))">
-  			AND a.sales_reg_date =#{scm_big_class}
+         	AND a.sales_reg_date  <![CDATA[>=]]> STR_TO_DATE(#{from_date}, '%Y.%m.%d')   
+  			
          </if>
          <if test="(to_date != null) and (!to_date.equals(''))">
-           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
+           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y.%m.%d')   
          </if>         
          
-           <if test="(to_date != null) and (!to_date.equals(''))">
-           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
+      	<if test="(to_date != null) and (!to_date.equals(''))">
+           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y.%m.%d')   
          </if>    
            <if test="(to_date != null) and (!to_date.equals(''))">
-           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
+           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y.%m.%d')   
          </if>    
            <if test="(to_date != null) and (!to_date.equals(''))">
-           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y-%m-%d')   
-         </if>    
+           AND a.sales_reg_date  <![CDATA[<=]]> STR_TO_DATE(#{to_date}, '%Y.%m.%d')   
+         </if>     
          
          </where>
 
@@ -110,7 +110,6 @@
 	<!-- 단건조회  -->
 	<select id ="planListSelect" resultType ="kr.happyjob.study.business.model.EmpSalePlanModel" >
 	  SELECT
-	
 	             a.sales_pro_seq
 	            ,a.client_cd
 	            ,a.goal_amt
@@ -122,7 +121,7 @@
 	            ,a.sales_reg_date
 	            ,a.m_ct_cd
 	            ,c.client_nm
-	            ,ifnull(re.estimate_cnt,0) estimate_cnt  <!-- null일때 0으로 출력 -->
+	            ,IFNUll(re.estimate_cnt,0) estimate_cnt  <!-- null일때 0으로 출력 -->
 	            ,e.product_nm
 	
 	
@@ -148,7 +147,7 @@
 	<insert id="insertPlanList" >
 
         <selectKey resultType="string" keyProperty="sales_pro_seq" order="BEFORE">
-            SELECT MAX(sales_pro_seq AS UNSIGNED) + 1 
+            SELECT CAST(MAX(sales_pro_seq) AS UNSIGNED) +1
             FROM tb_sales_pro 
         </selectKey> 
 
@@ -168,17 +167,16 @@
 			)
 		VALUES
 		(
-			#{client_cd}
-			,#{goal_amt }
-			,#{large_classifi }
-			,#{loginID }
-			,#{manufacturer }
-			,#{memo }
-			,#{product_cd }
-			,#{sales_pro_seq }
-			,#{sales_reg_date }
-			,#{small_classifi}
-
+			#{client_search1}
+			,#{goal_amt}
+			,#{scm_big_class1}
+			,#{loginID}
+			,#{manufacturer}
+			,#{memo}
+			,#{product_cd1}
+			,#{sales_pro_seq}
+			,DATE_FORMAT(CURDATE(),'%Y%m%d')
+			,#{scm_middle_class1}
 
 		     )		
 	</insert>
@@ -186,24 +184,13 @@
 	<!-- 단건수정 -->
 	<update id="updatePlanList" >
 
-		UPDATE tb_sales_pro 
-		
-		SET  client_cd = #{client_cd}
+		 UPDATE tb_sales_pro 
+			SET	client_cd = #{client_search1}
 				,goal_amt = #{goal_amt}
-				,l_ct_cd = #{large_classifi}
-				,loginID = #{loginID}
-				,manufacturer = #{manufacturer}
-				,memo = #{memo}
-				,product_cd = #{product_cd}
-				,sales_pro_seq = #{sales_pro_seq}
-				,sales_reg_date = #{sales_reg_date}
-				,m_ct_cd = #{small_classifi}
-		       ,sales_pro_seq = #{sales_pro_seq}
-		       
-		       
-
-		WHERE  sales_pro_seq = #{sales_pro_seq}
-
+				,l_ct_cd = #{scm_big_class1}
+				,product_cd = #{product_cd1}
+				,m_ct_cd = #{scm_middle_class1}
+		 WHERE  sales_pro_seq = #{sales_pro_seq}
 	</update>
 	
 	<!-- 단건삭제 -->

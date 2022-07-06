@@ -8,6 +8,7 @@ public class EstimateProdVo {
     private int unitCost;           // 단가
     private int price;              // 공급가액
     private int tax;                // 부가세
+	private int sumAmount;			// 합계
 	private String ourDeadline;		// 납기일자
     
 	public String getEstimateNo() {
@@ -34,10 +35,7 @@ public class EstimateProdVo {
 	public String getOurDeadline() {
 		return ourDeadline;
 	}
-
-	@Override
-	public String toString() {
-		return "EstimateProd [estimateNo=" + estimateNo + ", clientCd=" + clientCd + ", productCd=" + productCd
-				+ ", estimateCnt=" + estimateCnt + ", unitCost=" + unitCost + ", price=" + price + ", tax=" + tax + "]";
+	public int getSumAmount() {
+		return sumAmount;
 	}
 }

@@ -26,17 +26,18 @@ public class NoticeModel {
 	public void setContents(String contents) {
 		this.contents = contents;
 	}
-	public String getDate() {
-		return date;
+	public String getRegdate() {
+		return regdate;
 	}
-	public void setDate(String date) {
-		this.date = date;
+	public void setRegdate(String regdate) {
+		this.regdate = regdate;
 	}
+	
 	private int no;
 	private String loginID;
 	private String title;
 	private String contents;
-	private String date;
+	private String regdate;
 	
 	
 

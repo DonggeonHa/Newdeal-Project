@@ -133,7 +133,8 @@ public class LoginController {
 	     session.setAttribute("loginId",lgnInfoModel.getLgn_id());                     //   로그인 ID
 	     session.setAttribute("userNm",lgnInfoModel.getUsr_nm());                  // 사용자 성명
 	     session.setAttribute("usrMnuAtrt", listUsrMnuAtrtModel);
-	     session.setAttribute("userType", lgnInfoModel.getMem_author());            // 로그린 사용자 권란       A: 관리자       B: 기업회원    C:일반회원
+	     session.setAttribute("userType", lgnInfoModel.getMem_author());   
+	     session.setAttribute("deptName", lgnInfoModel.getDept_name());// 로그 사용자 권란       A: 관리자       B: 기업회원    C:일반회원
 	     session.setAttribute("serverName", request.getServerName());
 	
 	     resultMap.put("loginId",lgnInfoModel.getLgn_id()); 

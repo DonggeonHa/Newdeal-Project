@@ -9,7 +9,7 @@
 		    	a.estimate_no estimateNo,
 				DATE_FORMAT(a.estimate_date,'%Y-%m-%d')  as estimateDate,
 				a.client_cd clientCd,
-				a.sum_total sumTotal,
+				a.supply_amount supplyAmount,
 				b.client_nm clientNm,
 				e.name,
 				e.mail,
@@ -89,7 +89,7 @@
 	<!-- !!! 견적서 테이블 +  견적서 제품 테이블 인서트 -->
 	<!-- 견적서테이블 -->
 	<insert id="insertEstList" >
-		<selectKey resultType="String" keyProperty="estimate_no" order="BEFORE">
+		<selectKey resultType="String" keyProperty="estimateNo" order="BEFORE">
 			SELECT
 					CONCAT(b.client_cd,'-',DATE_FORMAT(NOW(),'%Y-%m-%d'),
 					'-',
@@ -99,7 +99,7 @@
 			    	estimate_info a
 			INNER JOIN  tb_erp_client b ON a.client_cd = b.client_cd
 			WHERE
-			    	b.client_cd = #{client_search1}
+			    	b.client_cd = #{clientCd}
 	    </selectKey>
 	
 		INSERT INTO	estimate_info (
@@ -109,13 +109,55 @@
 		        loginID,
 		        remarks
 		) VALUES (
-				#{estimate_no},
-				#{client_search1},
+				#{estimateNo},
+				#{clientCd},
 				NOW(),
-		      	#{loginID},
+		      	#{loginId},
 		      	#{remarks}
 		);
 	</insert>
+
+	<select id="InsertEstimateInfo" resultType="kr.happyjob.study.business.vo.EstimateInfoVo" parameterType="hashmap">
+		SELECT
+		    	estimate_no estimateNo,
+		    	client_cd clientCd,
+		    	estimate_date estimateDate,
+		    	supply_val supplyVal,
+		    	supply_tax supplyTax,
+		    	supply_cost supplyCost,
+		    	loginID loginId,
+		    	sum_total sumTotal,
+		    	remarks
+		FROM
+		    	estimate_info
+		WHERE
+				estimate_no = (
+					SELECT max(estimate_no)  <!--  String타입이라도 마지막에 들어온 번호가 나옴 -->
+					FROM estimate_info
+					WHERE client_cd = #{clientCd}
+				)
+		AND
+				client_cd = #{clientCd}
+	</select>
+
+	<select id="UpdateEstimateInfo" resultType="kr.happyjob.study.business.vo.EstimateInfoVo" parameterType="hashmap">
+		SELECT
+				estimate_no estimateNo,
+				client_cd clientCd,
+				estimate_date estimateDate,
+				supply_val supplyVal,
+				supply_tax supplyTax,
+				supply_cost supplyCost,
+				loginID loginId,
+				sum_total sumTotal,
+				remarks
+		FROM
+				estimate_info
+		WHERE
+				estimate_no = #{estimateNo}
+		AND
+				client_cd = #{clientCd}
+	</select>
 
 	<select id="InsertTableSelect" resultType="kr.happyjob.study.business.dto.InsertTableSelectDto" parameterType="hashmap">
 		SELECT
@@ -133,11 +175,30 @@
 				estimate_no = (
 									SELECT max(estimate_no)  <!--  String타입이라도 마지막에 들어온 번호가 나옴 -->
 									FROM estimate_info
-									WHERE client_cd = #{client_search1}
+									WHERE client_cd = #{clientCd}
 							   )
 		AND
-				client_cd = #{client_search1}
+				a.client_cd = #{clientCd}
 	</select>
+
+	<select id="UpdateTableSelect" resultType="kr.happyjob.study.business.dto.InsertTableSelectDto" parameterType="hashmap">
+		SELECT
+				a.estimate_no estimateNo,
+				a.estimate_date estimateDate,
+				a.remarks,
+				b.client_cd clientCd,
+				b.client_nm clientNm,
+				b.emp_nm empNm,
+				b.tel
+		FROM
+				estimate_info a
+		INNER JOIN tb_erp_client b ON a.client_cd = b.client_cd
+		WHERE
+				estimate_no = #{estimateNo}
+		AND
+				a.client_cd = #{clientCd}
+	</select>
+
 	<!-- 견적서제품 테이블 인서트 -->
 	<insert id ="updateInsertEstList">
 		INSERT INTO estimate_prod (
@@ -148,52 +209,36 @@
 				unit_cost,
 				tax,
 				price,
+		        sum_amount,
 		        our_deadline
 		) VALUES(
-				(
-					SELECT max(estimate_no)  <!--  String타입이라도 마지막에 들어온 번호가 나옴 -->
-					FROM estimate_info
-					WHERE client_cd = #{client_search1}
-				),
-				#{client_search1},
+				#{estimateNo},
+				#{clientCd},
 				#{productCd},
 				#{estimateCnt},
-				(
-					SELECT b.price
-					FROM estimate_prod a
-					INNER JOIN tb_scm_product b ON a.product_cd = b.product_cd
-					WHERE
-					a.estimate_no = #{estimateNo}
-					AND
-					a.client_cd = #{clientCd}
-					AND
-					b.product_cd = #{productCd}
-				),
-				(
-					SELECT  (b.price * a.estimate_cnt) / 10
-					FROM estimate_prod a
-					INNER JOIN tb_scm_product b ON a.product_cd = b.product_cd
-					WHERE
-					a.estimate_no = #{estimateNo}
-					AND
-					a.client_cd = #{clientCd}
-					AND
-					b.product_cd = #{productCd}
-				),
-				(
-					SELECT  b.price * a.estimate_cnt
-					FROM estimate_prod a
-					INNER JOIN tb_scm_product b ON a.product_cd = b.product_cd
-					WHERE
-					a.estimate_no = #{estimateNo}
-					AND
-					a.client_cd = #{clientCd}
-				    AND
-				    b.product_cd = #{productCd}
-				),
+				#{unitCost},
+		        #{tax},
+		        #{price},
+		        #{sumAmount},
 		        #{ourDeadline}
 		)
 	</insert>
+
+	<select id="searchProductCd" resultType="int" parameterType="hashmap">
+		SELECT
+		    	price
+		FROM
+		    	tb_scm_product
+		WHERE
+		    	product_cd = #{productCd}
+	</select>
+
+	<delete id="deleteEstProd">
+		DELETE FROM estimate_prod
+		WHERE	estimate_no = #{estimateNo}
+		AND		client_cd = #{clientCd}
+		AND		product_cd = #{productCd}
+	</delete>
 	
 	<!-- 5.단건삭제 -->
 	<delete id="deleteEstList">
@@ -211,7 +256,8 @@
 				a.unit_cost unitCost,
 				a.product_cd productCd,
 				a.estimate_cnt estimateCnt,
-				a.our_deadline ourDeadline,
+				a.sum_amount sumAmount,
+				DATE_FORMAT(a.our_deadline,'%Y-%m-%d') as ourDeadline,
 				DATE_FORMAT(b.estimate_date,'%Y-%m-%d') as estimateDate,
 				c.client_nm clientNm,
 				d.product_nm productNm
@@ -225,6 +271,7 @@
 		    	a.estimate_no = #{estimateNo}
 		AND
 				a.client_cd = #{clientCd}
+		ORDER BY estimateDate
 	</select>
 	
 	<!-- 7.모달 안 리스트 뿌리기 카운트  -->
@@ -253,16 +300,53 @@
 		WHERE
 		    	user_type = 'D'
 		AND
-		    	loginID = ${value}
+		    	loginID = #{value}
 	</select>
 
 	<select id="searchClient" resultType="kr.happyjob.study.business.vo.ErpClientVo" parameterType="hashmap">
 		SELECT
+		    	client_cd clientCd,
 		    	emp_nm empNm,
 		    	emp_hp empHp
 		FROM
 		    	tb_erp_client
 		WHERE
-		    	client_cd = ${client_search1}
+		    	client_cd = #{clientCd}
 	</select>
+
+	<update id="estUpdateInfo" parameterType="hashmap">
+		UPDATE
+		    	estimate_info
+		SET
+		    	supply_val = REPLACE(#{supplyVal},',',''),
+		    	supply_tax = REPLACE(#{supplyTax},',',''),
+		    	supply_cost = REPLACE(#{supplyCost},',',''),
+		    	sum_total = REPLACE(#{sumTotal},',',''),
+		    	supply_amount = REPLACE(#{supplyAmount},',','')
+		WHERE
+		    	estimate_no = #{estimateNo}
+		AND
+		    	client_cd = #{clientCd}
+	</update>
+
+	<update id="estimateInfoUpdate" parameterType="hashmap">
+		UPDATE
+			estimate_info
+		SET
+			client_cd = #{clientCd},
+			remarks = #{remarks}
+		WHERE
+			estimate_no = #{estimateNo}
+		  AND
+			client_cd = #{clientCdBefore}
+	</update>
+
+	<delete id="estimateInfoDelete" parameterType="hashmap">
+		DELETE FROM
+		        estimate_info
+		WHERE
+		    	estimate_no = #{estimateNo}
+		AND
+		    	client_cd = #{clientCd}
+	</delete>
 </mapper>

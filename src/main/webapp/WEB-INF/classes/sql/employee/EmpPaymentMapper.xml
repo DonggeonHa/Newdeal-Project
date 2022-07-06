@@ -79,6 +79,7 @@
                   		THEN 'T'  
                   ELSE 'N'
                END AS entry_type
+             , emp.oamt
          FROM tb_emp emp
             INNER JOIN tb_userinfo ui ON ui.loginID = emp.loginID
             LEFT OUTER JOIN (<!-- 지출금액합계  -->
@@ -151,6 +152,7 @@
 		    	 , sl.e_insure
 		    	 , sl.income_tax
 		    	 , al.extra_pay
+		    	 , emp.oamt
 		    	 , CASE
       				WHEN DATE_FORMAT(emp.entry_date,'%Y%m') = DATE_FORMAT(DATE_SUB(curdate(),INTERVAL 1 month),'%Y%m')
       				THEN ROUND((emp.salary/cast(date_format(LAST_DAY(NOW() - interval 1 month),'%d') as unsigned)) * TIMESTAMPDIFF(DAY, emp.entry_date, LAST_DAY(NOW() - interval 1 month)), -1)+IFNULL(al.extra_pay,0)

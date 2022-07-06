@@ -23,12 +23,24 @@ public class EmployeeModel {
 	private String school; //최종학력
 	private String entry_date; //입사일
 	private String retire_date; //퇴사일
+	private String abs_date; //휴직일
+	
+	public String getAbs_date() {
+		return abs_date;
+	}
+	public void setAbs_date(String abs_date) {
+		this.abs_date = abs_date;
+	}
+
 	private int year_salary; //연봉
 	private int salary; //급여
 	private int oamt; //퇴직금
 	private String memo; //비고
+	
 	private String out_yn; //퇴직여부 y/n
+	
 	private String rest_yn; //휴직유무 y/n
+	
 	private String filename; //프로필사진 파일명
 	private String filepath; //프로필사진 파일경로
 	private int filesize; //프로필사진 파일사이즈

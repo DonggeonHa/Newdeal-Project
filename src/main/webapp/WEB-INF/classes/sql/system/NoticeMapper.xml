@@ -5,31 +5,28 @@
 
   
    <select id="noticeList" resultType="kr.happyjob.study.system.model.NoticeModel">
-            /*kr.happyjob.study.sampletest.dao.SampletestDao.search_list7*/
+            /*kr.happyjob.study.system.dao.noticeList*/
 			select no 
 			      ,title
 			      ,loginID
-			      ,DATE_FORMAT(date, '%Y-%m-%d') as date
+			      ,regdate
 		   from tb_notice 
 		 	<where>
 		 	<if test="(search_option != null) and (!search_option.equals(''))">
 		 	<choose> 
 		 		<when test ="search_option eq 'search_title'.toString()">
 		 			and title Like CONCAT('%',#{search_text},'%')
-		 			and date BETWEEN#{fromDate} AND #{toDate} 
+		 			and regdate BETWEEN#{fromDate} AND #{toDate} 
 		 		</when>	 		
 		 		<when test ="search_option eq 'search_name'.toString()">
 		 			and loginID Like CONCAT('%',#{search_text},'%')
-		 			and date BETWEEN#{fromDate} AND #{toDate} 
+		 			and regdate BETWEEN#{fromDate} AND #{toDate} 
 		 		</when>	 
-		 		<otherwise>
-		 			and(
-		 			title Like CONCAT('%',#{search_text},'%')
-		 			or loginID Like CONCAT('%',#{search_text},'%')
-		 			)
-		 			and date BETWEEN#{fromDate} AND #{toDate} 
-		 		</otherwise>		
+		 				
 		 	</choose>
+		 	</if> 	
+		 		<if test =" (fromDate != null) and (toDate != null)">
+		 		and regdate BETWEEN#{fromDate} AND #{toDate} 
 		 	</if>
 			</where>
 		 	order by no DESC
@@ -37,7 +34,7 @@
      </select>
    
    <select id="noticeCnt" resultType="int">
-            /*kr.happyjob.study.sampletest.dao.SampletestDao.samplepage7listtotcant*/
+            /*kr.happyjob.study.dao.noticeCnt */
 			select count(no)
 		   from tb_notice
 		 	<where>
@@ -45,25 +42,23 @@
 		 	<choose>	
 		 		<when test ="search_option eq 'search_title'.toString()">
 		 			and title Like CONCAT('%',#{search_text},'%')
-		 			and date BETWEEN #{fromDate} AND #{toDate} 
+		 			and regdate BETWEEN #{fromDate} AND #{toDate} 
 		 		</when>	 	
 		 		<when test ="search_option eq 'search_name'.toString()">
 		 			and loginID Like CONCAT('%',#{search_text},'%')
-		 			and date BETWEEN#{fromDate} AND #{toDate} 
-		 		</when>	 	
-		 		<otherwise>
-		 			and(
-		 			title Like CONCAT('%',#{search_text},'%')
-		 			or loginID Like CONCAT('%',#{search_text},'%')
-		 			)
-		 			and date BETWEEN#{fromDate} AND #{toDate} 
-		 		</otherwise>			
+		 			and regdate BETWEEN#{fromDate} AND #{toDate} 
+		 		</when>	 			
 		 	</choose>
+		 	</if>
+		 	<if test =" (fromDate != null) and (toDate != null)">
+		 		and regdate BETWEEN#{fromDate} AND #{toDate} 
+	
 		 	</if>
 			</where>
      </select>  
      
      <select id="noticeSelectOne" resultType="kr.happyjob.study.system.model.NoticeModel">
+          /*kr.happyjob.study.dao.noticeSelectOne */
      		select title
 			      ,loginID
 			      ,contents
@@ -72,6 +67,7 @@
      </select>
    
       <insert id="saveInsert">
+       /*kr.happyjob.study.dao.saveInsert */
       	<selectKey resultType="int" keyProperty="no" order="BEFORE">
       	 	SELECT IFNULL(MAX(no),0) + 1 FROM tb_notice 
       	</selectKey>
@@ -81,7 +77,7 @@
      							no
      							,loginID  
      							,title
-     							,date
+     							,regdate
 			   					,contents
      							)values(
      							#{no}
@@ -93,11 +89,12 @@
 
      </insert>
    	<update id="saveUpdate">
+   	 /*kr.happyjob.study.dao.saveUpdate */
    		update tb_notice
      		set
      			loginID = #{loginID}
      			,title = #{title}
-     			,date = NOW()
+     			,regdate = NOW()
 			   	,contents = #{contents}
 			where no = #{no}
      </update>
@@ -105,6 +102,7 @@
      
      
      <delete id="deleteNotice">
+     /*kr.happyjob.study.dao.deleteNotice */
      		delete from tb_notice
      		where no = #{no}
      

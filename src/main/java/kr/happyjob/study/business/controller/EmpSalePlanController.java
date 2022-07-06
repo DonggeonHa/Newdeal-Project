@@ -67,7 +67,7 @@ public class EmpSalePlanController {
     public String planList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
     			HttpServletResponse response, HttpSession session) throws Exception {
 
-		logger.info("+ Start " + className + " ");
+		logger.info("+ Start " + className + "planList.do");
 	
 		
 		int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));	// 현재 페이지 번호 넘어온것
@@ -193,8 +193,8 @@ public class EmpSalePlanController {
 			
 		} else if("U".equals(action)) {
 			//  수정 할 때 
-			planService.insertPlanList(paramMap);
-			
+			//planService.insertPlanList(paramMap);
+			planService.updatePlanList(paramMap);
 		} else {
 			result = "FALSE";
 			resultMsg = "알수 없는 요청 입니다.";

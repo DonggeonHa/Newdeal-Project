@@ -16,12 +16,17 @@
    <!-- 사용자 로그인 -->
    <select id="selectLogin" resultType="kr.happyjob.study.login.model.LgnInfoModel">
       /*kr.happy.study.login.dao.LoginDao.selectLogin*/
-      SELECT  loginID as lgn_id
-               , name as usr_nm
-               , user_Type as mem_author
-      FROM tb_userinfo 
-     WHERE loginID = #{lgn_Id}
-        AND password = #{pwd}
+      SELECT  tui.loginID AS lgn_id
+           , tui.name AS usr_nm
+           , tui.user_Type AS mem_author
+           , tdc.dept_name AS dept_name
+	  FROM tb_userinfo tui, (SELECT te.loginID loginID
+	  							   ,td.dept_name dept_name
+	  						 FROM tb_emp te, tb_dept td
+	  						 WHERE te.dept_cd = td.dept_cd) tdc
+	  WHERE tui.loginID = tdc.loginID
+     	AND tui.loginID = #{lgn_Id}
+        AND tui.password = #{pwd}
      </select>
      
      

@@ -6,6 +6,7 @@ public class EstListDto {
     private int supplyVal;			// 총 공급가액
     private int supplyTax;			// 총 부가세
     private int supplyCost;			// 총 단가
+	private int supplyAmount;		// 총 합계
     private String clientCd;		// 거래처코드
     private String clientNm;		// 거래처명
     private String productCd;		// 제품코드
@@ -100,6 +101,12 @@ public class EstListDto {
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
+	public int getSupplyAmount() {
+		return supplyAmount;
+	}
+	public void setSupplyAmount(int supplyAmount) {
+		this.supplyAmount = supplyAmount;
+	}
 
 	@Override
 	public String toString() {
@@ -109,6 +116,7 @@ public class EstListDto {
 				", supplyVal=" + supplyVal +
 				", supplyTax=" + supplyTax +
 				", supplyCost=" + supplyCost +
+				", supplyAmount=" + supplyAmount +
 				", clientCd='" + clientCd + '\'' +
 				", clientNm='" + clientNm + '\'' +
 				", productCd='" + productCd + '\'' +
@@ -116,7 +124,7 @@ public class EstListDto {
 				", name='" + name + '\'' +
 				", mail='" + mail + '\'' +
 				", sumTotal=" + sumTotal +
-				", loginID='" + loginId + '\'' +
+				", loginId='" + loginId + '\'' +
 				", remarks='" + remarks + '\'' +
 				'}';
 	}

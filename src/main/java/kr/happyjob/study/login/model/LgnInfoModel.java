@@ -20,6 +20,9 @@ public class LgnInfoModel {
 	//승인 코드
 	private String approval_cd;
 	
+	//부서명
+	private String dept_name;
+	
 	
 	/*// 게시판 글 번호
 	private int row_num;
@@ -34,6 +37,14 @@ public class LgnInfoModel {
 	private String ofc_dvs_cod;
 	*/
 	
+	public String getDept_name() {
+		return dept_name;
+	}
+
+	public void setDept_name(String dept_name) {
+		this.dept_name = dept_name;
+	}
+
 	// 사용자 로그인 ID
 	private String lgn_id;
 	

@@ -2,17 +2,36 @@ package kr.happyjob.study.business.model;
 
 public class EmpSalePlanModel {
 
+	//
 	private int sales_pro_seq;
+	
+	//거래처 코드
 	private String client_cd;
+	
 	private String client_nm;
+	
+	//목표수량
 	private int goal_amt;
+	
+	//제품 대분류코드
 	private String l_ct_cd;
+	
+	//제품 중분류 코드
 	private String m_ct_cd;
+	
+	//로그인 아이디 우리사용자.
 	private String loginID;
+	
 	private String memo;
+	
 	private String product_cd;
+	
+	//계획등록일
 	private String sales_reg_date;
+	
+	//제품명
 	private String product_nm;
+	
 	private String estimate_cnt;
 
 	public int getSales_pro_seq() {

@@ -607,7 +607,7 @@
 							<!--검색   -->
 							<br>
 
-							<div style = "padding : 3% 10% 3% 13%  ; border : 3px #CDECFA; border-style : solid ; margin: auto;">
+							<div style = "padding : 3% 10% 3% 10%  ; border : 3px #CDECFA; border-style : solid ; margin: auto;">
 								<!-- 거래처 콤보박스   -->
 								<div style ="margin: auto" >
 									<b style ="padding: 0 1% 0 1%" >거래처</b>
@@ -615,7 +615,6 @@
 									<!-- 달력 조회  -->
 									<b style ="padding: 0 3% 0 5%">날짜 </b>
 									<input type="text" id="from_date"  style="padding : 0.5%;"> ~ <input type="text" id="to_date" style="padding : 0.5% 0 0.5% 0;" >
-
 									<a href="" class="btnType blue" id="btnSearchEst" name="btn" style ="float : right; ">
 										<span>조회</span>
 									</a>

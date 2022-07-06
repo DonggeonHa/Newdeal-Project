@@ -7,6 +7,7 @@ public class EstimateInfoVo {
     private int supplyVal;          // 전체 공급가액
     private int supplyTax;          // 부가세
     private int supplyCost;         // 단가
+	private int supplyAmount;		// 총합계
 	private int sumTotal;			// 총 갯수
 	private String remarks;			// 비고
     
@@ -34,18 +35,7 @@ public class EstimateInfoVo {
 	public String getRemarks() {
 		return remarks;
 	}
-
-	@Override
-	public String toString() {
-		return "EstimateInfoVo{" +
-				"estimateNo='" + estimateNo + '\'' +
-				", clientCd='" + clientCd + '\'' +
-				", estimateDate='" + estimateDate + '\'' +
-				", supplyVal=" + supplyVal +
-				", supplyTax=" + supplyTax +
-				", supplyCost=" + supplyCost +
-				", sumTotal=" + sumTotal +
-				", remarks='" + remarks + '\'' +
-				'}';
+	public int getSupplyAmount() {
+		return supplyAmount;
 	}
 }

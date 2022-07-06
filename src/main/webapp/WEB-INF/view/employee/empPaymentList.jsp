@@ -50,21 +50,23 @@
 			<c:if test = "${list.extra_pay == '0' || list.extra_pay eq '0'}">
 				<td class = "paymentTd" style = "color : blue;">0</td>
 				<td class = "paymentTd" style = "color : green;">${list.net_pay }</td>
+				<td class = "paymentTd" style = "color : Orange;">${list.oamt }</td>
 			</c:if>
 			<c:if test = "${list.extra_pay != '0' || list.extra_pay ne '0' }">
 				<td class = "paymentTd" style = "color : blue;">+ ${list.extra_pay }</td>
 				<td class = "paymentTd" style = "color : green;">${list.net_pay }</td>
+				<td class = "paymentTd" style = "color : Orange;">${list.oamt }</td>
 			</c:if>
 			<td class = "paymentTd">
 				<c:choose>
 					<c:when test = "${list.payment_st == '0' || list.payment_st eq '0' }">
-						<a class="btnType3 color2" href="javascript:empPaymentProcess('${list.loginID}')"><span>지급처리</span></a>
+						<a class="btnType3 color2" href="javascript:empPaymentProcess('${list.loginID}')"><span>지급</span></a>
 					</c:when>
 					<c:when test = "${list.payment_st == '1' || list.payment_st eq '1' }">
-						<a class="btnType3 color1" href="" style = "pointer-events : none; cursor : default;"><span>지급완료</span></a>
+						<a class="btnType3 color1" href="" style = "pointer-events : none; cursor : default;"><span>완료</span></a>
 					</c:when>
 					<c:when test = "${list.payment_st == '' || list.payment_st eq '' }">
-						<a class="btnType3 color1" href="" style = "pointer-events : none; cursor : default;"><span>지급완료</span></a>
+						<a class="btnType3 color1" href="" style = "pointer-events : none; cursor : default;"><span>완료</span></a>
 					</c:when>
 				</c:choose>
 			</td>

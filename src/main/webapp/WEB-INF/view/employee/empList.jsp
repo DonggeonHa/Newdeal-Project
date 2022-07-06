@@ -12,7 +12,7 @@
 
 <c:if test="${empTotalCnt > 0 }">
 	<c:set var="nRow" value="${pageSize*(currentPageEmpList-1)}" />
-	<c:forEach items="${listEmployeeModel}" var="list">
+	<c:forEach var="list" items="${listEmployeeModel}" >
 		<tr>
 			<td id="trytest"><a href="javascript:viewEmpDtl('${list.loginID }')"> <strong> ${list.loginID}</strong></a></td>
 			<td>${list.name}</td>
@@ -27,7 +27,7 @@
 			
 			<c:if test = "${list.rest_yn == 'n' }" ><!-- 재직자 리스트 조회일 시 -->			
 				<td>
-					<a class="btnType3 color1" href="javascript:fPopModalResignEmp('${list.loginID}', '${list.name}', '${list.entry_date}');"><span>퇴사처리</span></a>
+					<a class="btnType3 color1" href="javascript:fPopModalResignEmp('${list.loginID}', '${list.name}', '${list.entry_date}', '${list.dept_name}', '${list.poscd}');"><span>퇴사처리</span></a>
 				</td>
 			</c:if>
 			
@@ -36,10 +36,11 @@
 			</c:if>
 			
 			<c:if test ="${list.rest_yn == 'y' }"> <!-- 휴직자 리스트 조회일 시 -->
-				<td>휴직일자 데이터 없음</td>
+				<td>${list.abs_date}</td>
 			</c:if>
-
-		
+			
+<%-- 			<td> <c:out value="${nRow}"> </c:out> </td> --%>
+	
 		</tr>
 		<c:set var="nRow" value="${nRow + 1}" />
 	</c:forEach>

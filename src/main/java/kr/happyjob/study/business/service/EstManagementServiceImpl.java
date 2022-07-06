@@ -6,6 +6,7 @@ import kr.happyjob.study.business.dto.EstListDto;
 import kr.happyjob.study.business.dto.InsertTableSelectDto;
 import kr.happyjob.study.business.dto.SelectEstListDto;
 import kr.happyjob.study.business.vo.ErpClientVo;
+import kr.happyjob.study.business.vo.EstimateInfoVo;
 import kr.happyjob.study.business.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,4 +88,35 @@ public class EstManagementServiceImpl implements EstManagementService{
 	@Override
 	/** 견적생성시 estimate_info 정보 불러오기 */
 	public InsertTableSelectDto InsertTableSelect(Map<String, Object> paramMap) { return estManagementDao.InsertTableSelect(paramMap); }
+
+	@Override
+	/** 견적수정시 estimate_info 정보 불러오기 */
+	public InsertTableSelectDto UpdateTableSelect(Map<String, Object> paramMap) { return estManagementDao.UpdateTableSelect(paramMap); }
+
+	@Override
+	/** estimateInfoVo 불러오기 */
+	public EstimateInfoVo InsertEstimateInfo(Map<String, Object> paramMap) { return estManagementDao.InsertEstimateInfo(paramMap); }
+
+	/** estimateInfoVo 불러오기 */
+	public EstimateInfoVo UpdateEstimateInfo(Map<String, Object> paramMap) { return estManagementDao.UpdateEstimateInfo(paramMap); }
+
+	@Override
+	/** 단건 estimateProd 삭제 */
+	public int deleteEstProd(Map<String, Object> paramMap) { return estManagementDao.deleteEstProd(paramMap); }
+
+	@Override
+	/** 제품코드 가져오기 */
+	public int searchProductCd(Map<String, Object> paramMap) { return estManagementDao.searchProductCd(paramMap); }
+
+	/** estimate_info 업데이트 */
+	@Override
+	public int estUpdateInfo(Map<String, Object> paramMap) { return estManagementDao.estUpdateInfo(paramMap); }
+
+	/** estimate_info 업데이트22 */
+	@Override
+	public int estimateInfoUpdate(Map<String, Object> paramMap) { return estManagementDao.estimateInfoUpdate(paramMap); }
+
+	/** estimate_info 삭제 */
+	@Override
+	public int estimateInfoDelete(Map<String, Object> paramMap) { return estManagementDao.estimateInfoDelete(paramMap); }
 }

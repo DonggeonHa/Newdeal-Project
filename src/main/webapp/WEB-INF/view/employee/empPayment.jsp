@@ -343,6 +343,7 @@
 										<th scope="col">소득세</th>
 										<th scope="col">비고금액</th>
 										<th scope="col">실급여</th>
+										<th scope="col">퇴직금</th>
 										<th scope="col">지급</th>
 									</tr>
 								</thead>

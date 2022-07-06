@@ -28,14 +28,14 @@
 			</if>
 			<if test="(from_date != null) and (! from_date.equals(''))">
 				AND reg_date  <![CDATA[>=]]>
-				STR_TO_DATE(#{from_date}, '%Y-%m-%d')
+				STR_TO_DATE(#{from_date}, '%Y.%m.%d')
 			</if>
 			<if test="(to_date != null) and (!to_date.equals(''))">
 				AND reg_date  <![CDATA[<=]]>
-				STR_TO_DATE(#{to_date}, '%Y-%m-%d')
+				STR_TO_DATE(#{to_date}, '%Y.%m.%d')
 			</if>
 		</where>
-		ORDER BY client_cd
+		ORDER BY reg_date DESC
 		LIMIT #{pageIndex}, #{pageSize}
 	</select>
 
@@ -50,11 +50,11 @@
 			</if>
 			<if test="(from_date != null) and (! from_date.equals(''))">
 				AND reg_date  <![CDATA[>=]]>
-				STR_TO_DATE(#{from_date}, '%Y-%m-%d')
+				STR_TO_DATE(#{from_date}, '%Y.%m.%d')
 			</if>
 			<if test="(to_date != null) and (!to_date.equals(''))">
 				AND reg_date  <![CDATA[<=]]>
-				STR_TO_DATE(#{to_date}, '%Y-%m-%d')
+				STR_TO_DATE(#{to_date}, '%Y.%m.%d')
 			</if>
 		</where>
 		
@@ -119,8 +119,8 @@
 		VALUES
 		(
 			#{client_cd},
-			#{clientNm},
-			#{empNm},
+			#{client_nm},
+			#{emp_nm},
 			#{empHp},
 			#{zipCode},
 			#{bank},
@@ -144,8 +144,8 @@
 				tb_erp_client
 		SET 	
 				client_cd = #{client_cd},
-				client_nm= #{clientNm},
-				emp_nm = #{empNm},
+				client_nm= #{client_nm},
+				emp_nm = #{emp_nm},
 				emp_hp = #{empHp},
 				zip_code = #{zipCode},
 				bank = #{bank},

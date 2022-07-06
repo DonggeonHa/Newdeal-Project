@@ -18,7 +18,7 @@
 								<c:forEach items="${listPlan}" var="list"  >
 									<tr>
 						
-										 <td><a  href="javascript:planOne('${list.sales_pro_seq}')" ><strong >${list.sales_reg_date} </strong></a></td>
+										 <td><a  href="javascript:PlanModal1('${list.sales_pro_seq}')" ><strong >${list.sales_reg_date} </strong></a></td>
 						                  <td> ${list.client_nm} </td>
 						                  <td> ${list.l_ct_cd} </td>
 			                              <td> ${list.m_ct_cd}</td>

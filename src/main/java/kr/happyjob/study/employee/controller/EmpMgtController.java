@@ -144,6 +144,7 @@ public class EmpMgtController {
 		int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));
 		int pageSize = Integer.parseInt((String)paramMap.get("pageSize"));
 		int pageIndex = (currentPage-1)*pageSize;
+		
 		paramMap.put("pageIndex", pageIndex);
 		paramMap.put("pageSize", pageSize);
 		
