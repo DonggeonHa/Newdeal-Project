@@ -24,16 +24,14 @@
 	/* onload 이벤트  */
 	
 	// 날짜세팅
-	
-	$(function(){
+		$(function(){
 		
-        var today = new Date();
-		
+        var today = new Date(); //db에 입력되야할 수 있으니까 페이지엔 안보여도 
+        		
         fButtonClickEvent();
         
 		// 부서관리 리스트 뿌리기 함수 
 		selectDeptList();
-		
 	});
 	
 	/* 버튼 이벤트 등록 - 저장, 수정, 삭제  */
@@ -77,18 +75,15 @@
 				dept_nm : dept_nm ,
 				currentPage : currentPage ,
 				pageSize : pageSize  
-
-		}
-
+	}
+		
 		console.log("param : " + param);
 		
-		var resultCallback = function(data){  // 데이터를 이 함수로 넘깁시다. 
-			deptListResult(data, currentPage); 
+		var resultCallback = function(data){ 
+			deptListResult(data, currentPage);  // 리스트data를 가져오는것
 		}
-		
 		callAjax("/system/listdept.do","post","text", true, param, resultCallback);
-		
-	}
+		}
 	
 	/* callAjax 공통 common.js 에서 퍼옴  -> 이렇게 생긴 함수입니다.  
 	
@@ -99,7 +94,6 @@
 		callAjax("/image/selectImgSize.do", "post", "json", false, param, resultCallback);
 	 } */
 	
-
 	 /* 부서관리 리스트 data를 콜백함수를 통해 뿌려봅시당   */
 	 function deptListResult(data, currentPage){
 		 
@@ -111,13 +105,12 @@
 		 $('#deptList').append(data);	
 		 
 		 // 리스트의 총 개수를 추출합니다. 
-		 //var totalCnt = $data.find("#totalCnt").text();
 		 var totalCnt = $("#totcnt").val();  // qnaRealList() 에서보낸값 
 		 
 		 // * 페이지 네비게이션 생성 (만들어져있는 함수를 사용한다 -common.js)
 		 // function getPaginationHtml(currentPage, totalCount, pageRow, blockPage, pageFunc, exParams)
 		 // 파라미터를 참조합시다. 
-	     var list = $("#tmpList").val();
+	     var list = $("#tmpList").val();  //<input type="hidden" id="tmpList" value="">
 		 //var listnum = $("#tmpListNum").val();
 	     var pagingnavi = getPaginationHtml(currentPage, totalCnt, pageSize, pageBlock, 'selectDeptList',[list]);
 		 
@@ -140,7 +133,7 @@
 			// alert("넘을 찍어보자!!!!!!" + deptNo);
 			
 			$("#action").val("I"); // insert 
-			frealPopModal(deptNo); // 부서관리 초기화 
+			frealPopModal(); // 부서관리 초기화 
 			
 			//모달 팝업 모양 오픈! (빈거) _ 있는 함수 쓰는거임. 
 			gfModalPop("#dept");
@@ -156,7 +149,7 @@
 	 /*부서관리 상세 조회*/
 	 function fdetailModal(deptNo){
 		 //alert("부서관리 상세 조회  ");
-		 var currentPage = 1 || currentPage;
+		  var currentPage = 1 || currentPage;
 		  console.log('확인', pageSize, '현재페이지',currentPage)
 		 var param = {
 				 deptNo : deptNo,
@@ -183,8 +176,6 @@
 			// 모달에 정보 넣기 
 			frealPopModal(data.result);
 		 
-		 }else{
-			 alert(data.resultMsg);
 		 }
 	 }
 	 
@@ -192,16 +183,19 @@
 	 function frealPopModal(object){
 		 
 		 if(object == "" || object == null || object == undefined){
-			 var writer = $("#swriter").val();
+			 var writer = $("#swriter").val();  // 로그인 후 세션에서 넘어온값
 			 //var Now = new Date();
 			 
 			 $("#loginId").val(writer);
-			 $("#loginId").attr("readonly", true);
+			 $("#loginId").attr("readonly", false);
 			 
 			 $("#write_date").val();
-			 
+			
 			 $("#dept_cd").val("");
 			 $("#dept_nm").val("");
+			 
+			 $("#dept_cd").attr("readonly", false);
+			 $("#dept_cd").css('background','white')
 			 
 			 $("#btnDeleteDept").hide(); // 삭제버튼 숨기기
 			 $("#btnUpdateDept").hide();
@@ -218,12 +212,13 @@
 			 $("#write_date").attr("readonly", true); // 처음 작성된 날짜 수정불가 
 			 $("#dept_cd").attr("readonly", true);
 			 
+			 $("#dept_cd").css('background','lightgray')
 			 $("#dept_cd").val(object.dept_cd);
 			 $("#dept_nm").val(object.dept_name);
 			 // hidden값 설정
 			  $("#hidden_dept_cd").val(object.dept_cd);
 			 
-			//////object.deptNo
+			///object.deptNo
 			 
 			 //$("#deptNo").val(object.deptNo); // 중요한 num 값도 숨겨서 받아온다. 
 			 			 
@@ -253,7 +248,7 @@
 	 function fSaveDept(){
 		 //alert("저장 함수 타는지!!!!!?? ");
 		 // validation 체크 
-		 if(!(fValidatePopup())){ return; }
+		 if(!(fValidatePopup())){ return; }  //팝업내 수정 저장이 아니라면 return 
 		 
 		 var resultCallback3 = function(data){
 			 fSaveDeptResult(data);
@@ -263,26 +258,29 @@
 		 
 		 callAjax("/system/deptSave.do", "post", "json", true, $("#myDept").serialize(), resultCallback3);
 	 	// $("#myDept").serialize() => 직렬화해서 name 값들을 그냥 넘김.
-	 }	 
+	 	 }	 
 	 
+
 	 /* 저장, 수정, 삭제 콜백 함수 처리  */   
 	 function fSaveDeptResult(data){
 		 var currentPage = currentPage || 1; 
-		 
+		 console.log("2222222222222222222222222222");
+		 console.log(data)
 		 if($("#action").val() != "I"){
 			 currentPage = $("#currentPage").val();
 		 }
 		 
 		 if(data.resultMsg == "SUCCESS"){
 			 //alert(data.resultMsg);	// 받은 메세지 출력 
-			 alert("저장 되었습니다.");
+			 swal("저장 되었습니다.");
 		 }else if(data.resultMsg == "UPDATED") {
-			 alert("수정 되었습니다.");
+			 swal("수정 되었습니다.");
 		 }else if(data.resultMsg == "DELETED") {
-			 alert("삭제 되었습니다.");
-		 }else{
-			 alert(data.resultMsg); //실패시 이거 탄다. 
-			 //alert("실패 했습니다.");
+			swal("삭제 되었습니다.");
+		 }else if(data.resultMsg == "DUPLICATION"){
+			 swal("부서코드가 중복됩니다.");
+		 } else{
+			swal("실패했습니다.");
 		 }
 		 
 		 gfCloseModal();	// 모달 닫기
@@ -304,14 +302,14 @@
 		 $("#action").val("U");  // update
 		 
 		 callAjax("/system/deptSave.do", "post", "json", true, $("#myDept").serialize(), resultCallback3);
-		 //callAjax("/system/deptSave.do", "post", "json", true, $("#myDept").serialize(), resultCallback3);
-	 	// $("#myQna").serialize() => 직렬화해서 name 값들을 그냥 넘김.
+		
 	 }
 	 
 	 /* 부서관리 게시판 1건 삭제 */
 	 function fDeleteDept(){
-		 var con = confirm("정말 삭제하겠습니까? \n 삭제시 복구불가합니다."); 
-		 if(con){
+		 // 부서내에 직원 이있으면 삭제할 수없는 함수 ,mapper, 만들기(있으면 swal()  호출 후 return)
+	//	swal("정말 삭제하겠습니까? \n 삭제시 복구불가합니다."); 
+		 if( true){
 			 var resultCallback3 = function(data){
 				 fSaveDeptResult(data);
 			 }
@@ -323,6 +321,7 @@
 			 selectDeptList(currentPage); // 목록조회 함수 다시 출력 
 			 frealPopModal();// 입력폼 초기화
 		 }
+
 	 }
 	 
 </script>
@@ -335,10 +334,10 @@
 <form id="myDept" action="" method="">
 	
 	<input type="hidden" id="currentPage" value="1">  <!-- 현재페이지는 처음에 항상 1로 설정하여 넘김  -->
-	<input type="hidden" id="tmpList" value=""> <!-- ★ 이거뭐임??? -->
+	<input type="hidden" id="tmpList" value=""> <!-- 페이지 네비게이션에서 쓰임 뭐지? -->
 	<input type="hidden" id="tmpListNum" value=""> <!-- 스크립트에서 값을 설정해서 넘길거임 / 임시 리스트 넘버 -->
 	<input type="hidden" name="action" id="action" value=""> 
-	<input type="hidden" id="swriter" value="${loginId}"> <!-- 작성자 session에서 java에서 넘어온값 -->
+	<input type="hidden" id="swriter" value="${loginId}"> <!-- 작성자 session에서 넘어온값 -->
 
 		
 	<div id="wrap_area">
@@ -362,7 +361,7 @@
 						<!-- 최상단 집/시스텝관리/부서관리 -->
 						<p class="Location">
 							<a href="../dashboard/dashboard.do" class="btn_set home">메인으로</a>
-							<a href="#" class="btn_nav bold">시스템 관리</a> 
+							<a href="#" class="btn_nav bold">시스템 관리</a>  <!-- 페이지 전환되지 않도록 하기위해 #을 넣은것. 스크롤이 아래에 있다면 최상단으로 감 -->
 							<span class="btn_nav bold">부서관리</span> 
 								</p>
 
@@ -393,7 +392,7 @@
 	   
            <!-- 등록버튼 -->					
 		    <div class="sign_up">
-		    <a class="btnType blue" href="javascript:fDeptModal(${nullNum});" name="modal" style="float:right; padding-bottom : 10px;">
+		    <a class="btnType blue" href="javascript:fDeptModal();" name="modal" style="float:right; padding-bottom : 10px;">
 			<span>등 록</span>
 			</a>
 			</div>
@@ -452,7 +451,8 @@
 					<tbody>
 						<tr>							
 							<th scope="row">부서코드 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt p100" name="dept_cd" id="dept_cd" /></td>
+							<td><input type="text" class="inputTxt p100" name="dept_cd" id="dept_cd" placeholder="숫자를 입력하세요." /></td>
+												
 							<th scope="row">부서명 <span class="font_red">*</span></th>
 							<td><input type="text" class="inputTxt p100" name="dept_nm" id="dept_nm" /></td>						
 						</tr>

@@ -95,7 +95,7 @@
 				case 'btnComplete' :	// 견적서 최종 저장
 					estimateComplete();
 					break;
-				case 'btnUpdateEstimate' : // 테스트
+				case 'btnUpdateEstimate' : // 최종 업데이트
 					estimateInfoUpdate2();
 					break;
 			}
@@ -654,12 +654,8 @@
 			estimateNo : estimateNo
 		};
 
-		console.log("=======값 내놔 오류 나오지 말고========" + JSON.stringify(param));
-
 		// 콜백
 		var resultCallback = function(data) {
-			console.log("=======resultUpdateCallback========" + data);
-
 			estUpdateModal(data);
 		};
 

@@ -10,6 +10,12 @@ public class EstimateInfoVo {
 	private int supplyAmount;		// 총합계
 	private int sumTotal;			// 총 갯수
 	private String remarks;			// 비고
+	private String receiveNo;		// 수주번호
+	private String receiveRemarks;	// 수주_비고
+	private String receiveDate;		// 수주일자
+	private String receiveYN;		// 수주서 작성여부
+	private String depositYN;		// 입금완료여부
+	private String loginId;			// 로그인 아이디
     
 	public String getEstimateNo() {
 		return estimateNo;
@@ -37,5 +43,23 @@ public class EstimateInfoVo {
 	}
 	public int getSupplyAmount() {
 		return supplyAmount;
+	}
+	public String getReceiveDate() {
+		return receiveDate;
+	}
+	public String getDepositYN() {
+		return depositYN;
+	}
+	public String getReceiveNo() {
+		return receiveNo;
+	}
+	public String getReceiveRemarks() {
+		return receiveRemarks;
+	}
+	public String getReceiveYN() {
+		return receiveYN;
+	}
+	public String getLoginId() {
+		return loginId;
 	}
 }

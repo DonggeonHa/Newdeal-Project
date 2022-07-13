@@ -107,13 +107,15 @@
 				client_cd,
 				estimate_date,
 		        loginID,
-		        remarks
+		        remarks,
+		        receive_yn
 		) VALUES (
 				#{estimateNo},
 				#{clientCd},
 				NOW(),
 		      	#{loginId},
-		      	#{remarks}
+		      	#{remarks},
+		        'n'
 		);
 	</insert>
 
@@ -271,23 +273,18 @@
 		    	a.estimate_no = #{estimateNo}
 		AND
 				a.client_cd = #{clientCd}
-		ORDER BY estimateDate
 	</select>
 	
 	<!-- 7.모달 안 리스트 뿌리기 카운트  -->
 	<select id="estDetailCnt" resultType="int" parameterType="hashmap">
 		SELECT
-				COUNT(a.estimate_no)
+				COUNT(estimate_no)
 		FROM
-				estimate_prod a
-		INNER JOIN estimate_info b ON a.client_cd = b.client_cd
-		AND a.estimate_no = b.estimate_no
-		INNER JOIN tb_erp_client c ON c.client_cd = b.client_cd
-		INNER JOIN tb_scm_product d ON a.product_cd = d.product_cd
+				estimate_prod
 		WHERE
-		    	a.estimate_no = #{estimateNo}
+		    	estimate_no = #{estimateNo}
 		AND
-				a.client_cd = #{clientCd}
+				client_cd = #{clientCd}
 	</select>
 
 	<select id="searchLoginId" resultType="kr.happyjob.study.business.vo.UserInfoVo" parameterType="String">

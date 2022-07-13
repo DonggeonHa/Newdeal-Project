@@ -7,12 +7,12 @@
 	
 	<select id="listBmSalePlan" resultType = "kr.happyjob.study.business.model.BmSalePlanModel">
 			
-			select DISTINCT STR_TO_DATE(salp.sales_reg_date,'%Y%m%d') as sales_reg_date 
+				select DISTINCT STR_TO_DATE(salp.sales_reg_date,'%Y%m%d') as sales_reg_date 
 			      ,salp.loginID
 			      ,salp.l_ct_cd
 			      ,salp.m_ct_cd
-			      , ifnull((SELECT(ROUND((rc.estimate_cnt/salp.goal_amt) * 100))),0) as a_rate	
-			      , ifnull(rc.estimate_cnt,0) as estimate_cnt	
+			      ,ifnull((SELECT(ROUND((rc.estimate_cnt/salp.goal_amt) * 100))),0) as a_rate	
+		          ,ifnull(rc.estimate_cnt,0) as estimate_cnt	
 			      ,scmp.product_nm
 			      ,salp.memo
 			      ,salp.goal_amt
@@ -32,23 +32,23 @@
 						 and salp.m_ct_cd = ct.m_ct_cd
 						 inner join tb_scm_product as scmp
 						 on    salp.product_cd =scmp.product_cd
-						 left outer join 									 <!--왼쪽 테이블을 중심으로 오른쪽 테이블 정보 보여주기  -->
+						 left outer join 						
              			(select sum(estimate_cnt)as estimate_cnt
-				             					   ,loginID
 				             					   ,product_cd
-				             					   ,receive_num
-             			   from receive_prod group by loginID
-             			                              ,product_cd
-             			                              ,receive_num)as rc
+				             					   ,estimate_no
+             			   from estimate_prod group by  product_cd
+             			                              ,estimate_no)as rc
 						 	 	on    salp.product_cd = rc.product_cd
-             					and salp.loginID = rc.loginID
+             					
 
 			<where>  
 	       		<if test="(loginID_header != null) and (!loginID_header.equals(''))">
-	       			and salp.loginID = #{loginID_header}	
+	       			<!-- and salp.loginID like concat('%',#{loginID_header},'%') -->
+	       			and loginID like concat('%',#{loginID_header},'%')
+	       			
 				</if>			
 				<if test="(l_ct_cd != null) and (!l_ct_cd.equals(''))">
-			       and salp.l_ct_cd = #{l_ct_cd}
+			       and salp.l_ct_cd = #{l_ct_cd} 
 			    </if>
 			    <if test="(m_ct_cd != null) and (!m_ct_cd.equals(''))">
 			       and salp.m_ct_cd = #{m_ct_cd}	
@@ -77,7 +77,8 @@
 		SELECT COUNT(1) FROM tb_sales_pro
 			<where>  
 	       		<if test="(loginID_header != null) and (!loginID_header.equals(''))">
-	       			and loginID = #{loginID_header}	
+	       			<!-- and loginID = #{loginID_header} -->	
+	       			and loginID like concat('%',#{loginID_header},'%')
 				</if>
 				<if test="(l_ct_cd != null) and (!l_ct_cd.equals(''))">
 			       and l_ct_cd = #{l_ct_cd}

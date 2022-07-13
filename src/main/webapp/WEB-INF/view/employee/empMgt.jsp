@@ -157,6 +157,7 @@
 // 			success : function(data) {
 // 				showEmpListResult(data, currentPage);
 // 			}
+	
 // 			}
 // 		)
 
@@ -164,6 +165,7 @@
 		callAjax("/employee/showEmpList.do", "post", "text", true, param, resultCallback);
 		
 	}//showInEmpList
+	
 	
 	function showEmpListResult(data, currentPage){
 		
@@ -428,8 +430,8 @@
 							<span class="fr">
 								<p class="Location">
 									<strong style="margin-left: 2%;">입사일 조회&nbsp;</strong> 
-									<input type="date" id="from_date" style="width: 30%;">&nbsp~&nbsp
-									<input type="date" id="to_date" style="width: 30%;"> 
+									<input type="date" id="from_date" style="width: 28%;">&nbsp~&nbsp
+									<input type="date" id="to_date" style="width: 28%;"> 
 									<a class="btn_icon search" href="javascript:showEmpList()" name="search"> <span id="searchEnter">조회</span></a>
 								</p>
 							</span>

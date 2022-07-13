@@ -44,7 +44,7 @@ public class BmSalePlanModel {
 	/* 유저타입체크*/
 	private String userType;
 	
-	
+
 	private String cd;
 	
 	
@@ -106,15 +106,7 @@ public class BmSalePlanModel {
 	public void setGoal_amt(int goal_amt) {
 		this.goal_amt = goal_amt;
 	}
-
-	public int getEstimate_cnt() {
-		return estimate_cnt;
-	}
-
-	public void setEstimate_cnt(int estimate_cnt) {
-		this.estimate_cnt = estimate_cnt;
-	}
-
+	
 	public int getA_rate() {
 		return a_rate;
 	}
@@ -122,7 +114,14 @@ public class BmSalePlanModel {
 	public void setA_rate(int a_rate) {
 		this.a_rate = a_rate;
 	}
+	
+	public int getEstimate_cnt() {
+		return estimate_cnt;
+	}
 
+	public void setEstimate_cnt(int estimate_cnt) {
+		this.estimate_cnt = estimate_cnt;
+	}
 	public String getMemo() {
 		return memo;
 	}

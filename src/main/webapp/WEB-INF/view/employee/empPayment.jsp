@@ -12,7 +12,16 @@
 <script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
 <!-- 공통 js/css src 모은 jsp -->
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
+<style>
+	table.col thead th {
+		   padding: 5px 2px !important;
+	}
+	
+	table.col tbody td {
+		 padding: 5px 1px !important;
+	}
 
+</style>
 <script type="text/javascript">
 	//사원 급여지급내역 리스트 페이징 설정
 	var pageSizeEmpPayment = 5;
@@ -343,7 +352,6 @@
 										<th scope="col">소득세</th>
 										<th scope="col">비고금액</th>
 										<th scope="col">실급여</th>
-										<th scope="col">퇴직금</th>
 										<th scope="col">지급</th>
 									</tr>
 								</thead>

@@ -19,10 +19,7 @@
 	// 함수 시작
 	$(document).ready(function(){
 		//견적서 목록 조회 
-		oemList();
-		
-		//모달창 초기화
-		oemInitForm();
+		receiveList();
 			
 		// 버튼 이벤트 등록
 		oRegisterButtonClickEvent();
@@ -110,14 +107,14 @@
 				case 'btnReceiveInfoInsert' : // 신규등록 , 저장
 					ReceiveInfoInsert();
 					break;
-				case 'btnDeleteOem' : // 삭제 
-					oDeleteOem();
-					break;
-				case 'btnSearchOem': // 검색 
-					oSearchOem();
+				case 'btnSearchReceive': // 검색
+					SearchReceive();
 					break;
 				case 'btnReceiveClose' : // 모달 닫기 함수 [나는 하나로 썼음 ]
 					gfCloseModal();
+					break;
+				case 'btnReceiveComplete' :	// 수주서 최종 저장
+					receiveComplete();
 					break;
 			}
 		});
@@ -195,7 +192,7 @@
 
 		var param = {
 			clientCd : clientCd,
-			remarks : remarks,
+			receiveRemarks : remarks,
 			estimateNo : estimateNo
 		}
 
@@ -215,26 +212,33 @@
 
 		// 모달 팝업
 		gfModalPop("#receiveModal2");
-		ReceiveInfoInsert2(data.receiveInfo.estimateNo, data.receiveInfo.clientCd);
+		ReceiveInfoInsert2(data.receiveInfo.estimateNo, data.receiveInfo.clientCd, data.receiveInfo.receiveNo);
 	}
 
-	function ReceiveInfoInsert2(estimateNo, clientCd) {
+	function ReceiveInfoInsert2(estimateNo, clientCd, receiveNo) {
 		var param = {
 			estimateNo : estimateNo,
-			clientCd : clientCd
+			clientCd : clientCd,
+			receiveNo : receiveNo
 		}
 
 		var resultCallback = function(data){
 			ReceiveInfoInsertResult2(data); // 저장 콜백 함수
 		};
 
+		var resultCallback2 = function(data){
+			estimateProdUpdate2_1(data); // 저장 콜백 함수
+		};
+
 		callAjax("/business/receiveManagementInsert2.do", "post", "json", true, param, resultCallback);
+		callAjax("/business/estimateUpdateProdList.do", "post", "text", true, param, resultCallback2);
 	}
 
 	function ReceiveInfoInsertResult2(data) {
 		$("#erpCopnm2").text(data.erp_copnm);
 		$("#erpCopnum2").text(data.erp_copnum);
-		$("#receiveNum2").text(data.receiveInfo.receiveNum);
+		$("#receiveNum2").text(data.receiveInfo.receiveNo);
+		$("#estimateNo2").val(data.receiveInfo.estimateNo);
 		$("#erpEmp2").text(data.user.name);
 		$("#erpTel2").text(data.user.tel);
 		$("#erpEmail2").text(data.user.mail);
@@ -242,7 +246,40 @@
 		$("#clientNm2").text(data.receiveInfo.clientNm);
 		$("#clientName2").text(data.receiveInfo.empNm);
 		$("#clientTell2").text(data.receiveInfo.tel);
-		$("#remarks2").text(data.receiveInfo.remarks);
+		$("#remarks2").text(data.receiveInfo.receiveRemarks);
+	}
+
+	function estimateProdUpdate2_1(data) {
+		// 기존 목록 삭제
+		$('#receiveProductList').empty();
+		// 신규 목록 생성
+		$("#receiveProductList").append(data);
+	}
+
+	// 최종 저장
+	function receiveComplete() {
+		var receiveNum = $("#receiveNum2").text();
+		var estimateNo = $("#estimateNo2").val();
+		var clientCd = $("#clientCd2").val();
+
+		var param = {
+			estimateNo : estimateNo,
+			clientCd : clientCd,
+			receiveNo : receiveNum
+		}
+
+		var resultCallback = function(data){
+			receiveCompleteResult(data); // 저장 콜백 함수
+		};
+
+		callAjax("/business/receiveComplete.do", "post", "json", true, param, resultCallback);
+	}
+
+	function receiveCompleteResult(data) {
+		alert(data.resultMsg);
+
+		gfCloseModal();
+		location.reload(); // 새로고침
 	}
 
 	/* 팝업내 수정, 저장 validation */
@@ -261,62 +298,8 @@
 /* -------------------------------------------------------------------  */
 /* -------------------------------------------------------------------  */
 
-	/*  2 .단건조회 등등  모달창 값 초기화  */
-	function oemInitForm(data) {
-		$("#oemCnt").focus();	
-		
-		//2 - 1 신규등록	일 때
-		if( data == "" || data == null || data == undefined) {
-			$("#receive_num").val("");  					// hidden
-			$("#estimate_no").val("");  					// hidden
-			$("#client_search1").val(""); 					// 거래처 콤보박스
-			$("#scm_big_class").val(""); 					// scm 대분류
-			$("#scm_middle_class").val(""); 				// scm 중분류
-			$("#product_cd").val(""); 					// scm 제품
-			$("#estimate_cnt").val(""); 					// 수량
-			$('#divtitle').empty();
-			$("#divtitle").append("<strong>수주서 등록</strong>");
-		} else {
-			//2 - 2 단건 상세조회 모달창 
-	 		$("#oem_client_nm").val(data.client_nm); 		// data.실제컬럼이름
-		 	$("#limit_date").val(data.limit_date); 			// data.실제컬럼이름
-		 	$("#oem_client_nm").val(data.client_nm); 		// data.실제컬럼이름
-		 	$("#erp_copnm").val(data.cop_copnm); 			// data.실제컬럼이름
-		 	$("#cop_no1").val(data.cop_no1); 				// data.실제컬럼이름
-		 	$("#cop_no2").val(data.cop_no2); 				// data.실제컬럼이름
-		 	$("#cop_no3").val(data.cop_no3); 				// data.실제컬럼이름
-		 	$("#direct_nm").val(data.emp_nm); 				// data.실제컬럼이름
-		 	$("#addr").val(data.addr); 						// data.실제컬럼이름
-		 	$("#addr_other").val(data.addr_detail); 		// data.실제컬럼이름
-		 	$("#limit_date").val(data.limit_date); 			// data.실제컬럼이름
-		 	$("#client_search1").val(data.client_search); 	// data.실제컬럼이름
-			//var client_search1 =  $("#client_search1").val(data.client_search).text();
-		 	//console.log("client_search1 ", client_search1);
-
-			// 담당자 번호 
-			$("#local_tel2").val(data.emp_hp);	
-			var beta0 = $("#local_tel1").val();
-			var beta1 = $("#local_tel2").val();
-			var beta1Answer = beta1.split("-");
-
-			console.log("beta1Answer    ",beta1Answer);
-			
-			$("#local_tel2").val(beta1Answer[1]);
-			var beta2 = $("#local_tel3").val();
-
-			console.log("beta1Answer    ",beta1Answer[2]);
-			$("#local_tel3").val(beta1Answer[2]);
-			
-			if(beta0 != beta1Answer[0]){
-				console.log("beta0    " ,  beta0);
-				
-				$("#local_tel1").val(beta1Answer[0]);
-			}
-		}
-	}
-   
-	/**  3.  처음 견적서 목록 뿌려주기 */
-	function oemList(currentPage) {  
+	/**  처음 견적서 목록 뿌려주기 */
+	function receiveList(currentPage) {
 		currentPage = currentPage || 1;
 
 		var client_search = $("#client_search").val();
@@ -332,41 +315,35 @@
             to_date : to_date,
             from_date : from_date
         }
-
-	    console.log(" param : " ,param);
-		console.log("param.valueOf()",  param.valueOf());
 		 
 		//콜백
 		var resultCallback = function(data) {
-			console.log("=======resultCallback========");
-		
 			//목록 조회 결과 
-			oemListResult(data,currentPage);
-			console.log(" 목록뿌려주기 조회결과 data ",data);
+			receiveListResult(data, currentPage);
 		};
 		
 		/*  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터,, 비동기? 동기,     돌려 줄 함수  */
 		callAjax("/business/receiveManagementList.do", "post", "text", true, param, resultCallback); //text
 	}
 
-	/**  3-1.목록조회 콜백 함수 */
-	function oemListResult(data,currentPage) {
+	/**  목록조회 콜백 함수 */
+	function receiveListResult(data, currentPage) {
 		console.log("목록조회 콜백함수 ",data);
 
 		// 기존 목록 삭제
-		$('#listOemManage').empty(); 
+		$('#listReceiveManagement').empty();
 		// 신규 목록 생성
-		$("#listOemManage").append(data);
+		$("#listReceiveManagement").append(data);
 		// 총 갯수 추출
-		var oemCnt = $("#oemCnt").val();
+		var receiveCnt = $("#receiveCnt").val();
 
-		console.log("oemCnt ", oemCnt);
+		console.log("receiveCnt ", receiveCnt);
 
 		// 네비게이션
 		//	현재페이지  , 행 갯수 , 리스트사이즈 , 블록 갯수 , 목록리스트함수 
 		var oemManageHtml = getPaginationHtml(
-			currentPage, 
-			oemCnt,
+			currentPage,
+			receiveCnt,
 			pageSizeOemList,
 			pageBlockSizeOemList,
 			'oemList'
@@ -378,152 +355,120 @@
 		$("#OemPagination").empty().append( oemManageHtml );
 		
 		// BizCurrentPage 에 현재 페이지 설정
-		$("#OemCurrentPage").val(currentPage);
+		$("#receiveCurrentPage").val(currentPage);
 		
 		// 값이제대로 왔다 확인 
-		var OemCurrentPage = $("#OemCurrentPage").val();
-		console.log("OemCurrentPage " +  OemCurrentPage);
+		var receiveCurrentPage = $("#receiveCurrentPage").val();
+		console.log("receiveCurrentPage " +  receiveCurrentPage);
 	}
+
+/* -------------------------------------------------------------------  */
+/* -------------------------------------------------------------------  */
 
 	/** 4-1. 단건 조회 */
-	function oemOne(estimate_no) {
+	function receiveOne(receiveNum, estimateNo, clientCd) {
 		var param = {
-			estimate_no:estimate_no
+			receiveNo : receiveNum,
+			estimateNo : estimateNo,
+			clientCd : clientCd
 		};
-		
+
 		var resultCallback = function(data) {
-			oemOneResult(data);
+			receiveOneResult(data);
 		};
-		
-		callAjax("/business/oeManagementSelect.do", "post", "json", true, param, resultCallback);
+
+		callAjax("/business/receiveManagementSelect.do", "post", "json", true, param, resultCallback);
 	}
-	
+
 	/**  4-2 단건 조회 콜백 함수*/
-	function oemOneResult(data) {
+	function receiveOneResult(data) {
 		// 모달 팝업
-		gfModalPop("#layer2");
-			
+		gfModalPop("#receiveDetailView");
+
 		// 그룹코드 폼 데이터 설정
-		oemInitForm(data.oempart); // 사업자 파트 데이터
-			
-		// 숫자 -> 한글로 , 데이터값 바로 박음 
-		fn_change_hangul_money(data.oempart.supply_val, data.oempart.estimate_cnt, data.oempart.limit_data);
-		
-		// 사업자등록번호
-		$("#erp_copnum2").val(data.erp_copnum);
+		receiveInitForm(data.receivePart);
 
-		console.log("alpa1Answer    ",alpa1Answer[2]);
+		// 프로퍼티
+		$("#erp_copnm").text(data.erp_copnm);
+		$("#erp_copnum").text(data.erp_copnum);
+		$("#erp_addr").text(data.erp_addr);
+		$("#erp_addrDetail").text(data.erp_addrDetail);
+		$("#erp_emp").text(data.receivePart.name);
+		$("#erp_tel").text(data.receivePart.tel);
 
-		$("#erp_tel3").val(alpa1Answer[2]);
-
-		if(alpa0 != alpa1Answer[0]){
-			console.log("beta0    " ,  beta0);
-			$("#erp_tel1").val(alpa1Answer[0]);
-		}
-
-		// 단건조회의 foreach문으로 리스트 뿌리기 
-		oemdetailList(data.oempart.estimate_no); 
+		// 단건조회의 foreach문으로 리스트 뿌리기
+		receiveDetailList(data.receivePart.receiveNo, data.receivePart.estimateNo, data.receivePart.clientCd);
 	}
-	
-	// 4-3 단건조회의 리스트 뿌리기 
-	function oemdetailList(estimate_no){
-		console.log("단건 조회의 리스트 뿌리기 estimate_no ", estimate_no);
-		
-		var param = {
-			estimate_no : estimate_no
-	    }
 
-		console.log(" param : " ,param);
-		console.log("param.valueOf()",  param.valueOf());
+	/*  2 .단건조회 등등  모달창 값 초기화  */
+	function receiveInitForm(data) {
+		$("#estCnt").focus();
+
+		//2 - 2 단건 상세조회 모달창
+		var copNo = data.copNo1 + " - " + data.copNo2 + " - " + data.copNo3;
+
+		$("#cliName").text(data.clientNm);
+		$("#copNo").text(copNo);
+		$("#empNm").text(data.empNm);
+		$("#addr").text(data.addr);
+		$("#addrDetail").text(data.addrDetail);
+		$("#empHp").text(data.empHp);
+		$("#receiveDate").text(data.receiveDate);
+		$("#bigo").text(data.receiveRemarks);
+		$("#UclientCd").val(data.clientCd);
+		$("#UestimateNo").val(data.estimateNo);
+		$("#UreceiveNo").val(data.receiveNo);
+
+		var loginId1 = <%=(String)session.getAttribute("loginId")%>;
+		var loginId2 = data.loginId;
+
+		// 작성자 본인일때만 수정,삭제영역 보임
+		if(loginId1 == loginId2) {
+			$("#btnDeleteReceive").show();
+		} else {
+			$("#btnDeleteReceive").hide();
+		}
+	}
+
+	// 4-3 단건조회의 리스트 뿌리기
+	function receiveDetailList(receiveNum, estimate_no, client_cd) {
+		var param = {
+			receiveNo : receiveNum,
+			estimateNo : estimate_no,
+			clientCd : client_cd
+		}
 
 		//콜백
 		var resultCallback = function(data) {
-			console.log("=======resultCallback========");
-			
-			//목록 조회 결과 
-			oemDetailListResult(data);
-			console.log(" 목록뿌려주기 조회결과 data ",data);
+			//목록 조회 결과
+			receiveDetailListResult(data);
 		};
-			
-		/*  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터,, 비동기? 동기,     돌려 줄 함수  */
-		callAjax("/business/oeDetailList.do", "post", "text",  true,param, resultCallback); //text
+
+		/*  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터, 비동기? 동기,     돌려 줄 함수  */
+		callAjax("/business/receiveListDetail.do", "post", "text", true, param, resultCallback); //text
 	}
-	
-	// 4-4 단건조회의 리스트 뿌리기 콜백 
-	function oemDetailListResult(data){
+
+	// 4-4 단건조회의 리스트 뿌리기 콜백
+	function receiveDetailListResult(data){
 		// 기존 목록 삭제
-		$('#OemDetailList1').empty(); 
+		$('#receiveDetailList').empty();
 		// 신규 목록 생성
-		$("#OemDetailList1").append(data);
-	}
-	 
-	/* 팝업내 수정, 저장 validation */
-	function oValidatePopup(data){
-		var chk = checkNotEmpty(
-			[
-				["client_search1", "업체명을 체크해주세요!"],
-				["scm_big_class", "대분류를 체크해주세요!"],
-				["scm_middle_class", "중분류를 체크해주세요!"],
-				["product_cd", "제품을 체크해주세요!"],
-				["estimate_cnt", "수량을 입력해주세요"]
-			]
-		); 
-	 
-	 	if(!chk){return;}
-		return true;
-	}
-	/* 팝업내 수정, 저장 validation 끝 */
-	 
-	/*  신규 등록 및 저장  */
-	function oSaveOem(){
-		alert("저장 함수 타는지!!!!!?? ");
-		 
-		// validation 체크 
-		if(!(oValidatePopup())){ return; }
-		 
-		var resultCallback = function(data){
-			oSaveResult(data); // 저장 콜백 함수 
-		};
-	
-		//폼이름 =>$("#myNotice").serialize() => 직렬화해서 name 값들을 그냥 넘김.
-	 	callAjax("/business/oeManagementSave.do", "post", "json", true, $("#oemForm1").serialize(), resultCallback);
-		// callAjax("estManagementSave.do", "post", "json", true,par am, resultCallback);
-	}
-	 
-	/*  저장 & 수정  & 삭제 함수 콜백 함수 */
-	function oSaveResult(data){
-		if($("#action").val() != "I"){
-			alert("신규등록합니다");
-		}
-		if(data.resultMsg == "SUCCESS"){
-			alert(data.resultMsg);	// 받은 메세지 출력 
-			alert("저장 되었습니다.");
-		} else if(data.resultMsg == "UPDATED") {
-			alert("수정 되었습니다.");
-		} else if(data.resultMsg == "DELETED") {
-			alert("삭제 되었습니다.");
-		} else {
-			alert(data.resultMsg); //실패시 이거 탄다. 
-		}
-
-		gfCloseModal();	// 모달 닫기
-
-		oemInitForm();// 입력폼 초기화
+		$("#receiveDetailList").append(data);
 	}
 
 	//검색구현
-	function oSearchOem(currentPage) {
+	function SearchReceive(currentPage) {
 		/* 달력=>datepicker 사용했음 
 		document.ready에서 		
 		$('#from_date').datepicker();
 		$('#to_date').datepicker();  작성 후 검색구현 함수에서 값 가져오기  */
 			
 		currentPage = currentPage || 1;
-	
+
 		// 날짜 1
-		var to_date = $("#to_date").val();
+		var to_date = $("#to_date").val().toLocaleString().replace(/\./g, "");
 		// 날짜 2
-		var from_date = $("#from_date").val();
+		var from_date = $("#from_date").val().toLocaleString().replace(/\./g, "");
 			
 		console.log('to_date' , to_date);
 		console.log('from_date' , from_date);
@@ -550,103 +495,57 @@
 			console.log("=======resultCallback========");
 		
 			//목록 조회 결과 
-			oemListResult(data,currentPage);
+			receiveListResult(data, currentPage);
 			console.log(" 검색 조회결과 data ",data);
 		};
 		
 		// 목록조회에 던져준다.
 		/*  순서 주의 :  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터,, 비동기? 동기,     돌려 줄 함수  */
-		callAjax("/business/oeManagementList.do", "post", "text",  true,param, resultCallback); //text       
-	} 
-	 	
-	/**  견적서 모달 안 리스트  */
-	function oemDetailList(currentPage) {  
-		currentPage = currentPage || 1;
-
-		// 날짜 1
-		var to_date = $("#to_date").val();
-		// 날짜 2
-		var from_date = $("#from_date").val();
-		
-        var param = {
-			currentPage : currentPage,
-            pageSize : pageSizeOemList,
-         	// 뷰단에 남아있는 날짜 데이터 넣어줘서 다시 조회
-            to_date:to_date, 
-            from_date:from_date
-        }
-
-	    console.log(" param : " ,param);
-		console.log("param.valueOf()",  param.valueOf());
-		
-		//콜백
-		var resultCallback = function(data) {
-			console.log("=======resultCallback========");
-		
-			//목록 조회 결과 
-			oemListDetailResult(data);
-			console.log(" 목록뿌려주기 조회결과 data ",data);
-		};
-		
-		/*  보낼 링크 / 컨트롤러로 보낼 방식 /  받을 방식 ,데이터,, 비동기? 동기,     돌려 줄 함수  */
-		callAjax("/business/oeManagementSave.do", "post", "text",  true,param, resultCallback); //text
+		callAjax("/business/receiveManagementList.do", "post", "text",  true,param, resultCallback); //text
 	}
 
-	/**  견적서 모달 안 리스트  함수  */
-	function oemListDetailResult(data,currentPage) {
-		console.log("목록조회 콜백함수 ",data);
+/* -------------------------------------------------------------------  */
+/* -------------------------------------------------------------------  */
 
-		// 기존 목록 삭제
-		$('#listOemManage1').empty(); 
-		// 신규 목록 생성
-		$("#listOemManage1").append(data);
-		// 총 갯수 추출
-		var oemCnt = $("#oemCnt").val();
-		
-		console.log("oemCnt ", oemCnt);
-		
-		// 네비게이션
-		//	현재페이지  , 행 갯수 , 리스트사이즈 , 블록 갯수 , 목록리스트함수 
-		var oemManageHtml = getPaginationHtml(
-			currentPage, 
-			oemCnt,
-			pageSizeOemList ,  
-			pageBlockSizeOemList,
-			'oemList'
-		);
-		
-		console.log("oemManageHtml  : " + oemManageHtml );
+	/** 삭제 */
+	function receiveInfoDelete() {
+		let clientCd = $("#UclientCd").val();
+		let estimateNo = $("#UestimateNo").val();
+		let receiveNo = $("#UreceiveNo").val();
 
-		//네비게이션 비우고 다시 채우기
-		$("#OemPagination").empty().append( oemManageHtml );
-		
-		// BizCurrentPage 에 현재 페이지 설정
-		
-		// 값이제대로 왔다 확인 
-		var OemCurrentPage = $("#OemCurrentPage").val();
-		console.log("OemCurrentPage " +  OemCurrentPage);
+		let param = {
+			clientCd : clientCd,
+			estimateNo : estimateNo,
+			receiveNo : receiveNo
+		}
+
+		let result = confirm("정말 삭제하시겠습니까?");
+
+		if(result) {
+			let resultCallback = function(data) {
+				console.log("=======여기까지 왔느냐========" + JSON.stringify(data));
+				receiveInfoDelete2(data);
+			};
+
+			callAjax("/business/receiveInfoDelete.do", "post", "json", true, param, resultCallback);
+		} else {
+			alert("취소 했습니다.");
+		}
 	}
 
-	// scm 대분류,중분류,제품 콤보박스 
-	function selectmidcat() {
-		var largecd = $("#scm_big_class").val();
-		// 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))
-	  	productCombo("m", "scm_middle_class", "all", largecd);     
-	
-	  	$("#scm_middle_class").find("option").remove();
-	  	$("#scm_product").find("option").remove();
-	} 
-	
-	function selectproductlistcombo() {
-	  	var margecd = $("#scm_middle_class").val();
-	 // 조회 종류   l : 대분류  m : 중분류  p:중분류 제품,   Combo Name, Option("all" : 전체     "sel" : 선택 ,  중분류 코드(제품 목록 조회시 필수))
-	  	productCombo("p", "product_cd", "all", margecd);     
+	function receiveInfoDelete2(data) {
+		alert(data.resultMsg);	// 받은 메세지 출력
+
+		gfCloseModal();
+		location.reload();
 	}
+
+
 </script>
 </head>
 <body>
 	<form id="oemForm1" action=""  method="">
-		<input type="hidden" id="OemCurrentPage" value="1">
+		<input type="hidden" id="receiveCurrentPage" value="1">
 	    <input type="hidden" name="action" id="action" value="">
 	     
 		<!-- 모달 배경 -->
@@ -701,7 +600,7 @@
 									<b style ="padding: 0 3% 0 5%">날짜 </b>
 									<input type="text" id="from_date"  style="padding : 0.5%;"> ~ <input type="text" id="to_date"  style="padding : 0.5% 0 0.5% 0;" >
 						
-									<a href="" class="btnType blue" id="btnSearchOem" name="btn" style ="float : right; ">
+									<a href="" class="btnType blue" id="btnSearchReceive" name="btn" style ="float : right; ">
 								 		<span>조회</span>
 									</a> 
 								</div>
@@ -738,7 +637,7 @@
 		                           	</tr>
 		                        </thead>
 	
-		                        <tbody id="listOemManage"></tbody> <!--BizParnerCallBack으로 넘어감.여기는 틀만 만드는곳  -->
+		                        <tbody id="listReceiveManagement"></tbody> <!--BizParnerCallBack으로 넘어감.여기는 틀만 만드는곳  -->
                      		</table>
 		                  	<!-- 페이징에리어 -->
 							<div class="paging_area" id="OemPagination"></div>

@@ -1,14 +1,12 @@
 package kr.happyjob.study.business.controller;
 
-import kr.happyjob.study.business.dto.InsertTableSelectDto;
-import kr.happyjob.study.business.dto.ReceiveListDto;
-import kr.happyjob.study.business.model.OeManagementModel;
+import kr.happyjob.study.business.dto.*;
 import kr.happyjob.study.business.service.EstManagementService;
 import kr.happyjob.study.business.service.ReceiveManagementService;
 import kr.happyjob.study.business.vo.ErpClientVo;
-import kr.happyjob.study.business.vo.ReceiveInfoVo;
+import kr.happyjob.study.business.vo.EstimateInfoVo;
+import kr.happyjob.study.business.vo.EstimateProdVo;
 import kr.happyjob.study.business.vo.UserInfoVo;
-import kr.happyjob.study.common.uuid.OrderCodeGenerator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +47,12 @@ public class ReceiveManagementController {
 	@Value("${cop.copnum}")
 	private String erp_copnum; 				//사업자등록번호
 
+	@Value("${cop.addr}")
+	private String erp_addr; 				// 주소
+
+	@Value("1004호")
+	private String erp_addrDetail;			// 상세주소
+
 
 	// Set logger
 	private final Logger logger = LogManager.getLogger(this.getClass());
@@ -84,7 +88,7 @@ public class ReceiveManagementController {
 
 	/* model에 List 넣기  == 조회*/
 	@RequestMapping("receiveManagementList.do")
-	public String estManagementList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+	public String receiveManagementList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 	HttpServletResponse response, HttpSession session) throws Exception {
 
 		logger.info("+ Start " + className + "estManagementList ");
@@ -137,7 +141,7 @@ public class ReceiveManagementController {
 	/* 수주서 등록 모달에 거래처 정보 넣기 == 조회 */
 	@RequestMapping("receiveSearchClient.do")
 	@ResponseBody
-	public Map<String, Object> searchClient(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+	public Map<String, Object> receiveSearchClient(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 											HttpServletResponse response, HttpSession session) throws Exception {
 
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -165,9 +169,9 @@ public class ReceiveManagementController {
 
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
-		receiveService.receiveInfoInsert(paramMap);
+		receiveService.receiveNoInsert(paramMap);
 
-		ReceiveInfoVo receiveInfo = receiveService.InsertReceiveInfo(paramMap);
+		EstimateInfoVo receiveInfo = receiveService.InsertReceiveInfo(paramMap);
 
 		resultMap.put("receiveInfo", receiveInfo);
 		resultMap.put("result", result);
@@ -198,159 +202,102 @@ public class ReceiveManagementController {
 		resultMap.put("erp_copnm", erp_copnm); 							// 회사이름
 		resultMap.put("erp_copnum", erp_copnum); 						// 사업자번호
 		resultMap.put("user", user);									// 담당자 이름, 이메일, 전화번호
-		resultMap.put("receiveInfo", InsertTableSelect);					// 이전꺼 불러옴
+		resultMap.put("receiveInfo", InsertTableSelect);				// 이전꺼 불러옴
 
 		return resultMap;
 	}
 
-	// 단건 조회 
-	@RequestMapping("oeManagementSelect.do")
+	@RequestMapping("receiveComplete.do")
 	@ResponseBody
-	public Map<String, Object> selectEstList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception{
+	public Map<String, Object> receiveComplete(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+											 HttpServletResponse response, HttpSession session) throws Exception {
+		String result = "SUCCESS";
+		String resultMsg = "저장 되었습니다.";
 
-		logger.info("+ 자바단 컨트롤러 Start " + className + " .OeManagementSelect");
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		int update = receiveService.receiveProdInsert(paramMap);
+
+		resultMap.put("update", update);
+		resultMap.put("result", result);
+		resultMap.put("resultMsg", resultMsg);
+
+		EstimateInfoVo estimateInfo = receiveService.searchReceiveInfo(paramMap);
+		Map<String, Object> insertOrder = new HashMap<String, Object>();
+		insertOrder.put("totalPrice", estimateInfo.getSupplyAmount());
+		insertOrder.put("orderDate", estimateInfo.getReceiveDate());
+		insertOrder.put("request", estimateInfo.getReceiveRemarks());
+		insertOrder.put("loginId", estimateInfo.getLoginId());
+
+		/** order_cd & order_detail 정보 기입 */
+		receiveService.insertScmOrder(insertOrder);
+
+		List<ReceiveOrderDetailDto> orderDetail = receiveService.receiveOrderDetail(paramMap);
+		receiveService.orderDetailInsert(orderDetail);
+
+		return resultMap;
+	}
+
+	// 단건 조회
+	@RequestMapping("receiveManagementSelect.do")
+	@ResponseBody
+	public Map<String, Object> receiveManagementSelect(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+											 HttpServletResponse response, HttpSession session) throws Exception{
 
 		String result = "SUCCESS";
 		String resultMsg = "조회 되었습니다.";
 
-		//단건 조회
-		//단건조회에 맞는 모달 안 리스트 뽑을 때 estimate_no는 여기서 꺼내서 썼음
-		OeManagementModel oempart = receiveService.selectOemList(paramMap);
+		// 단건 조회
+		// 단건조회에 맞는 모달 안 리스트 뽑을 때 estimate_no, client_cd는 여기서 꺼내서 썼음
+		SelectReceiveListDto receivePart = receiveService.selectReceiveList(paramMap);
 
+		String value = receivePart.getReceiveRemarks();
+
+		if("".equals(value) || value == null) {
+			receivePart.setReceiveRemarks("없음.");
+		}
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("result",result); 								// 컨트롤러 탔으니 성공했다는 메세지 뷰로 보낸다
-		resultMap.put("oempart",oempart); 								// 단건조회 목록
-		resultMap.put("resultMsg",resultMsg); 							// 한국어로 메세지
+		resultMap.put("result", result); 								// 컨트롤러 탔으니 성공했다는 메세지 뷰로 보낸다
+		resultMap.put("receivePart", receivePart); 						// 단건조회 목록
+		resultMap.put("resultMsg", resultMsg); 							// 한국어로 메세지
 
-		String loginID = (String) session.getAttribute("loginId");
-		paramMap.put("loginID", loginID);
-
-		// 회사 프로퍼티 박은거 보내기
+		// happyjob.properties에서 회사 프로퍼티 박은거 보내기
 		resultMap.put("erp_copnm", erp_copnm); 							// 회사이름
 		resultMap.put("erp_copnum", erp_copnum); 						// 사업자번호
-		resultMap.put("loginID",loginID); 								// 세션 로그인 아이디
-
-		logger.info("+ End " + oempart + "oempart");
-		logger.info("+ End " + className + "estManagementSelect"); // log4j  순서도 중요
+		resultMap.put("erp_addr", erp_addr); 							// 회사 주소
+		resultMap.put("erp_addrDetail", erp_addrDetail); 				// 회사 상세주소
 
 		return resultMap ;
 	}
 
 	/* 모달에 foreach문 돌리기 : 단건 조회 항목에 대한 주문 건 리스트  */
-	@RequestMapping("oeDetailList.do")
-	public String OemDetaillist(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-				HttpServletResponse response, HttpSession session) throws Exception {
-
-		logger.info("+ 자바단 컨트롤러 Start " + className + " .oemDetailList");
-		System.out.println("oemDetailList   컨트롤러로           왔음 ");
+	@RequestMapping("receiveListDetail.do")
+	public String receiveListDetail(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+								HttpServletResponse response, HttpSession session) throws Exception {
 
 		// 1 . 목록 리스트 조회
-		List<OeManagementModel> oemDetailList = receiveService.oemListDetail(paramMap); // -> 콜백단으로 보내지는 데이터
-		model.addAttribute("oemDetailList", oemDetailList);
+		List<ReceiveListDetailDto> receiveListDetail = receiveService.receiveListDetail(paramMap); 	// -> 콜백단으로 보내지는 데이터
+		model.addAttribute("receiveListDetail", receiveListDetail);
 
 		// 2 . 목록 리스트  카운트 조회
-		int oemDetailCnt = receiveService.oemDetailCnt(paramMap);
-		model.addAttribute("oemDetailCnt",oemDetailCnt);
+		int receiveDetailCnt = receiveService.receiveDetailCnt(paramMap);
+		model.addAttribute("receiveDetailCnt", receiveDetailCnt);
 
-		logger.info("   자바단 컨트롤러  - paramMap : " + paramMap);
-
-		return "/business/ReceiveManagementModalDetail";
+		return "business/ReceiveManagementModalDetail";
 	}
 
-	// 신규 견적서 등록 및 수정
-	@RequestMapping("oeManagementSave.do")
+	/** 삭제 */
+	@RequestMapping("receiveInfoDelete.do")
 	@ResponseBody
-	public Map<String, Object> saveEstManage(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
-
-		logger.info("+ Start " + className + ".OeManagementSave");
-		logger.info("   - paramMap : " + paramMap);
-
-		OrderCodeGenerator  orderCodeGenerator = new OrderCodeGenerator();
-
-		String action = (String)paramMap.get("action");
-
-		String result = "SUCCESS";
-		String resultMsg = "저장 되었습니다.";
-
-		System.out.println("action action action action action " + action);
-
-		String receive_num = request.getParameter("receive_num"); // 뷰단에서 가져온 데이터그릇
-		String estimate_no = request.getParameter("estimate_no"); // 뷰단에서 가져온 데이터그릇
-		String client_search1 = request.getParameter("client_search1");
-		String product_cd = request.getParameter("product_cd");
-		String receive_cnt = request.getParameter("receive_cnt");
-		String loginID = (String) session.getAttribute("loginId");
-		
-		paramMap.put("loginID", loginID);
-
-		if ("I".equals(action)) {
-			// insert 두번 날리는법 -- 메소드 이름 다르게
-
-			// 신규 등록 일때
-			// tb_receive_info 테이블 인서트
-			receiveService.receiveInfoInsert(paramMap);
-			System.out.println("여기까지 오냐####################################");
-			// receive_prod 테이블 인서트
-			receiveService.updateInsertOemList(paramMap);
-
-			// --> scm 주문번호  : 매퍼단
-			String order_code =  orderCodeGenerator.uuidGenerator();
-			paramMap.put("order_code", order_code);
-
-			receiveService.insertOrderOemList(paramMap);
-			//scm order  테이블 인서트
-			//estService.updateInsertEstList(paramMap);
-
-			System.out.println("--------------------------scm 오더 테이블에 안넣어줬음~ -> 신규등록 ");
-		} else if("U".equals(action)) {
-			//  단건 조회시
-			receiveService.oemListDetail(paramMap);
-			System.out.println("------------> 상세 조회");
-		} else {
-			result = "FALSE";
-			resultMsg = "알수 없는 요청 입니다.";
-		}
-
-		// resultMap => 뷰로 간다
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("result", result);
-		resultMap.put("resultMsg", resultMsg);
-
-		logger.info("수정 저장 End " + className + ".신규등록 및 수정 ");
-		logger.info("   - paramMap : " + paramMap);
-
-		System.out.println("저장 컨트롤러 ");
-		return resultMap;
-	}
-
-	// 삭제
-	@RequestMapping("oeManagementListDelete.do")
-	@ResponseBody
-	public Map<String, Object> deleteEstManage(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
-
-		logger.info("+ Start " + className + ".OeManagementListDelete");
-		logger.info("   - paramMap : " + paramMap);
-
+	public Map<String, Object> receiveInfoDelete(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+												  HttpServletResponse response, HttpSession session) throws Exception {
 		String result = "SUCCESS";
 		String resultMsg = "삭제 되었습니다.";
 
-		String receive_num = request.getParameter("receive_num");
-		System.out.println(" ===>>>>>  receive_num "+ receive_num);
-
-		String emtimate_no = request.getParameter("emtimate_no");
-		System.out.println(" ===>>>>>  emtimate_no "+ emtimate_no);
-
-		// estimate_no 바로 받아서 삭제 : view단의  param : estimate_no -> mapper
-		receiveService.deleteOemList(paramMap);
+		receiveService.receiveInfoDelete(paramMap);
 
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("result", result); // 잘왔다고 확인 보내주기
+		resultMap.put("result", result);
 		resultMap.put("resultMsg", resultMsg);
-
-		logger.info("+ End " + className + ".OeManagementListDelete");
 
 		return resultMap;
 	}

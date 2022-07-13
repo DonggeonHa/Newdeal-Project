@@ -35,6 +35,7 @@
 						<th scope="row">수주서번호</th>
 						<td>
 							<div id="receiveNum2"></div>
+							<input type="hidden" id="estimateNo2">
 						</td>
 					</tr>
 					<tr>
@@ -104,54 +105,11 @@
 					</tr>
 				</thead>
 				<!--  detail 끼워넣기  -->
-				<tbody id="EstProductList"></tbody>
-			</table>
-			<br><br><br><br><br><br>
-			<table style="background-color: #F3F3F3;">
-				<colgroup>
-					<col width="10%">
-					<col width="10%">
-					<col width="10%">
-					<col width="10%">
-					<col width="10%">
-					<col width="10%">
-					<col width="10%">
-					<col width="5%">
-					<col width="10%">
-					<col width="8%">
-					<col width="7%">
-				</colgroup>
-				<thead>
-					<tr style="background-color: #fdfdfe">
-						<th scope="row">대분류</th>
-						<td>
-							<select id="scm_big_class" name="scm_big_class" onChange="javascript:selectmidcat();"></select>
-						</td>
-						<th scope="row">중분류</th>
-						<td>
-							<select id="scm_middle_class" name="scm_middle_class" onChange="javascript:selectproductlistcombo();"></select>
-						</td>
-						<th scope="row">제품</th>
-						<td>
-							<select id="productCd" name="productCd"></select>
-						</td>
-						<th scope="row">수량</th>
-						<td>
-							<input type="number" name="estimateCnt" id="estimateCnt"/>
-						</td>
-						<th scope="row">납기일</th>
-						<td>
-							<input type="text" name="ourDeadline" id="ourDeadline"  style="padding : 0.5%;">
-						</td>
-						<td style="float: right;">
-							<a href="" class="btnType2 color4" id="btnInsertEstProd" name="btn"><span>추가</span></a>
-						</td>
-					</tr>
-				</thead>
+				<tbody id="receiveProductList"></tbody>
 			</table>
 			<div class="btn_areaC mt30">
-				<a href="" class="btnType blue" id="btnComplete" name="btn"><span>등록</span></a>
-				<a href="" class="btnType gray" id="btnCloseEst" name="btn"><span>취소</span></a>
+				<a href="" class="btnType blue" id="btnReceiveComplete" name="btn"><span>등록</span></a>
+				<a href="" class="btnType gray" id="btnReceiveClose" name="btn"><span>취소</span></a>
 			</div>
 		</dd>
 	</dl>

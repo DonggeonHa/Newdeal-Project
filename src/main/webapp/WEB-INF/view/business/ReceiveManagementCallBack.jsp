@@ -16,16 +16,15 @@
 	<c:forEach items="${receiveList}" var="list">
 		<tr>
 			<td>${erp_copnm}</td>
-			<!-- 날짜 누르면 readonly  -->
 			<td>${list.name}</td>
 			<td>${list.clientNm}</td>
 			<td>${list.empNm}</td>
-			<td>${list.receiveNum}</td>
+			<td>${list.receiveNo}</td>
 			<td>${list.receiveDate}</td>
 			<td><fmt:formatNumber value="${list.sumTotal}" pattern="#,###"/></td>
 			<td><fmt:formatNumber value="${list.supplyAmount}" pattern="#,###"/></td>
 			<td>
-				<a href="javascript:estOne('${list.receiveNum}','${list.estimateNo}', '${list.clientCd}')" >
+				<a href="javascript:receiveOne('${list.receiveNo}','${list.estimateNo}', '${list.clientCd}')" >
 					<span>상세보기</span>
 				</a>
 			</td>

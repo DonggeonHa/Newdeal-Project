@@ -39,10 +39,13 @@ function fn_dateset(e){
 	    month = "0" + month;
 	}
 	var day = date.getDate();
+	console.log(day);
 	if (day <= 9){
-	    day = "0" + month;
+	    day = "0" + day;
 	}
 	var today = year + '-' + month + '-' + day;
+	
+	console.log(day);
 //오늘 날짜를 '00-00-00'형태로 변수에 저장   
 
 

@@ -26,9 +26,11 @@
 			<td><fmt:formatNumber value="${list.tax}" pattern="#,###"/></td>
 			<td><fmt:formatNumber value="${list.sumAmount}" pattern="#,###"/></td>
 			<td>
-				<a href="javascript:estDeleteProd('${list.estimateNo}', '${list.clientCd}', '${list.productCd}')" class="btnType2 color1" >
-					<span>삭제</span>
-				</a>
+				<c:if test = "${receiveNo == null}">
+					<a href="javascript:estDeleteProd('${list.estimateNo}', '${list.clientCd}', '${list.productCd}')" class="btnType2 color1" >
+						<span>삭제</span>
+					</a>
+				</c:if>
 			</td>
 		</tr>
 		<c:set var="totalCnt" value="${totalCnt + list.estimateCnt}"/>

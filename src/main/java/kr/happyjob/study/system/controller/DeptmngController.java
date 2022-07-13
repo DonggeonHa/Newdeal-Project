@@ -127,14 +127,32 @@ public class DeptmngController {
 		logger.info("   - paramMap : " + paramMap);
 		
 		String action = (String)paramMap.get("action");
+		logger.info("   잘나와라 1: " + action );
 		String resultMsg = "";
-		  
+		
+		String deptCd = (String)paramMap.get("dept_cd");
+		String deptNm = (String)paramMap.get("dept_nm");
+		
+	
 		// 사용자 정보 설정
 		paramMap.put("loginID", session.getAttribute("loginId"));
 		if ("I".equals(action)) {
+			int duplication = deptService.duplication(paramMap);
+			logger.info("   잘나와라2 : " + duplication );
+			
+			logger.info("   제대로 값 들어왔냐1 : " + duplication );
+			logger.info("   제대로 값 들어왔냐2 : " + action );
+			
+			if( duplication >0) {
+				logger.info("중복이다!");
+				action = "D";
+				resultMsg = "DUPLICATION";
+			} else {
+				deptService.insertDept(paramMap);
+				resultMsg = "SUCCESS";
+			}
 			// 그룹코드 신규 저장
-			deptService.insertDept(paramMap);
-			resultMsg = "SUCCESS";
+			
 		} else if("U".equals(action)) {
 			// 그룹코드 수정 저장
 			deptService.updateDept(paramMap);
@@ -147,7 +165,8 @@ public class DeptmngController {
 		//결과 값 전송
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("resultMsg", resultMsg);
-	    
+		
+		logger.info("   제대로 값 들어왔냐3 : "+resultMsg  );
 	    return resultMap;
 	}
 	
@@ -165,14 +184,14 @@ public class DeptmngController {
 		
 		// **** 변경. 주석은 원본 코드입니다.****
 //		deptService.deleteDept(paramMap);
-		int resultCode = deptService.deptdelete(paramMap);
+			deptService.deptdelete(paramMap);
 		
-		System.out.println("삭제확인" + resultCode);
+			logger.info("  삭제확인 " );
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
   	
-		resultMap.put("result", result);
-		resultMap.put("resultMsg", resultMsg);
+		
+		resultMap.put("resultMsg", result);
 		
 		logger.info("+ End " + className + ".deptDelete");
 		

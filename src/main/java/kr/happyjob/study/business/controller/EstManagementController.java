@@ -392,6 +392,11 @@ public class EstManagementController {
 		int estDetailCnt = estService.estDetailCnt(paramMap);
 		model.addAttribute("estDetailCnt",estDetailCnt);
 
+		String value = (String)paramMap.get("receiveNo");
+		if (value != null) {
+			model.addAttribute("receiveNo", value);
+		}
+
 		return "/business/EstimateProdCallBack";
 	}
 

@@ -13,7 +13,6 @@ public interface BmSalePlanDao {
 	/** 영업실적조회 */
 	public List<BmSalePlanModel> listBmSalePlan(Map<String, Object> paramMap) throws Exception;
 	
-
 	/** 목록 */
 	public int countListBmSalePlan(Map<String, Object> paramMap)throws Exception;
 	

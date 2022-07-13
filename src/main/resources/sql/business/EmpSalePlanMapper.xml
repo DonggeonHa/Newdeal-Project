@@ -34,8 +34,8 @@
 	                                  ,b.client_cd
 	                                  ,d.product_cd
 	                                  ,d.estimate_cnt
-	                              from tb_receive_info b
-	                                   INNER JOIN receive_prod d ON d.estimate_no = b.estimate_no  <!-- 1. 수주서,수주테이블에서 먼저 견적서번호로 조인한다 -->
+	                              from estimate_info b
+	                                   INNER JOIN estimate_prod d ON d.estimate_no = b.estimate_no  <!-- 1. 수주서,수주테이블에서 먼저 견적서번호로 조인한다 -->
 	                        ) re on re.client_cd = a.client_cd and re.product_cd = a.product_cd  <!--  2. 1에서 추출한 데이터의 거래처코드,제품코드를를 outer조인으로 연결 -->
 	
 	
@@ -75,8 +75,8 @@
 	                                  ,b.client_cd
 	                                  ,d.product_cd
 	                                  ,d.estimate_cnt
-	                              from tb_receive_info b
-	                                   INNER JOIN receive_prod d ON d.estimate_no = b.estimate_no  <!-- 1. 수주서,수주테이블에서 먼저 견적서번호로 조인한다 -->
+	                              from estimate_info b
+	                                   INNER JOIN estimate_prod d ON d.estimate_no = b.estimate_no  <!-- 1. 수주서,수주테이블에서 먼저 견적서번호로 조인한다 -->
 	                        ) re on re.client_cd = a.client_cd and re.product_cd = a.product_cd  <!--  2. 1에서 추출한 데이터의 거래처코드,제품코드를를 outer조인으로 연결 :: 기준 : 계획서테이블 -->
 		 <where>
          <if test="(client_search != null) and (! client_search.equals(''))">
@@ -133,8 +133,8 @@
 	                                  ,b.client_cd
 	                                  ,d.product_cd
 	                                  ,d.estimate_cnt
-	                              from tb_receive_info b
-	                                   INNER JOIN receive_prod d ON d.estimate_no = b.estimate_no  <!-- 1. 수주서,수주테이블에서 먼저 견적서번호로 조인한다 -->
+	                              from estimate_info b
+	                                   INNER JOIN estimate_prod d ON d.estimate_no = b.estimate_no  <!-- 1. 수주서,수주테이블에서 먼저 견적서번호로 조인한다 -->
 	                        ) re on re.client_cd = a.client_cd and re.product_cd = a.product_cd  <!--  2. 1에서 추출한 데이터의 거래처코드,제품코드를를 outer조인으로 연결 -->
 	
 	

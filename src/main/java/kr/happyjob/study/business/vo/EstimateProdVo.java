@@ -10,6 +10,7 @@ public class EstimateProdVo {
     private int tax;                // 부가세
 	private int sumAmount;			// 합계
 	private String ourDeadline;		// 납기일자
+	private String receiveNo;		// 수주번호
     
 	public String getEstimateNo() {
 		return estimateNo;
@@ -37,5 +38,8 @@ public class EstimateProdVo {
 	}
 	public int getSumAmount() {
 		return sumAmount;
+	}
+	public String getReceiveNo() {
+		return receiveNo;
 	}
 }

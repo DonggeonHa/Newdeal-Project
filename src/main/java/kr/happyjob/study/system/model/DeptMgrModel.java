@@ -4,6 +4,8 @@ public class DeptMgrModel {
 	
 	// 게시판 글 번호 deptMgrMapper.xml에 있는 select조건을 가져온다 -> general and getter을 한다!
 	private int dept_cd;
+	private String dept_name;
+	
 	public int getDept_cd() {
 		return dept_cd;
 	}
@@ -16,5 +18,4 @@ public class DeptMgrModel {
 	public void setDept_name(String dept_name) {
 		this.dept_name = dept_name;
 	}
-	private String dept_name;
 }

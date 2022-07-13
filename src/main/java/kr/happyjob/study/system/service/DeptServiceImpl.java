@@ -52,10 +52,13 @@ public class DeptServiceImpl implements DeptService {
 
 	// **** 삭제(변경)****
 	@Override
-	public int deptdelete(Map<String, Object> paramMap) throws Exception {
-
-		int statusChange = deptDao.deptdelete(paramMap);
-		return statusChange;
+	public void deptdelete(Map<String, Object> paramMap) throws Exception {
+		 deptDao.deptdelete(paramMap);
 	}
 	
+	// 중복값 확인
+	@Override
+	public int duplication(Map<String, Object> paramMap) throws Exception {
+		return deptDao.duplication(paramMap);
+	}
 }

@@ -20,18 +20,20 @@
 	   
 	   fn_ListBmSalePlan();
 	   
-   
+	
 	$("#plall").change( function() {			
-		productCombo("m", "pmall", "all", $("#plall").val(),"");   // 제품 목록
+		productCombo("m", "pmall", "all", $("#plall").val(),"");  // 제품 중분류 
 		
 		$('#product_cd').children('option').remove();
 	});
 
 	$("#pmall").change( function() {			
-		productCombo("p", "product_cd", "all", $("#pmall").val(),"");    // 제품 중분류
+		productCombo("p", "product_cd", "all", $("#pmall").val(),"");   // 제품 목록 
 	});			
 	
 	productCombo("l","plall","all","","");   // 제품 대분류
+	
+	
 	
    }); 	
   
@@ -50,7 +52,7 @@
 	   
 		console.log("pagenum : " + pagenum);
 	   
-	   var param ={   												//(controller에서 쓰는) key:(실제)value
+	   var param ={   								//(controller에서 쓰는) key:(실제)value
 			   pagenum : pagenum,
 			   pagesize : pagesize,
 			   sales_reg_date : sales_reg_date,
@@ -108,7 +110,7 @@
 			margin-bottom : 10px;
 		
 		}
-
+		
 </style>
 
 </head>
@@ -223,21 +225,6 @@
 							</thead>
 							
 							<tbody id="listBmSalePlan">
-							 <tr style="border: 10px; border-color: blue">
-						                           <td width="40" height="25" style="font-size: 100%">대분류명  </td>
-						                            <!-- <td colspan=5>productCombo("l","plall","all","","");--><br>
-						                                 
-						                           </td>      
-						                        </tr>			
-						                        
-						                        <tr style="border: 10px; border-color: blue">
-						                           <td width="40" height="25" style="font-size: 100%">중분류명 </td>
-						                          <!--  <td colspan=5>productCombo("m", "pmall", "all", $("#plall").val(),"");</td> -->	 </tr>			
-						                        
-						                        <tr style="border: 10px; border-color: blue">
-						                           <td width="40" height="25" style="font-size: 100%">제품명</td>
-						                           <!-- <td colspan=5>productCombo("p", "product_cd", "all", $("#pmall").val(),""); </td> --> </tr>	
-							
 								</tbody> 
 							
 							</table>

@@ -8,23 +8,26 @@ import kr.happyjob.study.system.model.NoticeModel;
 
 public interface deptMgrDao {
 
-	
 	// 부서관리 리스트 조회
-	public List<DeptMgrModel> deptList(Map<String, Object> paramMap)throws Exception ;
-	  
+	public List<DeptMgrModel> deptList(Map<String, Object> paramMap) throws Exception;
+
 	// 부서관리 목록 카운트 조회
-	public int deptCount(Map<String, Object> paramMap)throws Exception ;
-	
+	public int deptCount(Map<String, Object> paramMap) throws Exception;
+
 	// 부서관리 단건 조회
-	public DeptMgrModel deptdetail(Map<String, Object> paramMap)throws Exception ;
-	
+	public DeptMgrModel deptdetail(Map<String, Object> paramMap) throws Exception;
+
 	// 부서관리 저장
 	public int insertDept(Map<String, Object> paramMap) throws Exception;
-	
+
 	// 부서관리 수정
 	public int updateDept(Map<String, Object> paramMap) throws Exception;
-	
+
 	// 부서관리 삭제
-	public int deptdelete(Map<String, Object> paramMap) throws Exception;
+	public void deptdelete(Map<String, Object> paramMap) throws Exception;
 	
-	}
+	// 중복값 확인
+	public int duplication(Map<String, Object> paramMap) throws Exception;
+	
+
+}

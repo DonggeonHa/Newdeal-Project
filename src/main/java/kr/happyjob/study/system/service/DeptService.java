@@ -25,6 +25,9 @@ public interface DeptService {
 	public int updateDept(Map<String, Object> paramMap) throws Exception;
 	
 	// **** 부서관리 삭제(변경)****
-	public int deptdelete(Map<String, Object> paramMap) throws Exception;
+	public void deptdelete(Map<String, Object> paramMap) throws Exception;
+	
+	// 중복값 확인
+	public int duplication(Map<String, Object> paramMap) throws Exception;
 	
 }

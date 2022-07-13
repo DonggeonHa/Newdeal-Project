@@ -5,7 +5,7 @@ public class ReceiveListDto {
 	private String clientCd;		// 거래처코드
 	private String clientNm;		// 거래처명
 	private String empNm;			// 거래처 담당자
-	private String receiveNum;		// 수주번호
+	private String receiveNo;		// 수주번호
 	private String receiveDate;		// 수주일자
 	private int sumTotal;			// 총 갯수
 	private int supplyAmount;		// 총 합계
@@ -35,12 +35,6 @@ public class ReceiveListDto {
 	}
 	public void setEmpNm(String empNm) {
 		this.empNm = empNm;
-	}
-	public String getReceiveNum() {
-		return receiveNum;
-	}
-	public void setReceiveNum(String receiveNum) {
-		this.receiveNum = receiveNum;
 	}
 	public String getReceiveDate() {
 		return receiveDate;
@@ -72,6 +66,12 @@ public class ReceiveListDto {
 	public void setEstimateNo(String estimateNo) {
 		this.estimateNo = estimateNo;
 	}
+	public String getReceiveNo() {
+		return receiveNo;
+	}
+	public void setReceiveNo(String receiveNo) {
+		this.receiveNo = receiveNo;
+	}
 
 	@Override
 	public String toString() {
@@ -80,7 +80,7 @@ public class ReceiveListDto {
 				", clientCd='" + clientCd + '\'' +
 				", clientNm='" + clientNm + '\'' +
 				", empNm='" + empNm + '\'' +
-				", receiveNum='" + receiveNum + '\'' +
+				", receiveNo='" + receiveNo + '\'' +
 				", receiveDate='" + receiveDate + '\'' +
 				", sumTotal=" + sumTotal +
 				", supplyAmount=" + supplyAmount +

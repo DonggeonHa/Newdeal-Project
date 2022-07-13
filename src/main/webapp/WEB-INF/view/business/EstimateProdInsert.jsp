@@ -10,7 +10,7 @@
 		</dt>
 		<dd class="content">
 			<!-- s : 여기에 내용입력 -->
-			<p style="font-size: large; font-weight: bold; padding-bottom: 1%;"><i class="fa-solid fa-align-justify"></i>  견적서정보</p>
+			<p style="font-size: large; font-weight: bold; padding-bottom: 1%;"><i class="fa-solid fa-align-justify"></i> 견적서정보</p>
 			<table class="row">
 				<caption>caption</caption>
 				<colgroup>
